@@ -29,7 +29,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+//import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 public class MainActivity extends Activity implements GetJSONArrayListener {
 
@@ -130,7 +130,7 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 updateStationInfoView(marker);
-                mSlidingUpPanelLayout.expandPanel();
+                mSlidingUpPanelLayout.expandPane();
                 return true;
             }
         });
@@ -304,8 +304,8 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
     @Override
     public void onBackPressed() {
         // TODO: Also show the handle, or add a collapse button or something
-        if (mSlidingUpPanelLayout.isPanelExpanded()) {
-            mSlidingUpPanelLayout.collapsePanel();
+        if (mSlidingUpPanelLayout.isExpanded()) {
+            mSlidingUpPanelLayout.collapsePane();
         } else {
             super.onBackPressed();
         }

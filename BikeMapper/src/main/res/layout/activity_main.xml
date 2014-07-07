@@ -1,4 +1,4 @@
-<com.sothree.slidinguppanel.SlidingUpPanelLayout
+<com.flyingtoaster.bikemapper.SlidingUpPanelLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:sothree="http://schemas.android.com/apk/res-auto"
     android:id="@+id/sliding_layout"
@@ -108,4 +108,4 @@
             android:layout_alignParentBottom="true"
             android:src="@android:drawable/ic_dialog_map"/>
     </RelativeLayout>
-</com.sothree.slidinguppanel.SlidingUpPanelLayout>
+</com.flyingtoaster.bikemapper.SlidingUpPanelLayout>
