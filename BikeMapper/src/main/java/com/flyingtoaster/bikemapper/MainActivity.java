@@ -63,7 +63,7 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
     private ImageButton refreshButton;
 
     private SlidingUpPanelLayout mSlidingUpPanelLayout;
-    private LinearLayout dragView;
+    private View dragView;
     private LinearLayout slidingContentView;
 
     private TextView mStationNameView;
@@ -83,7 +83,7 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
         mBikesAmountView = (TextView) findViewById(R.id.bikes_amount_textview);
         mDocksAmountView = (TextView) findViewById(R.id.docks_amount_textview);
         mSlidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
-        dragView = (LinearLayout) findViewById(R.id.drag_view);
+        dragView = findViewById(R.id.drag_view);
         slidingContentView = (LinearLayout) findViewById(R.id.sliding_content_view);
         refreshButton = (ImageButton) findViewById(R.id.refresh_button);
         refreshButton.setOnClickListener(new View.OnClickListener() {
