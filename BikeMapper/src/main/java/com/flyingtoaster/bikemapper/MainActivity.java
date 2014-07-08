@@ -79,7 +79,7 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
         mMarkerHash = new HashMap<String, Integer>();
 
 
-        mStationNameView = (TextView) findViewById(R.id.station_name_view);
+        mStationNameView = (TextView) findViewById(R.id.station_name_text_view);
         mBikesAmountView = (TextView) findViewById(R.id.bikes_amount_textview);
         mDocksAmountView = (TextView) findViewById(R.id.docks_amount_textview);
         mSlidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);

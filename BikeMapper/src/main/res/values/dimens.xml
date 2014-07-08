@@ -4,7 +4,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="station_title_size">26sp</dimen>
-    <dimen name="item_amount_size">16dp</dimen>
+    <dimen name="item_amount_size">26dp</dimen>
+    <dimen name="item_label_size">16dp</dimen>
     <dimen name="station_info_padding">8dp</dimen>
 
     <dimen name="collapse_icon_padding">8dp</dimen>
@@ -15,6 +16,8 @@
     <dimen name="sliding_panel_expanded_height">192dp</dimen>
     <dimen name="sliding_panel_border_width">4dp</dimen>
 
-    <dimen name="drag_view_height">84dp</dimen>
+    <dimen name="station_title_view_height">84dp</dimen>
+
+    <dimen name="info_margin">64dp</dimen>
 
 </resources>

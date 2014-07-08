@@ -7,8 +7,8 @@
     <string name="title_section3">Section 3</string>
     <string name="action_settings">Settings</string>
 
-    <string name="bikes_amount_label">Bikes:</string>
-    <string name="docks_amount_label">Docks:</string>
+    <string name="bikes_amount_label">Bikes</string>
+    <string name="docks_amount_label">Docks</string>
     <string name="zero">0</string>
 
 </resources>
