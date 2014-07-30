@@ -10,6 +10,7 @@
 
     <dimen name="collapse_icon_padding">8dp</dimen>
 
+    <dimen name="compass_station_title_vertical_padding">48dp</dimen>
     <dimen name="station_title_vertical_padding">8dp</dimen>
     <dimen name="station_title_horizontal_padding">64dp</dimen>
 

@@ -393,9 +393,9 @@ public class SlidingUpPanelLayout extends ViewGroup {
         final int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
         if (widthMode != MeasureSpec.EXACTLY) {
-            throw new IllegalStateException("Width must have an exact value or MATCH_PARENT");
+            //throw new IllegalStateException("Width must have an exact value or MATCH_PARENT");
         } else if (heightMode != MeasureSpec.EXACTLY) {
-            throw new IllegalStateException("Height must have an exact value or MATCH_PARENT");
+            //throw new IllegalStateException("Height must have an exact value or MATCH_PARENT");
         }
 
         int layoutHeight = heightSize - getPaddingTop() - getPaddingBottom();

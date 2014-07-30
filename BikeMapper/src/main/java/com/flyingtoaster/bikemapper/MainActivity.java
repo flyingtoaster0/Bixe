@@ -6,6 +6,7 @@ import java.util.Locale;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -48,6 +49,8 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
      */
     ViewPager mViewPager;
 
+    private final String TAG = "ManActivity";
+
     private final String API_URL = "http://www.bikesharetoronto.com/stations/json";
     private final double STARTING_LAT = 43.652992;
     private final double STARTING_LNG = -79.383657;
@@ -61,6 +64,7 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
     private HashMap<String, Integer> mMarkerHash;
 
     private ImageButton refreshButton;
+    private ImageButton mNavigateButton;
 
     private SlidingUpPanelLayout mSlidingUpPanelLayout;
     private View dragView;
@@ -90,6 +94,18 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
             @Override
             public void onClick(View v) {
                 updateStations();
+            }
+        });
+
+        mNavigateButton= (ImageButton) findViewById(R.id.navigate_button);
+        mNavigateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "mNavigateButton.onClick()");
+                // Pass info to the TripActivity here
+
+                Intent intent = new Intent(MainActivity.this, TripActivity.class);
+                startActivity(intent);
             }
         });
 
