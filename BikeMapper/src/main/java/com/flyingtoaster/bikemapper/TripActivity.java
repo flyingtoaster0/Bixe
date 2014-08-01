@@ -12,6 +12,11 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.widget.Toast;
 
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
@@ -20,7 +25,7 @@ import com.google.android.gms.location.LocationClient;
  * Created by tim on 2014-07-13.
  */
 public class TripActivity extends Activity implements GooglePlayServicesClient.ConnectionCallbacks,
-        GooglePlayServicesClient.OnConnectionFailedListener {
+        GooglePlayServicesClient.OnConnectionFailedListener, SensorEventListener {
 
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     private final static String TAG = "TripActivity";
@@ -31,6 +36,11 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
     LocationClient mLocationClient;
 
     Location mCurrentLocation;
+
+    private SensorManager mSensorManager;
+    Sensor accelerometer;
+    Sensor magnetometer;
+    Float azimut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +56,36 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+
+
+        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+
         mLocationClient = new LocationClient(this, this, this);
         mLocationClient.connect();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSensorManager.unregisterListener(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mSensorManager.unregisterListener(this);
+        // Disconnecting the client invalidates it.
+        mLocationClient.disconnect();
     }
 
     /**
@@ -128,13 +166,6 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         }
     }
 
-    @Override
-    protected void onStop() {
-        // Disconnecting the client invalidates it.
-        mLocationClient.disconnect();
-        super.onStop();
-    }
-
     protected double getDistance(double lat1, double lon1, double lat2, double lon2) {
         double dlon = Math.toRadians(lon2-lon1);
         double dlat = Math.toRadians(lat2-lat1);
@@ -145,5 +176,66 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
 
     protected double getBearing(double lat1, double lon1, double lat2, double lon2) {
         return (Math.toDegrees(Math.atan2(Math.sin(Math.toRadians(lon2) - Math.toRadians(lon1)) * Math.cos(Math.toRadians(lat2)), Math.cos(Math.toRadians(lat1)) * Math.sin(Math.toRadians(lat2)) - Math.sin(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(lon2) - Math.toRadians(lon1)))) + 360) % 360;
+    }
+
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {  }
+
+    float[] mGravity;
+    float[] mGeomagnetic;
+    public void onSensorChanged(SensorEvent event) {
+
+        Log.d(TAG, "onSensorChanged");
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+            mGravity = event.values;
+        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
+            mGeomagnetic = event.values;
+        if (mGravity != null && mGeomagnetic != null) {
+            float R[] = new float[9];
+            float I[] = new float[9];
+            boolean success = SensorManager.getRotationMatrix(R, I, mGravity, mGeomagnetic);
+            if (success) {
+                float orientation[] = new float[3];
+                SensorManager.getOrientation(R, orientation);
+                azimut = orientation[0]; // orientation contains: azimut, pitch and roll
+                azimut = (float)Math.toDegrees(azimut) + (azimut < 0 ? 360 + azimut : azimut);
+                Log.d(TAG, String.valueOf(azimut));
+                Log.d(TAG, getCompassDir(azimut));
+            }
+        }
+        //mCustomDrawableView.invalidate();
+    }
+
+    private String getCompassDir(float degrees) {
+        // Use 22.5 for finer compass directions
+        float correction = degrees+22.5 > 360 ? (float)(degrees+22.5 - 360) : (float)(degrees+22.5);
+        int bearing = (int)((correction)/45);
+        String direction = null;
+        switch(bearing) {
+            case 0:
+                direction = "N";
+                break;
+            case 1:
+                direction = "NE";
+                break;
+            case 2:
+                direction = "E";
+                break;
+            case 3:
+                direction = "SE";
+                break;
+            case 4:
+                direction = "S";
+                break;
+            case 5:
+                direction = "SW";
+                break;
+            case 6:
+                direction = "W";
+                break;
+            case 7:
+                direction = "NW";
+                break;
+        }
+        return direction;
     }
 }
