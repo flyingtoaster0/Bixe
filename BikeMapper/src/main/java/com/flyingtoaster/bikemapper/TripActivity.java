@@ -37,6 +37,8 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
 
     Location mCurrentLocation;
 
+    CompassFragment mCompassFragment;
+
     private SensorManager mSensorManager;
     Sensor accelerometer;
     Sensor magnetometer;
@@ -55,7 +57,7 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
+        mCompassFragment = new CompassFragment();
 
 
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -102,14 +104,14 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return new CompassFragment();
+            return mCompassFragment;
             //return null;
         }
 
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 2;
+            return 1;
         }
 
 
@@ -200,6 +202,7 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
                 azimut = (float)Math.toDegrees(azimut) + (azimut < 0 ? 360 + azimut : azimut);
                 Log.d(TAG, String.valueOf(azimut));
                 Log.d(TAG, getCompassDir(azimut));
+                mCompassFragment.setPinRot(azimut);
             }
         }
         //mCustomDrawableView.invalidate();
