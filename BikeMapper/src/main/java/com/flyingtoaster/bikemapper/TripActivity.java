@@ -245,7 +245,8 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
                 float orientation[] = new float[3];
                 SensorManager.getOrientation(R, orientation);
                 azimut = orientation[0]; // orientation contains: azimut, pitch and roll
-                azimut = (float)Math.toDegrees(azimut) + (azimut < 0 ? 360 + azimut : azimut);
+                azimut = (float)Math.toDegrees(azimut) + 180;
+                //azimut = azimut + (azimut < 0 ? 360 + azimut : azimut);
                 //Log.d(TAG, String.valueOf(azimut));
                 //Log.d(TAG, getCompassDir(azimut));
                 //Log.d(TAG, String.valueOf(getBearing(mCurrentLatitude, mCurrentLongitude, mLatitude, mLongitude)));
@@ -253,7 +254,8 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
                 int distance = (int)getDistance(mCurrentLatitude, mCurrentLongitude, mLatitude, mLongitude);
                 // Round to the nearest 10
                 distance = (distance / 10) * 10;
-                mCompassFragment.setPinRot(bearing - azimut);
+                mCompassFragment.setPinRot(bearing /*- azimut*/);
+                //Log.d(TAG, String.valueOf(azimut));
                 mCompassFragment.setCompassRot(azimut);
                 mCompassFragment.setDirectionText(distance + "m " + getCompassDir(bearing));
             }
