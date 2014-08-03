@@ -74,6 +74,8 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
     private TextView mBikesAmountView;
     private TextView mDocksAmountView;
 
+    private  LatLng mStationLatLng;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +107,10 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
                 // Pass info to the TripActivity here
 
                 Intent intent = new Intent(MainActivity.this, TripActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putDouble("latitude", mStationLatLng.latitude);
+                bundle.putDouble("longitude", mStationLatLng.longitude);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
@@ -311,6 +317,7 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
         String stationName = theStation.getStationName();
         Integer availableBikes = theStation.getAvailableBikes();
         Integer availableDocks = theStation.getAvailableDocks();
+        mStationLatLng = theStation.getLatLng();
 
         mStationNameView.setText(stationName);
         mBikesAmountView.setText(availableBikes.toString());

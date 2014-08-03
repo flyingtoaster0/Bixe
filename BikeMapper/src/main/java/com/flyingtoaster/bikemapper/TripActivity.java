@@ -19,6 +19,7 @@ import android.hardware.SensorManager;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.identity.intents.AddressConstants;
 import com.google.android.gms.location.LocationClient;
 
 /**
@@ -44,6 +45,11 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
     Sensor magnetometer;
     Float azimut;
 
+    double mCurrentLatitude = 43.655423;
+    double mCurrentLongitude = -79.375904;
+    double mLatitude;
+    double mLongitude;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +63,13 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        Bundle bundle = getIntent().getExtras();
+
+
+        mLatitude = bundle.getDouble("latitude");
+        mLongitude = bundle.getDouble("longitude");
+
         mCompassFragment = new CompassFragment();
 
 
@@ -125,8 +138,8 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         Log.d(TAG, coordsString);
         Toast.makeText(this, coordsString, Toast.LENGTH_SHORT).show();
 
-        Log.d(TAG, String.valueOf(getBearing(43.655416, -79.3753296, 43.6432201, -79.3985133)));
-        Log.d(TAG, String.valueOf(getDistance(43.655416, -79.3753296, 43.6432201, -79.3985133)));
+        //Log.d(TAG, String.valueOf(getBearing(43.6432201, -79.3985133, mLatitude, mLongitude)));
+        //Log.d(TAG, String.valueOf(getDistance(43.6432201, -79.3985133, mLatitude, mLongitude)));
     }
 
 
@@ -200,9 +213,10 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
                 SensorManager.getOrientation(R, orientation);
                 azimut = orientation[0]; // orientation contains: azimut, pitch and roll
                 azimut = (float)Math.toDegrees(azimut) + (azimut < 0 ? 360 + azimut : azimut);
-                Log.d(TAG, String.valueOf(azimut));
-                Log.d(TAG, getCompassDir(azimut));
-                mCompassFragment.setPinRot(azimut);
+                //Log.d(TAG, String.valueOf(azimut));
+                //Log.d(TAG, getCompassDir(azimut));
+                //Log.d(TAG, String.valueOf(getBearing(mCurrentLatitude, mCurrentLongitude, mLatitude, mLongitude)));
+                mCompassFragment.setPinRot((float)getBearing(mCurrentLatitude, mCurrentLongitude, mLatitude, mLongitude) - azimut);
             }
         }
         //mCustomDrawableView.invalidate();
