@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.IntentSender;
 import android.location.Location;
+import com.google.android.gms.location.LocationListener;
 import android.os.Bundle;
 
 import android.support.v13.app.FragmentPagerAdapter;
@@ -17,16 +18,18 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.identity.intents.AddressConstants;
 import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationRequest;
 
 /**
  * Created by tim on 2014-07-13.
  */
 public class TripActivity extends Activity implements GooglePlayServicesClient.ConnectionCallbacks,
-        GooglePlayServicesClient.OnConnectionFailedListener, SensorEventListener {
+        GooglePlayServicesClient.OnConnectionFailedListener, SensorEventListener, LocationListener {
 
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     private final static String TAG = "TripActivity";
@@ -45,10 +48,19 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
     Sensor magnetometer;
     Float azimut;
 
+    public static final int UPDATE_INTERVAL = 5000;
+    private static final int FASTEST_INTERVAL = 2000;
+
     double mCurrentLatitude = 43.655423;
     double mCurrentLongitude = -79.375904;
     double mLatitude;
     double mLongitude;
+
+    String mStationName;
+
+    boolean mUpdatesRequested;
+    LocationRequest mLocationRequest;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +81,7 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
 
         mLatitude = bundle.getDouble("latitude");
         mLongitude = bundle.getDouble("longitude");
+        mStationName = bundle.getString("station_name","");
 
         mCompassFragment = new CompassFragment();
 
@@ -78,8 +91,20 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
 
+        mUpdatesRequested = true;
         mLocationClient = new LocationClient(this, this, this);
         mLocationClient.connect();
+
+
+        // Create the LocationRequest object
+        mLocationRequest = LocationRequest.create();
+        // Use high accuracy
+        mLocationRequest.setPriority(
+                LocationRequest.PRIORITY_HIGH_ACCURACY);
+        // Set the update interval to 5 seconds
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        // Set the fastest update interval to 1 second
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
     }
 
     @Override
@@ -87,6 +112,8 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         super.onResume();
         mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
         mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
+
+        mCompassFragment.setStationName(mStationName);
     }
 
     @Override
@@ -135,8 +162,14 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
 
         mCurrentLocation = mLocationClient.getLastLocation();
         String coordsString = mCurrentLocation.getLatitude() + ", " + mCurrentLocation.getLongitude();
+        mCurrentLongitude = mCurrentLocation.getLatitude();
+        mCurrentLongitude = mCurrentLocation.getLongitude();
         Log.d(TAG, coordsString);
         Toast.makeText(this, coordsString, Toast.LENGTH_SHORT).show();
+
+        if (mUpdatesRequested) {
+            mLocationClient.requestLocationUpdates(mLocationRequest, this);
+        }
 
         //Log.d(TAG, String.valueOf(getBearing(43.6432201, -79.3985133, mLatitude, mLongitude)));
         //Log.d(TAG, String.valueOf(getDistance(43.6432201, -79.3985133, mLatitude, mLongitude)));
@@ -199,7 +232,7 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
     float[] mGeomagnetic;
     public void onSensorChanged(SensorEvent event) {
 
-        Log.d(TAG, "onSensorChanged");
+        //Log.d(TAG, "onSensorChanged");
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
             mGravity = event.values;
         if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
@@ -216,7 +249,13 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
                 //Log.d(TAG, String.valueOf(azimut));
                 //Log.d(TAG, getCompassDir(azimut));
                 //Log.d(TAG, String.valueOf(getBearing(mCurrentLatitude, mCurrentLongitude, mLatitude, mLongitude)));
-                mCompassFragment.setPinRot((float)getBearing(mCurrentLatitude, mCurrentLongitude, mLatitude, mLongitude) - azimut);
+                float bearing = (float)getBearing(mCurrentLatitude, mCurrentLongitude, mLatitude, mLongitude);
+                int distance = (int)getDistance(mCurrentLatitude, mCurrentLongitude, mLatitude, mLongitude);
+                // Round to the nearest 10
+                distance = (distance / 10) * 10;
+                mCompassFragment.setPinRot(bearing - azimut);
+                mCompassFragment.setCompassRot(azimut);
+                mCompassFragment.setDirectionText(distance + "m " + getCompassDir(bearing));
             }
         }
         //mCustomDrawableView.invalidate();
@@ -226,7 +265,7 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         // Use 22.5 for finer compass directions
         float correction = degrees+22.5 > 360 ? (float)(degrees+22.5 - 360) : (float)(degrees+22.5);
         int bearing = (int)((correction)/45);
-        String direction = null;
+        String direction = "";
         switch(bearing) {
             case 0:
                 direction = "N";
@@ -253,6 +292,15 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
                 direction = "NW";
                 break;
         }
+        //Log.d(TAG, direction);
         return direction;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d(TAG, "onLocationChanged");
+        mCurrentLatitude = location.getLatitude();
+        mCurrentLongitude = location.getLongitude();
+
     }
 }

@@ -23,8 +23,10 @@ public class CompassView extends View {
     private int spaceDP = 15;
     private Paint mBackgroundPaint;
     private Paint mForegroundPaint;
+    private Paint mDirectionPaint;
     private Paint mBackgroundStroke;
     private Paint mForegroundStroke;
+    private Paint mDirectionStroke;
     private int mBackgroundColor = Color.BLACK; //R.color.se_dark_gray;
     private int mForegroundColor = android.R.color.white;
     private int mPinColor = Color.RED;
@@ -32,6 +34,7 @@ public class CompassView extends View {
     private int mMaxwidth = 200;
 
     private float mPinAngle = 0;
+    private float mCompassAngle = 0;
 
     public CompassView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
@@ -83,6 +86,10 @@ public class CompassView extends View {
         pinPaint.setColor(Color.RED);
         pinPaint.setAntiAlias(true);
 
+        Paint dirPaint = new Paint();
+        dirPaint.setColor(Color.WHITE);
+        dirPaint.setAntiAlias(true);
+
         mBackgroundPaint = bgPaint;
 
         mBackgroundStroke = new Paint(mBackgroundPaint);
@@ -101,6 +108,16 @@ public class CompassView extends View {
         mForegroundStroke.setStrokeWidth(10);
         mForegroundStroke.setStyle(Style.STROKE);
 
+
+        mDirectionPaint = dirPaint;
+
+        mDirectionStroke = new Paint(mDirectionPaint);
+        mDirectionStroke.setStrokeWidth(convertDpToPx(spaceDP));
+        mDirectionStroke.setStrokeJoin(Join.ROUND);
+        mDirectionStroke.setStrokeMiter(10000);
+        mDirectionStroke.setStrokeWidth(10);
+        mDirectionStroke.setStyle(Style.STROKE);
+
         setMinimumHeight((int) convertDpToPx(mMaxwidth));
         setMinimumWidth((int) convertDpToPx(mMaxwidth));
     }
@@ -108,7 +125,7 @@ public class CompassView extends View {
     private void drawPin(Canvas canvas, float cx, float cy, float degrees) {
         //canvas.drawPath(path, mForegroundStroke);
         canvas.rotate(degrees, cx, cy);
-        canvas.drawLine(cx, cy, cx, cy - 40, mForegroundStroke);
+        canvas.drawLine(cx, cy, cx, cy - 40, mDirectionStroke);
         canvas.rotate(-degrees, cx, cy);
     }
 
@@ -119,7 +136,10 @@ public class CompassView extends View {
         RectF oval = new RectF(cx - r, cy - r, cx + r, cy + r);
         Path bp = new Path();
         bp.addArc(oval, startAngle, 360.0f);
+        canvas.rotate(-mCompassAngle, cx, cy);
         canvas.drawPath(bp, mBackgroundStroke);
+        canvas.drawLine(cx, cy, cx, cy - 40, mForegroundStroke);
+        canvas.rotate(mCompassAngle, cx, cy);
 
         // calculate the percentage arc
         //Path p = new Path();
@@ -143,6 +163,10 @@ public class CompassView extends View {
 
     public void setPinAngle(float degrees) {
         mPinAngle = degrees;
+    }
+
+    public void setCompassAngle(float degrees) {
+        mCompassAngle = degrees;
     }
 
 }
