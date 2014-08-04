@@ -221,7 +221,7 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         mCurrentLongitude = mCurrentLocation.getLatitude();
         mCurrentLongitude = mCurrentLocation.getLongitude();
         Log.d(TAG, coordsString);
-        Toast.makeText(this, coordsString, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, coordsString, Toast.LENGTH_SHORT).show();
 
         if (mUpdatesRequested) {
             mLocationClient.requestLocationUpdates(mLocationRequest, this);
