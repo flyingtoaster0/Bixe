@@ -51,8 +51,7 @@
             android:gravity="top|center_horizontal"
             android:textSize="@dimen/station_title_size"
             android:layout_centerHorizontal="true"
-            android:layout_below="@id/station_name_text_view"
-            android:text="@string/station_name_placeholder"/>
+            android:layout_below="@id/station_name_text_view"/>
 
     </RelativeLayout>
 
@@ -67,16 +66,70 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="128dp"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/compass_fragment_bottom_vertical_padding"
             android:layout_centerHorizontal="true">
             <TextView
                 android:id="@+id/timer_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:textSize="@dimen/station_title_size"
                 android:textColor="@android:color/white"
                 android:text="30:00"/>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="@dimen/info_margin"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/bikes_amount_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textColor="@color/sliding_panel_text_color"
+                        android:textSize="@dimen/item_amount_size"
+                        android:text="@string/zero"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textColor="@color/sliding_panel_text_color"
+                        android:textSize="@dimen/item_label_size"
+                        android:text="@string/bikes_amount_label"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/info_margin"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/docks_amount_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textSize="@dimen/item_amount_size"
+                        android:textColor="@color/sliding_panel_text_color"
+                        android:text="@string/zero"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textColor="@color/sliding_panel_text_color"
+                        android:textSize="@dimen/item_label_size"
+                        android:text="@string/docks_amount_label"/>
+                </LinearLayout>
+            </RelativeLayout>
             <!-- make this margin match the one above the line -->
         </LinearLayout>
 

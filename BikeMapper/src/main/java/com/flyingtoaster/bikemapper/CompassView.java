@@ -23,6 +23,7 @@ public class CompassView extends View {
     private int mArrowHeight = 20;
     private int mFontSize;
     private int mBorderThickness = 4;
+    private boolean mHasReceivedUpdate = false;
 
 
     private Paint mBackgroundPaint;
@@ -60,6 +61,7 @@ public class CompassView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+
         int h = getHeight();
         int w = getWidth();
 
@@ -80,8 +82,11 @@ public class CompassView extends View {
         //canvas.rotate(-mCompassAngle, cx, cy);
         drawPercentPie(canvas, cx, cy, r);
 
-        drawPin(canvas, cx, cy, r, mPinAngle);
+        if(mHasReceivedUpdate) {
+            drawPin(canvas, cx, cy, r, mPinAngle);
+        }
 
+        mHasReceivedUpdate = true;
 
     }
 

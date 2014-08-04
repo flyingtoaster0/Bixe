@@ -70,6 +70,10 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
     private View dragView;
     private LinearLayout slidingContentView;
 
+    private int mStationID;
+    private int mBikes;
+    private int mDocks;
+
     private TextView mStationNameView;
     private TextView mBikesAmountView;
     private TextView mDocksAmountView;
@@ -112,6 +116,9 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
                 bundle.putDouble("latitude", mStationLatLng.latitude);
                 bundle.putDouble("longitude", mStationLatLng.longitude);
                 bundle.putString("station_name", mStationName);
+                bundle.putInt("station_id", mStationID);
+                bundle.putInt("bikes", mBikes);
+                bundle.putInt("docks", mDocks);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -321,6 +328,10 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
         Integer availableDocks = theStation.getAvailableDocks();
         mStationLatLng = theStation.getLatLng();
         mStationName = theStation.getStationName();
+
+        mStationID = stationId;
+        mBikes = availableBikes;
+        mDocks = availableDocks;
 
         mStationNameView.setText(stationName);
         mBikesAmountView.setText(availableBikes.toString());

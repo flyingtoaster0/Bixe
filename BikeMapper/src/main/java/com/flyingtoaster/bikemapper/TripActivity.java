@@ -50,6 +50,7 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
 
     public static final int UPDATE_INTERVAL = 5000;
     private static final int FASTEST_INTERVAL = 2000;
+    private static final int BIKE_UPDATE_FREQUENCY = 60000;
 
     double mCurrentLatitude = 43.655423;
     double mCurrentLongitude = -79.375904;
@@ -60,6 +61,9 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
 
     boolean mUpdatesRequested;
     LocationRequest mLocationRequest;
+
+
+    Thread mUpdateThread;
 
 
     @Override
@@ -105,6 +109,9 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         mLocationRequest.setInterval(UPDATE_INTERVAL);
         // Set the fastest update interval to 1 second
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+
+
+
     }
 
     @Override
@@ -114,12 +121,43 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         //mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
 
         mCompassFragment.setStationName(mStationName);
+
+
+        if (mUpdateThread == null) {
+            mUpdateThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (true) {
+                        try {
+                            Thread.sleep(BIKE_UPDATE_FREQUENCY);
+                            Log.d(TAG, "update JSON");
+                            if (Thread.interrupted()) {
+                                return;
+                            }
+                            mCompassFragment.updateStations();
+                        } catch (InterruptedException e) {
+                            Log.d(TAG, "update JSON interrupted");
+                            // We've been interrupted: no more messages.
+                            return;
+                        } catch (Exception e) {
+                        }
+                    }
+                }
+            });
+
+            mUpdateThread.start();
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this);
+
+        if (mUpdateThread != null) {
+            mUpdateThread.interrupt();
+            mUpdateThread = null;
+        }
     }
 
     @Override
@@ -128,6 +166,24 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         mSensorManager.unregisterListener(this);
         // Disconnecting the client invalidates it.
         mLocationClient.disconnect();
+
+        if (mUpdateThread != null) {
+            mUpdateThread.interrupt();
+            mUpdateThread = null;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mSensorManager.unregisterListener(this);
+        // Disconnecting the client invalidates it.
+        mLocationClient.disconnect();
+
+        if (mUpdateThread != null) {
+            mUpdateThread.interrupt();
+            mUpdateThread = null;
+        }
     }
 
     /**
