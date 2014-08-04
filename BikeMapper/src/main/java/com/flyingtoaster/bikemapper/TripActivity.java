@@ -110,8 +110,8 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
     @Override
     protected void onResume() {
         super.onResume();
-        mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
-        mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
+        //mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
+        //mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
 
         mCompassFragment.setStationName(mStationName);
     }
@@ -256,7 +256,7 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
                 distance = (distance / 10) * 10;
                 mCompassFragment.setPinRot(bearing /*- azimut*/);
                 //Log.d(TAG, String.valueOf(azimut));
-                mCompassFragment.setCompassRot(azimut);
+                mCompassFragment.setCompassRot(azimut + 180);
                 mCompassFragment.setDirectionText(distance + "m " + getCompassDir(bearing));
             }
         }
@@ -304,5 +304,11 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         mCurrentLatitude = location.getLatitude();
         mCurrentLongitude = location.getLongitude();
 
+        float bearing = (float)getBearing(mCurrentLatitude, mCurrentLongitude, mLatitude, mLongitude);
+        int distance = (int)getDistance(mCurrentLatitude, mCurrentLongitude, mLatitude, mLongitude);
+        distance = (distance / 10) * 10;
+
+        mCompassFragment.setDirectionText(distance + "m " + getCompassDir(bearing));
+        mCompassFragment.setPinRot(bearing);
     }
 }

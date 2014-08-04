@@ -17,7 +17,14 @@ import android.view.View;
  */
 public class CompassView extends View {
 
-    private int mCompassRadius = 80;
+    private int mArrowOffset = 24;
+    private int mCompassRadius = 40;
+    private int mArrowWidth = 6;
+    private int mArrowHeight = 20;
+    private int mFontSize;
+    private int mBorderThickness = 4;
+
+
     private Paint mBackgroundPaint;
     private Paint mForegroundPaint;
     private Paint mDirectionPaint;
@@ -59,23 +66,30 @@ public class CompassView extends View {
         int cx = w/2;
         int cy = h/2;
 
-        float r = Math.min(h, w) / 2 - convertDpToPx(mCompassRadius);
+        //float r = Math.min(h, w) / 2 - convertDpToPx(mCompassRadius);
+        float r = convertDpToPx(mCompassRadius);
+        //r = Math.min(r, convertDpToPx(3)/2);
 
-        // Pie chart size: 320px x 320px at 640x960 (16px right padding)
-        // scale up to 400x400 at 720x1280
 
-        r = Math.min(r, convertDpToPx(3)/2);
+        canvas.drawCircle(cx, cy, r + mBorderThickness, shadowPaint);
+        canvas.drawCircle(cx, cy, r, mBackgroundStroke);
 
-        canvas.rotate(-mCompassAngle, cx, cy);
+
+        //canvas.drawLine(cx, cy - 40, cx, cy - 120, mForegroundStroke);
+
+        //canvas.rotate(-mCompassAngle, cx, cy);
         drawPercentPie(canvas, cx, cy, r);
 
-        drawPin(canvas, cx, cy, mPinAngle);
+        drawPin(canvas, cx, cy, r, mPinAngle);
 
 
     }
 
     private void initResources() {
         //mBackgroundPaint = getPaint(mBackgroundColor);
+
+        mFontSize = (int)convertDpToPx(mCompassRadius)/3;
+        mBorderThickness = (int)convertDpToPx(mBorderThickness);
 
         Paint bgPaint = new Paint();
         //int whiteColor = getContext().getResources().getColor(res);
@@ -93,8 +107,10 @@ public class CompassView extends View {
 
         shadowPaint = new Paint();
         shadowPaint.setAntiAlias(true);
-        shadowPaint.setColor(Color.WHITE);
-        shadowPaint.setTextSize(45.0f);
+        shadowPaint.setColor(Color.BLACK);
+        shadowPaint.setStrokeWidth(10);
+        shadowPaint.setStrokeMiter(10000);
+        shadowPaint.setTextSize(mFontSize);
 
         mBackgroundPaint = bgPaint;
 
@@ -102,7 +118,7 @@ public class CompassView extends View {
         mBackgroundStroke.setStrokeWidth(convertDpToPx(mCompassRadius));
         mBackgroundStroke.setStrokeJoin(Join.ROUND);
         mBackgroundStroke.setStrokeMiter(10000);
-        mBackgroundStroke.setStyle(Style.STROKE);
+        mBackgroundStroke.setStyle(Style.FILL);
 
 
         mForegroundPaint = pinPaint;
@@ -126,13 +142,28 @@ public class CompassView extends View {
 
         setMinimumHeight((int) convertDpToPx(mMaxwidth));
         setMinimumWidth((int) convertDpToPx(mMaxwidth));
+
+
+        mArrowWidth = (int)convertDpToPx(mArrowWidth);
+        mArrowHeight = (int)convertDpToPx(mArrowHeight);
+        mArrowOffset = (int)convertDpToPx(mArrowOffset);
     }
 
-    private void drawPin(Canvas canvas, float cx, float cy, float degrees) {
+    private void drawPin(Canvas canvas, float cx, float cy, float r, float degrees) {
         //canvas.drawPath(path, mForegroundStroke);
 
         canvas.rotate(degrees, cx, cy);
-        canvas.drawLine(cx, cy, cx, cy - 40, mDirectionStroke);
+        float arrowCenterY = cy - mArrowOffset;
+
+        Path arrow = new Path();
+        arrow.moveTo(cx,arrowCenterY);
+        arrow.lineTo(cx+mArrowWidth,arrowCenterY+mArrowHeight);
+        arrow.lineTo(cx,arrowCenterY+mArrowHeight/4*3);
+        arrow.lineTo(cx-mArrowWidth,arrowCenterY+mArrowHeight);
+        arrow.close();
+
+        canvas.drawPath(arrow, shadowPaint);
+        //canvas.drawLine(cx, cy, cx, cy - 120, shadowPaint);
         canvas.rotate(-degrees, cx, cy);
     }
 
@@ -153,16 +184,22 @@ public class CompassView extends View {
 
         //canvas.rotate(-mCompassAngle, cx, cy);
 
-        canvas.drawLine(cx, cy, cx, cy - 40, mForegroundStroke);
-        canvas.drawText("N", cx - shadowPaint.measureText("N")/2, cy - 100, shadowPaint);
+
+        canvas.drawText("N", cx - shadowPaint.measureText("N") / 2, cy - (int)(r/(1.5)), shadowPaint);
+        //canvas.drawLine(cx, cy - 20, cx, cy - 60, shadowPaint);
         canvas.rotate(90, cx, cy);
-        canvas.drawText("E", cx - shadowPaint.measureText("N")/2, cy - 100, shadowPaint);
+        canvas.drawText("E", cx - shadowPaint.measureText("E") / 2, cy - (int)(r/(1.5)), shadowPaint);
+        //canvas.drawLine(cx, cy - 20, cx, cy - 60, shadowPaint);
         canvas.rotate(90, cx, cy);
-        canvas.drawText("S", cx - shadowPaint.measureText("N")/2, cy - 100, shadowPaint);
+        canvas.drawText("S", cx - shadowPaint.measureText("S") / 2, cy - (int)(r/(1.5)), shadowPaint);
+        //canvas.drawLine(cx, cy - 20, cx, cy - 60, shadowPaint);
         canvas.rotate(90, cx, cy);
-        canvas.drawText("W", cx - shadowPaint.measureText("N")/2, cy - 100, shadowPaint);
+        canvas.drawText("W", cx - shadowPaint.measureText("W") / 2, cy - (int)(r/(1.5)), shadowPaint);
+        //canvas.drawLine(cx, cy - 20, cx, cy - 60, shadowPaint);
         canvas.rotate(90, cx, cy);
-        canvas.drawPath(bp, mBackgroundStroke);
+
+        //canvas.drawPath(bp, mBackgroundStroke);
+
         //canvas.rotate(mCompassAngle, cx, cy);
 
         // calculate the percentage arc
