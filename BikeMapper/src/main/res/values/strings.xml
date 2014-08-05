@@ -13,4 +13,6 @@
     <string name="docks_amount_label">Docks</string>
     <string name="zero">0</string>
 
+    <string name="contact_email">example@example.com</string>
+
 </resources>

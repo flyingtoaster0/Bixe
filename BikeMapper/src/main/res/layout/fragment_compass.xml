@@ -76,6 +76,7 @@
                 android:layout_gravity="center_horizontal"
                 android:textSize="@dimen/station_title_size"
                 android:textColor="@android:color/white"
+                android:visibility="invisible"
                 android:text="30:00"/>
 
             <RelativeLayout
