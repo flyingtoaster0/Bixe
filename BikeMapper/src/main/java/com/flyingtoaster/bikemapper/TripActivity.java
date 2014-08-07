@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import android.hardware.Sensor;
@@ -25,11 +26,15 @@ import com.google.android.gms.identity.intents.AddressConstants;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationRequest;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 /**
  * Created by tim on 2014-07-13.
  */
 public class TripActivity extends Activity implements GooglePlayServicesClient.ConnectionCallbacks,
-        GooglePlayServicesClient.OnConnectionFailedListener, SensorEventListener, LocationListener {
+        GooglePlayServicesClient.OnConnectionFailedListener, SensorEventListener, LocationListener,
+        GetJSONArrayListener{
 
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     private final static String TAG = "TripActivity";
@@ -42,6 +47,7 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
     Location mCurrentLocation;
 
     CompassFragment mCompassFragment;
+    MiniMapFragment mMiniMapFragment;
 
     private SensorManager mSensorManager;
     Sensor accelerometer;
@@ -66,6 +72,21 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
     Thread mUpdateThread;
 
 
+    private GetJSONArrayTask mJSONTask;
+
+    TextView mStationNameView;
+    TextView mDirectionView;
+    private TextView mBikesAmountView;
+    private TextView mDocksAmountView;
+
+    private final String API_URL = "http://www.bikesharetoronto.com/stations/json";
+
+    float mStationID;
+
+    int mBikes;
+    int mDocks;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +101,12 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+
+        mStationNameView = (TextView) findViewById(R.id.station_name_text_view);
+        mDirectionView = (TextView) findViewById(R.id.distance_text_view);
+        mBikesAmountView = (TextView) findViewById(R.id.bikes_amount_textview);
+        mDocksAmountView = (TextView) findViewById(R.id.docks_amount_textview);
+
         Bundle bundle = getIntent().getExtras();
 
 
@@ -87,7 +114,19 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         mLongitude = bundle.getDouble("longitude");
         mStationName = bundle.getString("station_name","");
 
+
+        if (bundle != null) {
+            mStationNameView.setText(bundle.getString("station_name", ""));
+            mStationID = bundle.getInt("station_id", -1);
+            mBikes = bundle.getInt("bikes", -1);
+            mDocks = bundle.getInt("docks", -1);
+
+            mBikesAmountView.setText(String.valueOf(mBikes));
+            mDocksAmountView.setText(String.valueOf(mDocks));
+        }
+
         mCompassFragment = new CompassFragment();
+        mMiniMapFragment = new MiniMapFragment();
 
 
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -120,9 +159,6 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         //mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_UI);
         //mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_UI);
 
-        mCompassFragment.setStationName(mStationName);
-
-
         if (mUpdateThread == null) {
             mUpdateThread = new Thread(new Runnable() {
                 @Override
@@ -134,7 +170,7 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
                             if (Thread.interrupted()) {
                                 return;
                             }
-                            mCompassFragment.updateStations();
+                            updateStations();
                         } catch (InterruptedException e) {
                             Log.d(TAG, "update JSON interrupted");
                             // We've been interrupted: no more messages.
@@ -198,16 +234,19 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
+            switch (position) {
+                case 0:
+                    return mCompassFragment;
+                case 1:
+                    return mMiniMapFragment;
+            }
             return mCompassFragment;
-            //return null;
         }
 
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 1;
+            return 2;
         }
 
 
@@ -313,7 +352,7 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
                 mCompassFragment.setPinRot(bearing /*- azimut*/);
                 //Log.d(TAG, String.valueOf(azimut));
                 mCompassFragment.setCompassRot(azimut + 180);
-                mCompassFragment.setDirectionText(distance + "m " + getCompassDir(bearing));
+                setDirectionText(distance + "m " + getCompassDir(bearing));
             }
         }
         //mCustomDrawableView.invalidate();
@@ -364,7 +403,52 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         int distance = (int)getDistance(mCurrentLatitude, mCurrentLongitude, mLatitude, mLongitude);
         distance = (distance / 10) * 10;
 
-        mCompassFragment.setDirectionText(distance + "m " + getCompassDir(bearing));
+        setDirectionText(distance + " m " + getCompassDir(bearing));
         mCompassFragment.setPinRot(bearing);
+    }
+
+
+
+
+
+
+
+    public void onJSONArrayPreExecute() {
+
+    }
+    public void onJSONArrayProgressUpdate(String... params) {
+
+    }
+    public void onJSONArrayPostExecute(JSONArray jArray) {
+        try {
+            for (int i = 0; i < jArray.length(); i++) {
+                if(jArray.getJSONObject(i).getInt("id") == mStationID) {
+                    mBikes = jArray.getJSONObject(i).getInt("availableBikes");
+                    mDocks = jArray.getJSONObject(i).getInt("availableDocks");
+                    mBikesAmountView.setText(String.valueOf(mBikes));
+                    mDocksAmountView.setText(String.valueOf(mDocks));
+                }
+            }
+        } catch (JSONException e) {
+            Log.e("MainActivity", "Could not get JSONObject");
+        }
+        Log.d("MainActivity", "GetJSONArrayTask complete");
+    }
+    public void onJSONArrayCancelled() {
+        Log.d("MainActivity", "GetJSONArrayTask cancelled");
+    }
+
+
+    public void updateStations() {
+        if (mJSONTask != null) {
+            mJSONTask.cancel(true);
+        }
+        mJSONTask = new GetJSONArrayTask(this, API_URL);
+        mJSONTask.execute();
+    }
+
+    public void setDirectionText(String description) {
+        if (mDirectionView == null) return;
+        mDirectionView.setText(description);
     }
 }

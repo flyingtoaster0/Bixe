@@ -1,6 +1,164 @@
-<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/pager"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.flyingtoaster.bikemapper.TripActivity" />
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/sliding_panel_border_width"
+        android:background="@color/sliding_panel_border_color"
+        android:layout_centerVertical="true"/-->
+    <LinearLayout
+        android:id="@+id/compass_divider"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_centerVertical="true"/>
+    <RelativeLayout
+        android:id="@+id/compass_top_section"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/green_light"
+        android:layout_centerVertical="true"
+        android:layout_above="@id/compass_divider">
+
+        <TextView
+            android:id="@+id/station_name_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/compass_station_title_vertical_padding"
+            android:layout_marginBottom="@dimen/compass_station_title_vertical_padding"
+            android:layout_marginLeft="@dimen/station_title_horizontal_padding"
+            android:layout_marginRight="@dimen/station_title_horizontal_padding"
+            android:textColor="@color/sliding_panel_text_color"
+            android:gravity="top|center_horizontal"
+            android:textSize="@dimen/station_title_size"
+            android:layout_centerHorizontal="true"
+            android:text="@string/station_name_placeholder"/>
+
+
+        <TextView
+            android:id="@+id/distance_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/compass_station_title_vertical_padding"
+            android:layout_marginLeft="@dimen/station_title_horizontal_padding"
+            android:layout_marginRight="@dimen/station_title_horizontal_padding"
+            android:textColor="@color/sliding_panel_text_color"
+            android:gravity="top|center_horizontal"
+            android:textSize="@dimen/station_title_size"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/station_name_text_view"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/compass_bottom_section"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/green_dark"
+        android:layout_centerVertical="true"
+        android:layout_below="@id/compass_divider">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/compass_fragment_bottom_vertical_padding"
+            android:layout_centerHorizontal="true">
+            <TextView
+                android:id="@+id/timer_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:textSize="@dimen/station_title_size"
+                android:textColor="@android:color/white"
+                android:visibility="invisible"
+                android:text="30:00"/>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="@dimen/info_margin"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/bikes_amount_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textColor="@color/sliding_panel_text_color"
+                        android:textSize="@dimen/item_amount_size"
+                        android:text="@string/zero"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textColor="@color/sliding_panel_text_color"
+                        android:textSize="@dimen/item_label_size"
+                        android:text="@string/bikes_amount_label"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/info_margin"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/docks_amount_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textSize="@dimen/item_amount_size"
+                        android:textColor="@color/sliding_panel_text_color"
+                        android:text="@string/zero"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textColor="@color/sliding_panel_text_color"
+                        android:textSize="@dimen/item_label_size"
+                        android:text="@string/docks_amount_label"/>
+                </LinearLayout>
+            </RelativeLayout>
+            <!-- make this margin match the one above the line -->
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/map_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/ic_action_map"/>
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/ic_action_back"/>
+
+    </RelativeLayout>
+
+
+    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.flyingtoaster.bikemapper.TripActivity" />
+
+
+
+</RelativeLayout>
+
