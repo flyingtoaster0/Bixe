@@ -15,6 +15,7 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 /**
  * Created by tim on 2014-07-13.
@@ -24,15 +25,20 @@ public class MiniMapFragment extends Fragment implements OnMyLocationChangeListe
     private static final String TAG = "MiniMapFragment";
     private final double STARTING_LAT = 43.652992;
     private final double STARTING_LNG = -79.383657;
+    private final LatLng STARTING_LAT_LNG = new LatLng(STARTING_LAT, STARTING_LNG);
 
     private double mDestLat;
     private double mDestLng;
+    private LatLng mDestLatLng;
 
     View mRootView;
 
 
     private MapFragment mMapFragment;
     private GoogleMap mGoogleMap;
+
+    private LatLngBounds mBounds;
+    private LatLngBounds.Builder mBuilder = new LatLngBounds.Builder();
 
 
     @Override
@@ -43,11 +49,6 @@ public class MiniMapFragment extends Fragment implements OnMyLocationChangeListe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_minimap, container, false);
-
-        Bundle bundle = getArguments();
-
-        mDestLat = bundle.getDouble("dest_lat", STARTING_LAT);
-        mDestLng = bundle.getDouble("dest_lng", STARTING_LNG);
 
         mMapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.minimap);
 
@@ -73,8 +74,8 @@ public class MiniMapFragment extends Fragment implements OnMyLocationChangeListe
         mapSettings.setZoomGesturesEnabled(false);
         mapSettings.setRotateGesturesEnabled(false);
 
-        mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(mDestLat, mDestLng)));
 
+        mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(mDestLat, mDestLng)));
         mGoogleMap.setMyLocationEnabled(true);
         mGoogleMap.getUiSettings().setZoomControlsEnabled(false);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -85,11 +86,19 @@ public class MiniMapFragment extends Fragment implements OnMyLocationChangeListe
 
     @Override
     public void onMyLocationChange(Location location) {
-        if (mGoogleMap == null) return;
+        if (mGoogleMap == null || mDestLatLng == null) return;
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mBuilder.include(mDestLatLng).include(latLng);
+        mBounds =  mBuilder.build();
+
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(mBounds, 128));
     }
 
+    public void setDest(double latitude, double longitude) {
+        mDestLatLng = new LatLng(latitude, longitude);
+        mDestLat = latitude;
+        mDestLng = longitude;
+    }
 }

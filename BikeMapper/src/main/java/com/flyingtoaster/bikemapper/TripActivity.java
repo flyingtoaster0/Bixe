@@ -126,12 +126,8 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         }
 
         mCompassFragment = new CompassFragment();
-
-        Bundle miniMapBundle = new Bundle();
-        miniMapBundle.putDouble("dest_lat", mLatitude);
-        miniMapBundle.putDouble("dest_lng", mLongitude);
         mMiniMapFragment = new MiniMapFragment();
-        mMiniMapFragment.setArguments(miniMapBundle);
+        mMiniMapFragment.setDest(mLatitude, mLongitude);
 
 
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
