@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.IntentSender;
+import android.graphics.Color;
 import android.location.Location;
 import com.google.android.gms.location.LocationListener;
 import android.os.Bundle;
@@ -28,6 +29,8 @@ import com.google.android.gms.location.LocationRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import com.viewpagerindicator.LinePageIndicator;
 
 /**
  * Created by tim on 2014-07-13.
@@ -86,6 +89,8 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
     int mBikes;
     int mDocks;
 
+    LinePageIndicator mIndicator;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +105,12 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mIndicator = (LinePageIndicator)findViewById(R.id.titles);
+        mIndicator.setViewPager(mViewPager);
+        mIndicator.setSelectedColor(Color.WHITE);
+        mIndicator.setStrokeWidth(8);
+        mIndicator.setLineWidth(64);
+        mIndicator.setGapWidth(8);
 
 
         mStationNameView = (TextView) findViewById(R.id.station_name_text_view);

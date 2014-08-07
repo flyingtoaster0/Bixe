@@ -24,7 +24,7 @@
         android:layout_height="8dp"
         android:background="@color/sliding_panel_border_color"
         android:layout_below="@id/minimap"/>
-    <LinearLayout
+    <!--LinearLayout
         android:orientation="horizontal"
         android:layout_width="8dp"
         android:layout_height="192dp"
@@ -37,5 +37,5 @@
         android:layout_height="192dp"
         android:background="@color/sliding_panel_border_color"
         android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"/-->
 </RelativeLayout>
