@@ -121,6 +121,8 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
                 bundle.putInt("docks", mDocks);
                 intent.putExtras(bundle);
                 startActivity(intent);
+
+                overridePendingTransition(R.anim.pull_in_down, R.anim.push_out_up);
             }
         });
 

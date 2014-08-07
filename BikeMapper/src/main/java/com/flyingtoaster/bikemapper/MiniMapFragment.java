@@ -79,7 +79,7 @@ public class MiniMapFragment extends Fragment implements OnMyLocationChangeListe
         mGoogleMap.setMyLocationEnabled(true);
         mGoogleMap.getUiSettings().setZoomControlsEnabled(false);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(torontoCoords, 13));
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(torontoCoords, 12));
 
         mGoogleMap.setOnMyLocationChangeListener(this);
     }

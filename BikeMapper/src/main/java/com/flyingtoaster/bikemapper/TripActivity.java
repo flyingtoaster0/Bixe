@@ -223,6 +223,16 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mViewPager.getCurrentItem() == 0) {
+            super.onBackPressed();
+            overridePendingTransition(R.anim.pull_in_up, R.anim.push_out_down);
+        } else {
+            mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
+        }
+    }
+
     /**
      * A {@link android.support.v13.app.FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -241,7 +251,7 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
                 case 1:
                     return mMiniMapFragment;
             }
-            return mCompassFragment;
+            return null;
         }
 
         @Override
