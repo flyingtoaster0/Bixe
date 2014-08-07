@@ -1,14 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent">>
+    <fragment
+        android:id="@+id/minimap"
+        android:layout_width="match_parent"
+        android:layout_height="192dp"
+        android:name="com.google.android.gms.maps.MapFragment"
+        tools:layout="@layout/fragment_bottom_bar"
+        android:layout_centerVertical="true"/>
     <LinearLayout
-        android:id="@+id/compass_divider"
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="8dp"
         android:background="@color/sliding_panel_border_color"
+        android:layout_above="@id/minimap"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="8dp"
+        android:background="@color/sliding_panel_border_color"
+        android:layout_below="@id/minimap"/>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="8dp"
+        android:layout_height="192dp"
+        android:background="@color/sliding_panel_border_color"
+        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"/>
-
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="8dp"
+        android:layout_height="192dp"
+        android:background="@color/sliding_panel_border_color"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"/>
 </RelativeLayout>
