@@ -3,6 +3,7 @@
     <color name="sliding_panel_background_color">#107054</color>
     <color name="green_light">#2eb458</color>
     <color name="green_dark">#107054</color>
+    <color name="green_highlight">#57c379</color>
     <color name="sliding_panel_text_color">#FFFFFF</color>
     <color name="sliding_panel_border_color">#000000</color>
 </resources>
