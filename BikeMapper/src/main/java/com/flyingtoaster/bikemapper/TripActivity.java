@@ -177,12 +177,12 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
                 public void run() {
                     while (true) {
                         try {
+                            updateStations();
                             Thread.sleep(BIKE_UPDATE_FREQUENCY);
                             Log.d(TAG, "update JSON");
                             if (Thread.interrupted()) {
                                 return;
                             }
-                            updateStations();
                         } catch (InterruptedException e) {
                             Log.d(TAG, "update JSON interrupted");
                             // We've been interrupted: no more messages.
@@ -428,12 +428,6 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         setDirectionText(distance + " m " + getCompassDir(bearing));
         mCompassFragment.setPinRot(bearing);
     }
-
-
-
-
-
-
 
     public void onJSONArrayPreExecute() {
 
