@@ -133,7 +133,6 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
         slidingContentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                return;
             }
         });
 
@@ -171,6 +170,8 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
         mGoogleMap.setMyLocationEnabled(true);
         mGoogleMap.getUiSettings().setZoomControlsEnabled(false);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mGoogleMap.getUiSettings().setRotateGesturesEnabled(false);
+        mGoogleMap.getUiSettings().setTiltGesturesEnabled(false);
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(torontoCoords, 13));
     }
 
