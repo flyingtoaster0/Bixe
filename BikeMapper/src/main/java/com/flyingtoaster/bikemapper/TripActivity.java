@@ -42,54 +42,51 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     private final static String TAG = "TripActivity";
     private static final double EARTH_RADIUS = 6373000;
-    SectionsPagerAdapter mSectionsPagerAdapter;
-    ViewPager mViewPager;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+    private ViewPager mViewPager;
 
-    LocationClient mLocationClient;
+    private LocationClient mLocationClient;
 
-    Location mCurrentLocation;
+    private Location mCurrentLocation;
 
-    CompassFragment mCompassFragment;
-    MiniMapFragment mMiniMapFragment;
+    private CompassFragment mCompassFragment;
+    private MiniMapFragment mMiniMapFragment;
 
     private SensorManager mSensorManager;
-    Sensor accelerometer;
-    Sensor magnetometer;
-    Float azimut;
+    private Sensor accelerometer;
+    private Sensor magnetometer;
+    private Float azimut;
 
     public static final int UPDATE_INTERVAL = 5000;
     private static final int FASTEST_INTERVAL = 2000;
     private static final int BIKE_UPDATE_FREQUENCY = 60000;
 
-    double mCurrentLatitude = 43.655423;
-    double mCurrentLongitude = -79.375904;
-    double mLatitude;
-    double mLongitude;
+    private double mCurrentLatitude = 43.655423;
+    private double mCurrentLongitude = -79.375904;
+    private double mLatitude;
+    private double mLongitude;
 
-    String mStationName;
+    private String mStationName;
 
-    boolean mUpdatesRequested;
-    LocationRequest mLocationRequest;
+    private boolean mUpdatesRequested;
+    private LocationRequest mLocationRequest;
 
-
-    Thread mUpdateThread;
-
-
+    private Thread mUpdateThread;
     private GetJSONArrayTask mJSONTask;
 
-    TextView mStationNameView;
-    TextView mDirectionView;
+    private TextView mStationNameView;
+    private TextView mDirectionView;
     private TextView mBikesAmountView;
     private TextView mDocksAmountView;
 
     private final String API_URL = "http://www.bikesharetoronto.com/stations/json";
 
-    float mStationID;
+    private float mStationID;
 
-    int mBikes;
-    int mDocks;
+    private int mBikes;
+    private int mDocks;
 
-    LinePageIndicator mIndicator;
+    private LinePageIndicator mIndicator;
 
 
     @Override
@@ -112,14 +109,12 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         mIndicator.setLineWidth(64);
         mIndicator.setGapWidth(8);
 
-
         mStationNameView = (TextView) findViewById(R.id.station_name_text_view);
         mDirectionView = (TextView) findViewById(R.id.distance_text_view);
         mBikesAmountView = (TextView) findViewById(R.id.bikes_amount_textview);
         mDocksAmountView = (TextView) findViewById(R.id.docks_amount_textview);
 
         Bundle bundle = getIntent().getExtras();
-
 
         mLatitude = bundle.getDouble("latitude");
         mLongitude = bundle.getDouble("longitude");
@@ -140,16 +135,13 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         mMiniMapFragment = new MiniMapFragment();
         mMiniMapFragment.setDest(mLatitude, mLongitude);
 
-
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
-
         mUpdatesRequested = true;
         mLocationClient = new LocationClient(this, this, this);
         mLocationClient.connect();
-
 
         // Create the LocationRequest object
         mLocationRequest = LocationRequest.create();
@@ -160,9 +152,6 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         mLocationRequest.setInterval(UPDATE_INTERVAL);
         // Set the fastest update interval to 1 second
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
-
-
-
     }
 
     @Override
@@ -267,11 +256,8 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
             return 2;
         }
-
-
     }
 
     public void onConnected(Bundle dataBundle) {
