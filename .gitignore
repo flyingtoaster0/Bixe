@@ -53,4 +53,5 @@ gradlew
 *.swp
 gradle/wrapper/gradle-wrapper.jar
 gradle.bat
+gradlew.bat
 build/*
