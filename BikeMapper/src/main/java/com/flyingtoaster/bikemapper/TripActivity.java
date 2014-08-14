@@ -102,12 +102,15 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        /*
         mIndicator = (LinePageIndicator)findViewById(R.id.titles);
         mIndicator.setViewPager(mViewPager);
         mIndicator.setSelectedColor(Color.WHITE);
         mIndicator.setStrokeWidth(8);
         mIndicator.setLineWidth(64);
         mIndicator.setGapWidth(8);
+        */
 
         mStationNameView = (TextView) findViewById(R.id.station_name_text_view);
         mDirectionView = (TextView) findViewById(R.id.distance_text_view);
@@ -247,16 +250,16 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return mCompassFragment;
-                case 1:
                     return mMiniMapFragment;
+                //case 1:
+                //    return mCompassFragment;
             }
             return null;
         }
 
         @Override
         public int getCount() {
-            return 2;
+            return 1;
         }
     }
 
