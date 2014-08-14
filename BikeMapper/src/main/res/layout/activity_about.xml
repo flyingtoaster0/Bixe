@@ -9,12 +9,13 @@
         android:layout_height="wrap_content"
         android:id="@+id/about_icon"
         android:layout_gravity="center"
-        android:layout_marginTop="32dp"/>
+        android:layout_marginTop="@dimen/about_item_vertical_margin"
+        android:src="@drawable/icon_placeholder"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="@dimen/about_item_vertical_margin"
         android:textStyle="bold"
         android:textSize="24dp"
         android:text="@string/app_name"
@@ -63,7 +64,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/about_item_vertical_margin"
         android:text="Please send any feedback to:"
         android:id="@+id/about_feedbacktext"
         android:layout_gravity="center" />
@@ -84,14 +85,14 @@
     <View
         android:layout_width="fill_parent"
         android:layout_height="2dip"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/about_item_vertical_margin"
         android:background="#CCCCCC" />
 
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/about_item_vertical_margin"
         android:text="Thanks to the following open source libraries:"
         android:layout_gravity="center" />
 

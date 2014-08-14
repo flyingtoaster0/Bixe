@@ -22,4 +22,7 @@
 
     <dimen name="info_margin">64dp</dimen>
 
+
+    <dimen name="about_item_vertical_margin">16dp</dimen>
+
 </resources>
