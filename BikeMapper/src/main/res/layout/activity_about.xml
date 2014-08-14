@@ -49,7 +49,7 @@
         android:id="@+id/about_name_text_view"
         android:layout_gravity="center"
         android:clickable="true"
-        android:onClick="sendFeedback"
+        android:onClick="onTimClicked"
         android:textStyle="bold"
         android:padding="16dp"/>
 

@@ -40,6 +40,10 @@
             android:name="com.flyingtoaster.bikemapper.TripActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name="com.flyingtoaster.bikemapper.AboutActivity"
+            android:screenOrientation="portrait">
+        </activity>
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyDyI0SVg3kUMSiZAD1W2ASouZBLRS8kVoI"/>
