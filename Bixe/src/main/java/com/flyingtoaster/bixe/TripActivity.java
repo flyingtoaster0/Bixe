@@ -1,10 +1,9 @@
-package com.flyingtoaster.bikemapper;
+package com.flyingtoaster.bixe;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.IntentSender;
-import android.graphics.Color;
 import android.location.Location;
 import com.google.android.gms.location.LocationListener;
 import android.os.Bundle;
@@ -23,7 +22,6 @@ import android.hardware.SensorManager;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.identity.intents.AddressConstants;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationRequest;
 

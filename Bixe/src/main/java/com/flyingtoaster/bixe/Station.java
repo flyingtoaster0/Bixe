@@ -1,4 +1,4 @@
-package com.flyingtoaster.bikemapper;
+package com.flyingtoaster.bixe;
 
 import android.util.Log;
 

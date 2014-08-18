@@ -1,8 +1,6 @@
-package com.flyingtoaster.bikemapper;
+package com.flyingtoaster.bixe;
 
 import org.json.JSONArray;
-
-import java.util.Vector;
 
 /**
  * Created by tim on 6/7/14.

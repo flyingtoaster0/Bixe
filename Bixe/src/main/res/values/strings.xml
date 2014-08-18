@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">BikeMapper</string>
+    <string name="app_name">Bixe</string>
     <string name="station_name_placeholder">Station Name Here</string>
     <string name="dummy_text">Dummy</string>
     <string name="title_section1">Section 1</string>
@@ -14,7 +14,7 @@
     <string name="docks_amount_label">Docks</string>
     <string name="zero">0</string>
 
-    <string name="contact_email">example@example.com</string>
+    <string name="contact_email">flyingtoaster0@gmail.com</string>
 
     <string name="ad_unit_id">ca-app-pub-3545068976746355/6474633821</string>
     <string name="note3_id">357518051496230</string>

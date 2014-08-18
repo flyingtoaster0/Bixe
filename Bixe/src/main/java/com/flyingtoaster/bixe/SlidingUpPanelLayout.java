@@ -1,4 +1,4 @@
-package com.flyingtoaster.bikemapper;
+package com.flyingtoaster.bixe;
 
 import android.content.Context;
 import android.content.res.TypedArray;

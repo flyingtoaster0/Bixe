@@ -1,4 +1,4 @@
-<com.flyingtoaster.bikemapper.SlidingUpPanelLayout
+<com.flyingtoaster.bixe.SlidingUpPanelLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:sothree="http://schemas.android.com/apk/res-auto"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
@@ -160,4 +160,4 @@
             android:src="@drawable/ic_action_refresh"
             android:background="@drawable/transparent_button"/>
     </RelativeLayout>
-</com.flyingtoaster.bikemapper.SlidingUpPanelLayout>
+</com.flyingtoaster.bixe.SlidingUpPanelLayout>
