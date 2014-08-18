@@ -20,6 +20,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.flyingtoaster.util.IabHelper;
+import com.flyingtoaster.util.IabResult;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,6 +33,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
 
 //import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -85,6 +88,9 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
     private LatLng mStationLatLng;
     private String mStationName;
 
+    private IabHelper mHelper;
+    private String base64EncodedPublicKey;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +110,20 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
             mAdView.loadAd(adRequest);
 
         }
+
+        base64EncodedPublicKey = getString(R.string.base64_rsa_key);
+        mHelper = new IabHelper(this, base64EncodedPublicKey);
+        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+            public void onIabSetupFinished(IabResult result) {
+                if (!result.isSuccess()) {
+                    // Oh noes, there was a problem.
+                    Log.d(TAG, "Problem setting up In-app Billing: " + result);
+                } else {
+                    Log.d(TAG, "IAB set up successfully!! " + result);
+                }
+                // Hooray, IAB is fully set up!
+            }
+        });
 
         mStationNameView = (TextView) findViewById(R.id.station_name_text_view);
         mBikesAmountView = (TextView) findViewById(R.id.bikes_amount_textview);
@@ -196,6 +216,13 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
         }
         mJSONTask = new GetJSONArrayTask(this, API_URL);
         mJSONTask.execute();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mHelper != null) mHelper.dispose();
+        mHelper = null;
     }
 
     @Override
