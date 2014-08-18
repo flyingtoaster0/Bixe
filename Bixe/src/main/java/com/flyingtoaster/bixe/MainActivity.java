@@ -27,12 +27,12 @@ import com.flyingtoaster.util.IabHelper;
 import com.flyingtoaster.util.IabResult;
 import com.flyingtoaster.util.Inventory;
 import com.flyingtoaster.util.Purchase;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -85,6 +85,7 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
     private int mStationID;
     private int mBikes;
     private int mDocks;
+    private int mTotalDocks;
 
     private TextView mStationNameView;
     private TextView mBikesAmountView;
@@ -146,6 +147,7 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
                 bundle.putInt("station_id", mStationID);
                 bundle.putInt("bikes", mBikes);
                 bundle.putInt("docks", mDocks);
+                bundle.putInt("total_docks", mTotalDocks);
                 intent.putExtras(bundle);
                 startActivity(intent);
 
@@ -341,10 +343,18 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
                 Station station = new Station(jArray.getJSONObject(i));
                 mStations.put(station.getId(), station);
 
-                Marker marker = mGoogleMap.addMarker(new MarkerOptions()
+                BitmapDescriptor bitmapDescriptor = getBitmapDescriptor(station);
+
+                MarkerOptions options = new MarkerOptions()
                         .title(station.getStationName())
                         .snippet(availabilityString(station))
-                        .position(station.getLatLng()));
+                        .position(station.getLatLng());
+
+                if (bitmapDescriptor != null) {
+                    options.icon(bitmapDescriptor);
+                }
+
+                Marker marker = mGoogleMap.addMarker(options);
 
                 String markerId = marker.getId();
                 Integer stationId = station.getId();
@@ -378,12 +388,14 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
         String stationName = theStation.getStationName();
         Integer availableBikes = theStation.getAvailableBikes();
         Integer availableDocks = theStation.getAvailableDocks();
+        Integer totalDocks = theStation.getTotalDocks();
         mStationLatLng = theStation.getLatLng();
         mStationName = theStation.getStationName();
 
         mStationID = stationId;
         mBikes = availableBikes;
         mDocks = availableDocks;
+        mTotalDocks = totalDocks;
 
         mStationNameView.setText(stationName);
         mBikesAmountView.setText(availableBikes.toString());
@@ -431,13 +443,13 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
                 else {
 
                     if (inventory.hasPurchase(getString(R.string.sku_test_purchased))) {
-                        mHelper.consumeAsync(inventory.getPurchase(getString(R.string.sku_test_purchased)),null);
+                        mHelper.consumeAsync(inventory.getPurchase(getString(R.string.sku_test_purchased)), null);
                     }
                     // does the user have the premium upgrade?
                     mIsPremium = inventory.hasPurchase(getString(R.string.sku_remove_ads));
 
                     if (!mIsPremium) {
-                        BannerAdView adFragment = new BannerAdView();
+                        BannerAdFragment adFragment = new BannerAdFragment();
                         FragmentManager fm = getFragmentManager();
                         FragmentTransaction ft = fm.beginTransaction();
                         ft.add(R.id.content_layout, adFragment);
@@ -472,5 +484,26 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
     public void launchPurchaseFlow() {
         if (mHelper == null) return;
         mHelper.launchPurchaseFlow(this, getString(R.string.sku_remove_ads), 1001, mPurchaseFinishedListener);
+    }
+
+    public static BitmapDescriptor getBitmapDescriptor(Station station) {
+        BitmapDescriptor bitmapDescriptor = null;
+        float percent = (float)station.getAvailableBikes() / (float)station.getTotalDocks();
+
+        if (percent == 1) {
+            //bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_5);
+        } else if (percent >= 0.8) {
+            //bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_4);
+        } else if (percent >= 0.6) {
+            //bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_3);
+        } else if (percent >= 0.4) {
+            //bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_2);
+        } else if (percent >= 0.2) {
+            //bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_1);
+        } else {
+            //bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_0);
+        }
+
+        return bitmapDescriptor;
     }
 }

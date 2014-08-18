@@ -83,6 +83,7 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
 
     private int mBikes;
     private int mDocks;
+    private int mTotalDocks;
 
     private LinePageIndicator mIndicator;
 
@@ -127,6 +128,7 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
             mStationID = bundle.getInt("station_id", -1);
             mBikes = bundle.getInt("bikes", -1);
             mDocks = bundle.getInt("docks", -1);
+            mTotalDocks = bundle.getInt("total_docks", -1);
 
             mBikesAmountView.setText(String.valueOf(mBikes));
             mDocksAmountView.setText(String.valueOf(mDocks));
@@ -135,6 +137,7 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         mCompassFragment = new CompassFragment();
         mMiniMapFragment = new MiniMapFragment();
         mMiniMapFragment.setDest(mLatitude, mLongitude);
+        mMiniMapFragment.setBikeInfo(mBikes, mDocks, mTotalDocks);
 
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -428,8 +431,12 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
                 if(jArray.getJSONObject(i).getInt("id") == mStationID) {
                     mBikes = jArray.getJSONObject(i).getInt("availableBikes");
                     mDocks = jArray.getJSONObject(i).getInt("availableDocks");
+                    mTotalDocks = jArray.getJSONObject(i).getInt("totalDocks");
                     mBikesAmountView.setText(String.valueOf(mBikes));
                     mDocksAmountView.setText(String.valueOf(mDocks));
+
+                    mMiniMapFragment.setBikeInfo(mBikes, mTotalDocks);
+                    break;
                 }
             }
         } catch (JSONException e) {

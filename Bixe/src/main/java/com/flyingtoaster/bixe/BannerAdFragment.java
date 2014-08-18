@@ -15,7 +15,7 @@ import com.google.android.gms.ads.AdView;
 /**
  * Created by tim on 2014-08-18.
  */
-public class BannerAdView extends Fragment {
+public class BannerAdFragment extends Fragment {
     private View mRootView;
     private ImageView mX;
     private AdView mAdView;
@@ -55,7 +55,6 @@ public class BannerAdView extends Fragment {
                 });
 
                 builder.create().show();
-
             }
         });
 

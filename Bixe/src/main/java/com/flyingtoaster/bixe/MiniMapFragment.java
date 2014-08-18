@@ -12,6 +12,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMyLocationChangeListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -39,6 +41,10 @@ public class MiniMapFragment extends Fragment implements OnMyLocationChangeListe
 
     private LatLngBounds mBounds;
     private LatLngBounds.Builder mBuilder = new LatLngBounds.Builder();
+
+    private int mBikes;
+    private int mDocks;
+    private int mTotalDocks;
 
 
     @Override
@@ -75,7 +81,7 @@ public class MiniMapFragment extends Fragment implements OnMyLocationChangeListe
         mapSettings.setRotateGesturesEnabled(false);
 
 
-        mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(mDestLat, mDestLng)));
+        //mGoogleMap.addMarker(new MarkerOptions().position(new LatLng(mDestLat, mDestLng)));
         mGoogleMap.setMyLocationEnabled(true);
         mGoogleMap.getUiSettings().setZoomControlsEnabled(false);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -100,5 +106,47 @@ public class MiniMapFragment extends Fragment implements OnMyLocationChangeListe
         mDestLatLng = new LatLng(latitude, longitude);
         mDestLat = latitude;
         mDestLng = longitude;
+    }
+
+    public void updateMarker() {
+        BitmapDescriptor bitmapDescriptor = null;
+        float percent = (float)mBikes / (float)mTotalDocks;
+
+        if (percent == 1) {
+            //bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_5);
+        } else if (percent >= 0.8) {
+            //bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_4);
+        } else if (percent >= 0.6) {
+            //bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_3);
+        } else if (percent >= 0.4) {
+            //bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_2);
+        } else if (percent >= 0.2) {
+            //bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_1);
+        } else {
+            //bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_0);
+        }
+
+        MarkerOptions options = new MarkerOptions()
+                .position(new LatLng(mDestLat, mDestLng));
+
+        if (bitmapDescriptor != null) {
+            options.icon(bitmapDescriptor);
+        }
+
+        mGoogleMap.clear();
+        mGoogleMap.addMarker(options);
+    }
+
+    public void setBikeInfo(int bikes, int docks, int totalDocks) {
+        this.mBikes = bikes;
+        this.mDocks = docks;
+        this.mTotalDocks = totalDocks;
+    }
+
+    public void setBikeInfo(int bikes, int docks) {
+        this.mBikes = bikes;
+        this.mDocks = docks;
+
+        updateMarker();
     }
 }
