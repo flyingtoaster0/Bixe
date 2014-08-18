@@ -18,11 +18,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.flyingtoaster.util.IabHelper;
 import com.flyingtoaster.util.IabResult;
+import com.flyingtoaster.util.Inventory;
+import com.flyingtoaster.util.Purchase;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -74,6 +78,7 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
     private SlidingUpPanelLayout mSlidingUpPanelLayout;
     private View dragView;
     private LinearLayout slidingContentView;
+    private RelativeLayout contentLayout;
 
     private int mStationID;
     private int mBikes;
@@ -91,6 +96,11 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
     private IabHelper mHelper;
     private String base64EncodedPublicKey;
 
+    private boolean mIsPremium;
+
+    IabHelper.QueryInventoryFinishedListener mGotInventoryListener;
+    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,20 +109,15 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
         mStations = new HashMap<Integer, Station>();
         mMarkerHash = new HashMap<String, Integer>();
 
-        mAdView = (AdView) findViewById(R.id.ad_view);
+        contentLayout = (RelativeLayout) findViewById(R.id.content_layout);
 
-        if (mAdView != null) {
-            AdRequest adRequest = new AdRequest.Builder()
-                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                    .addTestDevice(getString(R.string.note3_id))
-                    .build();
-
-            mAdView.loadAd(adRequest);
-
-        }
+        //mAdView = (AdView) findViewById(R.id.ad_view);
 
         base64EncodedPublicKey = getString(R.string.base64_rsa_key);
         mHelper = new IabHelper(this, base64EncodedPublicKey);
+
+
+
         mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
             public void onIabSetupFinished(IabResult result) {
                 if (!result.isSuccess()) {
@@ -120,10 +125,67 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
                     Log.d(TAG, "Problem setting up In-app Billing: " + result);
                 } else {
                     Log.d(TAG, "IAB set up successfully!! " + result);
+
+                    mHelper.queryInventoryAsync(mGotInventoryListener);
                 }
-                // Hooray, IAB is fully set up!
             }
         });
+
+
+        mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
+            public void onQueryInventoryFinished(IabResult result,
+                                                 Inventory inventory) {
+
+                if (result.isFailure()) {
+                    Log.d(TAG, "The thing failed");
+                }
+                else {
+
+                    if (inventory.hasPurchase(getString(R.string.sku_test_purchased))) {
+                        mHelper.consumeAsync(inventory.getPurchase(getString(R.string.sku_test_purchased)),null);
+                    }
+                    // does the user have the premium upgrade?
+                    mIsPremium = false;//inventory.hasPurchase(getString(R.string.sku_remove_ads));
+
+                    if (!mIsPremium) {
+                        mAdView = new AdView(MainActivity.this);
+                        mAdView.setAdSize(AdSize.BANNER);
+                        mAdView.setAdUnitId(getString(R.string.ad_unit_id));
+                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                        mAdView.setLayoutParams(layoutParams);
+                        contentLayout.addView(mAdView);
+
+                        if (mAdView != null) {
+                            AdRequest adRequest = new AdRequest.Builder()
+                                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                                    .addTestDevice(getString(R.string.note3_id))
+                                    .build();
+
+                            mAdView.loadAd(adRequest);
+                        }
+                    }
+
+                    Log.d(TAG, String.valueOf(mIsPremium));
+                }
+            }
+        };
+
+
+        mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
+            public void onIabPurchaseFinished(IabResult result, Purchase purchase)
+            {
+                if (result.isFailure()) {
+                    Log.d(TAG, "Error purchasing: " + result);
+                    return;
+                }
+                else if (purchase.getSku().equals(getString(R.string.sku_remove_ads))) {
+                    Log.d(TAG, "Success??");
+                    if (mAdView == null) return;
+                    contentLayout.removeView(mAdView);
+                }
+            }
+        };
 
         mStationNameView = (TextView) findViewById(R.id.station_name_text_view);
         mBikesAmountView = (TextView) findViewById(R.id.bikes_amount_textview);
@@ -208,6 +270,19 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
         mGoogleMap.getUiSettings().setRotateGesturesEnabled(false);
         mGoogleMap.getUiSettings().setTiltGesturesEnabled(false);
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(torontoCoords, 13));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
+            // not handled, so handle it ourselves (here's where you'd
+            // perform any handling of activity results not related to in-app
+            // billing...
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+        else {
+            Log.d(TAG, "onActivityResult handled by IABUtil.");
+        }
     }
 
     public void updateStations() {
