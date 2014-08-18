@@ -1,6 +1,7 @@
 <com.flyingtoaster.bikemapper.SlidingUpPanelLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -22,12 +23,18 @@
             android:name="com.google.android.gms.maps.MapFragment"
             tools:layout="@layout/fragment_bottom_bar" />
 
+        <com.google.android.gms.ads.AdView android:id="@+id/ad_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            ads:adUnitId="@string/ad_unit_id"
+            ads:adSize="BANNER"/>
+
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/sliding_panel_expanded_height">
-
 
         <LinearLayout
             android:id="@+id/sliding_content_view"

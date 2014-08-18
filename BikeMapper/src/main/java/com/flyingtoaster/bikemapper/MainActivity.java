@@ -6,10 +6,12 @@ import java.util.Locale;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +22,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -78,6 +82,8 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
     private TextView mBikesAmountView;
     private TextView mDocksAmountView;
 
+    private AdView mAdView;
+
     private LatLng mStationLatLng;
     private String mStationName;
 
@@ -89,6 +95,17 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
         mStations = new HashMap<Integer, Station>();
         mMarkerHash = new HashMap<String, Integer>();
 
+        mAdView = (AdView) findViewById(R.id.ad_view);
+
+        if (mAdView != null) {
+            AdRequest adRequest = new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .addTestDevice(getString(R.string.note3_id))
+                    .build();
+
+            mAdView.loadAd(adRequest);
+
+        }
 
         mStationNameView = (TextView) findViewById(R.id.station_name_text_view);
         mBikesAmountView = (TextView) findViewById(R.id.bikes_amount_textview);

@@ -16,4 +16,7 @@
 
     <string name="contact_email">example@example.com</string>
 
+    <string name="ad_unit_id">ca-app-pub-3545068976746355/6474633821</string>
+    <string name="note3_id">357518051496230</string>
+
 </resources>
