@@ -6,7 +6,9 @@ import java.util.Locale;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -98,6 +100,8 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
 
     private boolean mIsPremium;
 
+    private SharedPreferences prefs;
+
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener;
     IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener;
 
@@ -111,81 +115,7 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
 
         contentLayout = (RelativeLayout) findViewById(R.id.content_layout);
 
-        //mAdView = (AdView) findViewById(R.id.ad_view);
-
-        base64EncodedPublicKey = getString(R.string.base64_rsa_key);
-        mHelper = new IabHelper(this, base64EncodedPublicKey);
-
-
-
-        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            public void onIabSetupFinished(IabResult result) {
-                if (!result.isSuccess()) {
-                    // Oh noes, there was a problem.
-                    Log.d(TAG, "Problem setting up In-app Billing: " + result);
-                } else {
-                    Log.d(TAG, "IAB set up successfully!! " + result);
-
-                    mHelper.queryInventoryAsync(mGotInventoryListener);
-                }
-            }
-        });
-
-
-        mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
-            public void onQueryInventoryFinished(IabResult result,
-                                                 Inventory inventory) {
-
-                if (result.isFailure()) {
-                    Log.d(TAG, "The thing failed");
-                }
-                else {
-
-                    if (inventory.hasPurchase(getString(R.string.sku_test_purchased))) {
-                        mHelper.consumeAsync(inventory.getPurchase(getString(R.string.sku_test_purchased)),null);
-                    }
-                    // does the user have the premium upgrade?
-                    mIsPremium = false;//inventory.hasPurchase(getString(R.string.sku_remove_ads));
-
-                    if (!mIsPremium) {
-                        mAdView = new AdView(MainActivity.this);
-                        mAdView.setAdSize(AdSize.BANNER);
-                        mAdView.setAdUnitId(getString(R.string.ad_unit_id));
-                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                        mAdView.setLayoutParams(layoutParams);
-                        contentLayout.addView(mAdView);
-
-                        if (mAdView != null) {
-                            AdRequest adRequest = new AdRequest.Builder()
-                                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                                    .addTestDevice(getString(R.string.note3_id))
-                                    .build();
-
-                            mAdView.loadAd(adRequest);
-                        }
-                    }
-
-                    Log.d(TAG, String.valueOf(mIsPremium));
-                }
-            }
-        };
-
-
-        mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
-            public void onIabPurchaseFinished(IabResult result, Purchase purchase)
-            {
-                if (result.isFailure()) {
-                    Log.d(TAG, "Error purchasing: " + result);
-                    return;
-                }
-                else if (purchase.getSku().equals(getString(R.string.sku_remove_ads))) {
-                    Log.d(TAG, "Success??");
-                    if (mAdView == null) return;
-                    contentLayout.removeView(mAdView);
-                }
-            }
-        };
+        checkAndSetupAd();
 
         mStationNameView = (TextView) findViewById(R.id.station_name_text_view);
         mBikesAmountView = (TextView) findViewById(R.id.bikes_amount_textview);
@@ -468,5 +398,79 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void checkAndSetupAd() {
+        prefs = getSharedPreferences(getString(R.string.app_name), 0);
+
+        if (prefs.getBoolean("remove_ads", false)) return;
+
+        base64EncodedPublicKey = getString(R.string.base64_rsa_key);
+        mHelper = new IabHelper(this, base64EncodedPublicKey);
+
+        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
+            public void onIabSetupFinished(IabResult result) {
+                if (!result.isSuccess()) {
+                    // Oh noes, there was a problem.
+                    Log.d(TAG, "Problem setting up In-app Billing: " + result);
+                } else {
+                    Log.d(TAG, "IAB set up successfully!! " + result);
+
+                    mHelper.queryInventoryAsync(mGotInventoryListener);
+                }
+            }
+        });
+
+        mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
+            public void onQueryInventoryFinished(IabResult result,
+                                                 Inventory inventory) {
+
+                if (result.isFailure()) {
+                    Log.d(TAG, "The thing failed");
+                }
+                else {
+
+                    if (inventory.hasPurchase(getString(R.string.sku_test_purchased))) {
+                        mHelper.consumeAsync(inventory.getPurchase(getString(R.string.sku_test_purchased)),null);
+                    }
+                    // does the user have the premium upgrade?
+                    mIsPremium = inventory.hasPurchase(getString(R.string.sku_remove_ads));
+
+                    if (!mIsPremium) {
+                        BannerAdView adFragment = new BannerAdView();
+                        FragmentManager fm = getFragmentManager();
+                        FragmentTransaction ft = fm.beginTransaction();
+                        ft.add(R.id.content_layout, adFragment);
+                        ft.commit();
+                    } else {
+                        prefs.edit().putBoolean("remove_ads", true).commit();
+                    }
+
+                    Log.d(TAG, String.valueOf(mIsPremium));
+                }
+            }
+        };
+
+        mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
+            public void onIabPurchaseFinished(IabResult result, Purchase purchase)
+            {
+                if (result.isFailure()) {
+                    Log.d(TAG, "Error purchasing: " + result);
+                    return;
+                }
+                else if (purchase.getSku().equals(getString(R.string.sku_remove_ads))) {
+                    Log.d(TAG, "Success??");
+                    if (mAdView == null) return;
+
+                    prefs.edit().putBoolean("remove_ads", true).commit();
+                    contentLayout.removeView(mAdView);
+                }
+            }
+        };
+    }
+
+    public void launchPurchaseFlow() {
+        if (mHelper == null) return;
+        mHelper.launchPurchaseFlow(this, getString(R.string.sku_remove_ads), 1001, mPurchaseFinishedListener);
     }
 }

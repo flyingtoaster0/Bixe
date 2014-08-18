@@ -17,10 +17,12 @@
     <string name="contact_email">flyingtoaster0@gmail.com</string>
 
     <string name="ad_unit_id">ca-app-pub-3545068976746355/6474633821</string>
-    <string name="note3_id">357518051496230</string>
+    <string name="note3_id">7685C26306AADA7795F443EFCE8ABBFA</string>
 
     <string name="base64_rsa_key">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkZDHXWzF3XVkmGc9+oWtHAwMuywsMGeTvJycecITl/TU5rA7jVQjVSOWCNLiwWSqmdObBVA77buknlqeMtKLPX9HV7sr1qiH6LmoBiYk+zqgmr/NrwEUTBessSMCYsRc4CyuUeEn1kqNcNlbVahARZBX7GyyvR8otWYiU02PndD/hCxkf2E+ep5+p8Jww/ntmW9Ac5OhYF8uceac6iB6qp3EjwgF3lmH2/nUcG4jgH5kJgu9Jrn/7LkVjX1ILslQidNI+Ce081tu6Xku98a893zzHK0Rq6G2N3joRoHgSGj4h7qcfiIgm3p1lLrXsFTdTYxtEYiROdlP++7uqix9HQIDAQAB</string>
     <string name="sku_remove_ads">com.flyingtoaster.bixe.remove_ads</string>
     <string name="sku_test_purchased">android.test.purchased</string>
+
+    <string name="remove_ads_dialog_text">Please purchase ad removal to support the continued development of this app.</string>
 
 </resources>
