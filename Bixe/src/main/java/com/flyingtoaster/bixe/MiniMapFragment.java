@@ -113,17 +113,17 @@ public class MiniMapFragment extends Fragment implements OnMyLocationChangeListe
         float percent = (float)mBikes / (float)mTotalDocks;
 
         if (percent == 1) {
-            //bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_5);
+            bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_5);
         } else if (percent >= 0.8) {
-            //bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_4);
+            bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_4);
         } else if (percent >= 0.6) {
-            //bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_3);
+            bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_3);
         } else if (percent >= 0.4) {
-            //bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_2);
+            bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_2);
         } else if (percent >= 0.2) {
-            //bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_1);
+            bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_1);
         } else {
-            //bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_0);
+            bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_0);
         }
 
         MarkerOptions options = new MarkerOptions()
