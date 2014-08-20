@@ -490,7 +490,7 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
         BitmapDescriptor bitmapDescriptor = null;
         float percent = (float)station.getAvailableBikes() / (float)station.getTotalDocks();
 
-        if (percent >= 0.6) {
+        if (percent == 1) {
             bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_5);
         } else if (percent >= 0.8) {
             bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_4);
