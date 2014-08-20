@@ -65,6 +65,6 @@ public class Station {
     private String fixStationName(String stationName) {
         if (stationName == null) return "";
 
-        return stationName.replaceAll(" ?/", " And");
+        return stationName.replaceAll(" ?/ ?", " And ").replaceAll("\\(.*\\)", "");
     }
 }
