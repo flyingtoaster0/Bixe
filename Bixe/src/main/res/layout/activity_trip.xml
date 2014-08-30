@@ -50,7 +50,8 @@
             android:gravity="top|center_horizontal"
             android:textSize="@dimen/station_title_size"
             android:layout_centerHorizontal="true"
-            android:layout_below="@id/station_name_text_view"/>
+            android:layout_below="@id/station_name_text_view"
+            android:text="@string/station_name_placeholder"/>
 
     </RelativeLayout>
 
@@ -66,8 +67,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="@dimen/compass_fragment_bottom_vertical_padding"
-            android:layout_centerHorizontal="true">
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/compass_station_title_vertical_padding">
             <TextView
                 android:id="@+id/timer_text"
                 android:layout_width="wrap_content"
