@@ -43,9 +43,12 @@
             android:name="com.flyingtoaster.bixe.AboutActivity"
             android:screenOrientation="portrait">
         </activity>
+        <!-- DEBUG KEY -->
         <!--meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyDyI0SVg3kUMSiZAD1W2ASouZBLRS8kVoI"/-->
+
+        <!-- RELEASE KEY-->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyC6IOtNonXQ9tD3objItmmVDqZic3Vng_c"/>
