@@ -267,16 +267,17 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
     public void onConnected(Bundle dataBundle) {
         // Display the connection status
 
+        if (mUpdatesRequested) {
+            mLocationClient.requestLocationUpdates(mLocationRequest, this);
+        }
+
         mCurrentLocation = mLocationClient.getLastLocation();
+        if (mCurrentLocation == null) return;
         String coordsString = mCurrentLocation.getLatitude() + ", " + mCurrentLocation.getLongitude();
         mCurrentLongitude = mCurrentLocation.getLatitude();
         mCurrentLongitude = mCurrentLocation.getLongitude();
         Log.d(TAG, coordsString);
         //Toast.makeText(this, coordsString, Toast.LENGTH_SHORT).show();
-
-        if (mUpdatesRequested) {
-            mLocationClient.requestLocationUpdates(mLocationRequest, this);
-        }
 
         //Log.d(TAG, String.valueOf(getBearing(43.6432201, -79.3985133, mLatitude, mLongitude)));
         //Log.d(TAG, String.valueOf(getDistance(43.6432201, -79.3985133, mLatitude, mLongitude)));
