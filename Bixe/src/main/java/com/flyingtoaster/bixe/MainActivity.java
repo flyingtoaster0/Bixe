@@ -3,7 +3,6 @@ package com.flyingtoaster.bixe;
 import java.util.HashMap;
 import java.util.Locale;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -12,6 +11,10 @@ import android.content.SharedPreferences;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,6 +39,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +47,7 @@ import org.json.JSONException;
 
 //import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-public class MainActivity extends Activity implements GetJSONArrayListener {
+public class MainActivity extends ActionBarActivity implements GetJSONArrayListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -79,8 +83,8 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
 
     private SlidingUpPanelLayout mSlidingUpPanelLayout;
     private View dragView;
-    private LinearLayout slidingContentView;
-    private RelativeLayout contentLayout;
+    private RelativeLayout mSlidingContentView;
+    private LinearLayout mContentLayout;
 
     private int mStationID;
     private int mBikes;
@@ -103,6 +107,10 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
 
     private SharedPreferences prefs;
 
+    private Toolbar mToolbar;
+    private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mActionBarDrawerToggle;
+
     IabHelper.QueryInventoryFinishedListener mGotInventoryListener;
     IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener;
 
@@ -111,10 +119,30 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open_content_description, R.string.drawer_close_content_description) {
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+
+            }
+        };
+        mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        mActionBarDrawerToggle.syncState();
+
+
         mStations = new HashMap<Integer, Station>();
         mMarkerHash = new HashMap<String, Integer>();
 
-        contentLayout = (RelativeLayout) findViewById(R.id.content_layout);
+        mContentLayout = (LinearLayout) findViewById(R.id.content_layout);
 
         checkAndSetupAd();
 
@@ -122,8 +150,8 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
         mBikesAmountView = (TextView) findViewById(R.id.bikes_amount_textview);
         mDocksAmountView = (TextView) findViewById(R.id.docks_amount_textview);
         mSlidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
-        dragView = findViewById(R.id.drag_view);
-        slidingContentView = (LinearLayout) findViewById(R.id.sliding_content_view);
+        dragView = findViewById(R.id.sliding_content_view);
+        mSlidingContentView = (RelativeLayout) findViewById(R.id.sliding_content_view);
         refreshButton = (ImageButton) findViewById(R.id.refresh_button);
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,7 +187,7 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
         mSlidingUpPanelLayout.setDragView(dragView);
 
         // Prevent presses from "bleeding" through below the SlidingUpPanel
-        slidingContentView.setOnClickListener(new View.OnClickListener() {
+        mSlidingContentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             }
@@ -178,7 +206,7 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
         //mViewPager = (ViewPager) findViewById(R.id.pager);
         //mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        mStationNameView.setText("DUNDAS OR SOMETHING");
+        //mStationNameView.setText("DUNDAS OR SOMETHING");
     }
 
     @Override
@@ -191,7 +219,7 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 updateStationInfoView(marker);
-                mSlidingUpPanelLayout.expandPane();
+                mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
                 return true;
             }
         });
@@ -251,7 +279,8 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
             startActivity(intent);
             return true;
         }
-        return super.onOptionsItemSelected(item);
+
+        return mActionBarDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
     
@@ -404,9 +433,8 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
 
     @Override
     public void onBackPressed() {
-        // TODO: Also show the handle, or add a collapse button or something
-        if (mSlidingUpPanelLayout.isExpanded()) {
-            mSlidingUpPanelLayout.collapsePane();
+        if (mSlidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+            mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
         } else {
             super.onBackPressed();
         }
@@ -475,7 +503,7 @@ public class MainActivity extends Activity implements GetJSONArrayListener {
                     if (mAdView == null) return;
 
                     prefs.edit().putBoolean("remove_ads", true).commit();
-                    contentLayout.removeView(mAdView);
+                    mContentLayout.removeView(mAdView);
                 }
             }
         };

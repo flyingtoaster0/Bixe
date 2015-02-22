@@ -3,8 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="station_title_size">26sp</dimen>
-    <dimen name="item_amount_size">26dp</dimen>
+    <dimen name="station_title_size">20dp</dimen>
+    <dimen name="item_amount_size">20dp</dimen>
     <dimen name="item_label_size">16dp</dimen>
     <dimen name="station_info_padding">8dp</dimen>
 
@@ -12,10 +12,10 @@
 
     <dimen name="compass_station_title_vertical_padding">28dp</dimen>
     <dimen name="compass_fragment_bottom_vertical_padding">80dp</dimen>
-    <dimen name="station_title_vertical_padding">8dp</dimen>
+    <dimen name="station_title_vertical_padding">16dp</dimen>
     <dimen name="station_title_horizontal_padding">64dp</dimen>
 
-    <dimen name="sliding_panel_expanded_height">192dp</dimen>
+    <dimen name="sliding_panel_expanded_height">128dp</dimen>
     <dimen name="sliding_panel_border_width">4dp</dimen>
 
     <dimen name="station_title_view_height">84dp</dimen>
@@ -24,5 +24,7 @@
 
 
     <dimen name="about_item_vertical_margin">16dp</dimen>
+
+
 
 </resources>

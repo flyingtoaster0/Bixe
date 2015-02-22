@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="drawer_open_content_description">TEST</string>
+    <string name="drawer_close_content_description">TEST</string>
 
     <string name="app_name">Bixe</string>
     <string name="station_name_placeholder">Station Name Here</string>
@@ -24,5 +26,6 @@
     <string name="sku_test_purchased">android.test.purchased</string>
 
     <string name="remove_ads_dialog_text">Please purchase ad removal to support the continued development of this app.</string>
+    <string name="slidemenu_unselected_text">Select a bike station</string>
 
 </resources>
