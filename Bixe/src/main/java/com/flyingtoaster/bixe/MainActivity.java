@@ -4,13 +4,11 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import android.animation.AnimatorInflater;
-import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.TransitionDrawable;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
@@ -25,11 +23,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -83,7 +78,6 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
     private HashMap<Integer, Station> mStations;
     private HashMap<String, Integer> mMarkerHash;
 
-    private ImageButton refreshButton;
     private ImageButton mNavigateButton;
 
     private SlidingUpPanelLayout mSlidingUpPanelLayout;
@@ -214,13 +208,13 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
 
         mFloatingActionButton = (FloatingActionButton) findViewById(R.id.sliding_menu_floating_button);
 
-        refreshButton = (ImageButton) findViewById(R.id.refresh_button);
-        refreshButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateStations();
-            }
-        });
+        // TODO put this in the onmenuoptionselected
+//        refreshButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+////            public void onClick(View v) {
+//                updateStations();
+//            }
+//        });
 
         mNavigateButton = (ImageButton) findViewById(R.id.navigate_button);
         mNavigateButton.setOnClickListener(new View.OnClickListener() {
@@ -408,9 +402,10 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_about) {
-            Intent intent = new Intent(MainActivity.this, AboutActivity.class);
-            startActivity(intent);
+        if (id == R.id.action_refresh) {
+            updateStations();
+//            Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+//            startActivity(intent);
             return true;
         }
 
