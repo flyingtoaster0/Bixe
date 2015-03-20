@@ -25,6 +25,7 @@
 
     <dimen name="about_item_vertical_margin">16dp</dimen>
 
-
+    <dimen name="sliding_panel_collapsed_height">128dp</dimen>
+    <dimen name="sliding_panel_max_height">256dp</dimen>
 
 </resources>

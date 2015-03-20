@@ -3,9 +3,11 @@ package com.flyingtoaster.bixe;
 import java.util.HashMap;
 import java.util.Locale;
 
+import android.animation.AnimatorInflater;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v13.app.FragmentPagerAdapter;
@@ -21,16 +23,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Interpolator;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.flyingtoaster.util.IabHelper;
-import com.flyingtoaster.util.IabResult;
-import com.flyingtoaster.util.Inventory;
-import com.flyingtoaster.util.Purchase;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -39,6 +37,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.melnykov.fab.FloatingActionButton;
+import com.sothree.slidinguppanel.FloatingActionButtonLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.json.JSONArray;
@@ -91,28 +91,21 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
     private int mDocks;
     private int mTotalDocks;
 
+    private View mCollapsedContentView;
+
     private TextView mStationNameView;
     private TextView mBikesAmountView;
     private TextView mDocksAmountView;
 
-    private AdView mAdView;
-
     private LatLng mStationLatLng;
     private String mStationName;
-
-    private IabHelper mHelper;
-    private String base64EncodedPublicKey;
-
-    private boolean mIsPremium;
-
-    private SharedPreferences prefs;
 
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
 
-    IabHelper.QueryInventoryFinishedListener mGotInventoryListener;
-    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener;
+    private FloatingActionButton mFloatingActionButton;
+    private FloatingActionButtonLayout mFloatingButtonLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,14 +137,96 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
 
         mContentLayout = (LinearLayout) findViewById(R.id.content_layout);
 
-        checkAndSetupAd();
-
+        mCollapsedContentView = findViewById(R.id.slidemenu_collapsed_content);
         mStationNameView = (TextView) findViewById(R.id.station_name_text_view);
         mBikesAmountView = (TextView) findViewById(R.id.bikes_amount_textview);
         mDocksAmountView = (TextView) findViewById(R.id.docks_amount_textview);
         mSlidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+
+        mSlidingUpPanelLayout.setPanelHeight(getResources().getDimensionPixelSize(R.dimen.sliding_panel_collapsed_height));
+        mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        mSlidingUpPanelLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+
+            }
+
+            @Override
+            public void onPanelCollapsed(View panel) {
+
+            }
+
+            @Override
+            public void onPanelExpanded(View panel) {
+
+            }
+
+            @Override
+            public void onPanelAnchored(View panel) {
+
+            }
+
+            @Override
+            public void onPanelHidden(View panel) {
+
+            }
+
+            @Override
+            public void onPanelHiddenExecuted(View panel, Interpolator interpolator, int duration) {
+
+            }
+
+            @Override
+            public void onPanelShownExecuted(View panel, Interpolator interpolator, int duration) {
+
+            }
+
+            @Override
+            public void onPanelExpandedStateY(View panel, boolean reached) {
+
+            }
+
+            @Override
+            public void onPanelCollapsedStateY(View panel, boolean reached) {
+                if (reached) {
+                    Log.d("TEST", "onPanelCollapsedStateY -- true");
+
+                    ObjectAnimator animator = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.green_white_animator);
+                    animator.setTarget(mCollapsedContentView);
+                    animator.setEvaluator(new ArgbEvaluator());
+                    animator.start();
+
+                    ObjectAnimator animator2 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.white_textcolor_animator);
+                    animator2.setTarget(mStationNameView);
+                    animator2.setEvaluator(new ArgbEvaluator());
+                    animator2.start();
+                } else {
+                    Log.d("TEST", "onPanelCollapsedStateY -- false");
+
+                    ObjectAnimator animator = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.white_green_animator);
+                    animator.setTarget(mCollapsedContentView);
+                    animator.setEvaluator(new ArgbEvaluator());
+                    animator.start();
+
+                    ObjectAnimator animator2 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.textcolor_white_animator);
+                    animator2.setTarget(mStationNameView);
+                    animator2.setEvaluator(new ArgbEvaluator());
+                    animator2.start();
+                }
+            }
+
+            @Override
+            public void onPanelLayout(View panel, SlidingUpPanelLayout.PanelState state) {
+
+            }
+        });
         dragView = findViewById(R.id.sliding_content_view);
+
         mSlidingContentView = (RelativeLayout) findViewById(R.id.sliding_content_view);
+        mFloatingButtonLayout= (FloatingActionButtonLayout) findViewById(R.id.floating_button_layout);
+
+        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.sliding_menu_floating_button);
+
         refreshButton = (ImageButton) findViewById(R.id.refresh_button);
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,7 +270,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
 
         mTorontoFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.toronto_fragment);
 
-
+//        mSlidingUpPanelLayout.attachFloatingActionButton(mFloatingActionButton, 0, 100, 0, 1000);
         updateStations();
 
         // Create the adapter that will return a fragment for each of the three
@@ -219,7 +294,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
             @Override
             public boolean onMarkerClick(Marker marker) {
                 updateStationInfoView(marker);
-                mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+                //mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
                 return true;
             }
         });
@@ -232,32 +307,12 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(torontoCoords, 13));
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
-            // not handled, so handle it ourselves (here's where you'd
-            // perform any handling of activity results not related to in-app
-            // billing...
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-        else {
-            Log.d(TAG, "onActivityResult handled by IABUtil.");
-        }
-    }
-
     public void updateStations() {
         if (mJSONTask != null) {
             mJSONTask.cancel(true);
         }
         mJSONTask = new GetJSONArrayTask(this, API_URL);
         mJSONTask.execute();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mHelper != null) mHelper.dispose();
-        mHelper = null;
     }
 
     @Override
@@ -283,7 +338,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         return mActionBarDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
-    
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -433,85 +488,11 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
 
     @Override
     public void onBackPressed() {
-        if (mSlidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED) {
+        if (mSlidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || mSlidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED) {
             mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
         } else {
             super.onBackPressed();
         }
-    }
-
-    private void checkAndSetupAd() {
-        prefs = getSharedPreferences(getString(R.string.app_name), 0);
-
-        if (prefs.getBoolean("remove_ads", false)) return;
-
-        base64EncodedPublicKey = getString(R.string.base64_rsa_key);
-        mHelper = new IabHelper(this, base64EncodedPublicKey);
-
-        mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            public void onIabSetupFinished(IabResult result) {
-                if (!result.isSuccess()) {
-                    // Oh noes, there was a problem.
-                    Log.d(TAG, "Problem setting up In-app Billing: " + result);
-                } else {
-                    Log.d(TAG, "IAB set up successfully!! " + result);
-
-                    mHelper.queryInventoryAsync(mGotInventoryListener);
-                }
-            }
-        });
-
-        mGotInventoryListener = new IabHelper.QueryInventoryFinishedListener() {
-            public void onQueryInventoryFinished(IabResult result,
-                                                 Inventory inventory) {
-
-                if (result.isFailure()) {
-                    Log.d(TAG, "The thing failed");
-                }
-                else {
-
-                    if (inventory.hasPurchase(getString(R.string.sku_test_purchased))) {
-                        mHelper.consumeAsync(inventory.getPurchase(getString(R.string.sku_test_purchased)), null);
-                    }
-                    // does the user have the premium upgrade?
-                    mIsPremium = inventory.hasPurchase(getString(R.string.sku_remove_ads));
-
-                    if (!mIsPremium) {
-                        BannerAdFragment adFragment = new BannerAdFragment();
-                        FragmentManager fm = getFragmentManager();
-                        FragmentTransaction ft = fm.beginTransaction();
-                        ft.add(R.id.content_layout, adFragment);
-                        ft.commit();
-                    } else {
-                        prefs.edit().putBoolean("remove_ads", true).commit();
-                    }
-
-                    Log.d(TAG, String.valueOf(mIsPremium));
-                }
-            }
-        };
-
-        mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
-            public void onIabPurchaseFinished(IabResult result, Purchase purchase)
-            {
-                if (result.isFailure()) {
-                    Log.d(TAG, "Error purchasing: " + result);
-                    return;
-                }
-                else if (purchase.getSku().equals(getString(R.string.sku_remove_ads))) {
-                    Log.d(TAG, "Success??");
-                    if (mAdView == null) return;
-
-                    prefs.edit().putBoolean("remove_ads", true).commit();
-                    mContentLayout.removeView(mAdView);
-                }
-            }
-        };
-    }
-
-    public void launchPurchaseFlow() {
-        if (mHelper == null) return;
-        mHelper.launchPurchaseFlow(this, getString(R.string.sku_remove_ads), 1001, mPurchaseFinishedListener);
     }
 
     public static BitmapDescriptor getBitmapDescriptor(Station station) {
@@ -531,7 +512,6 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         } else {
             bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_0);
         }
-
 
         return bitmapDescriptor;
     }

@@ -1,1 +1,2 @@
-include ':Bixe', ':ViewPagerIndicator'
+include ':Bixe', ':ViewPagerIndicator', ':SlidingUpPanel'
+project(':SlidingUpPanel').projectDir = new File('AndroidSlidingUpPanel/library')

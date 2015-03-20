@@ -32,7 +32,7 @@
             android:layout_marginBottom="@dimen/compass_station_title_vertical_padding"
             android:layout_marginLeft="@dimen/station_title_horizontal_padding"
             android:layout_marginRight="@dimen/station_title_horizontal_padding"
-            android:textColor="@color/sliding_panel_text_color"
+            android:textColor="@color/white"
             android:gravity="top|center_horizontal"
             android:textSize="@dimen/station_title_size"
             android:layout_centerHorizontal="true"
@@ -46,7 +46,7 @@
             android:layout_marginBottom="@dimen/compass_station_title_vertical_padding"
             android:layout_marginLeft="@dimen/station_title_horizontal_padding"
             android:layout_marginRight="@dimen/station_title_horizontal_padding"
-            android:textColor="@color/sliding_panel_text_color"
+            android:textColor="@color/white"
             android:gravity="top|center_horizontal"
             android:textSize="@dimen/station_title_size"
             android:layout_centerHorizontal="true"
@@ -97,14 +97,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:textColor="@color/sliding_panel_text_color"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/item_amount_size"
                         android:text="@string/zero"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:textColor="@color/sliding_panel_text_color"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/item_label_size"
                         android:text="@string/bikes_amount_label"/>
                 </LinearLayout>
@@ -121,13 +121,13 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:textSize="@dimen/item_amount_size"
-                        android:textColor="@color/sliding_panel_text_color"
+                        android:textColor="@color/white"
                         android:text="@string/zero"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:textColor="@color/sliding_panel_text_color"
+                        android:textColor="@color/white"
                         android:textSize="@dimen/item_label_size"
                         android:text="@string/docks_amount_label"/>
                 </LinearLayout>

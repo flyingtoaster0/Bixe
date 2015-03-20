@@ -4,42 +4,82 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/sliding_layout"
+    <com.sothree.slidinguppanel.FloatingActionButtonLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/floating_button_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="bottom"
-        sothree:panelHeight="0dp"
-        sothree:shadowHeight="4dp"
-        sothree:umanoFadeColor="@android:color/transparent">
+        tools:context=".MainActivity"
+        fab:umanoFabMode="circular_reveal">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/content_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/sliding_layout"
+            android:layout_width="match_parent"
+            android:layout_height="256dp"
+            android:gravity="bottom"
+            sothree:panelHeight="100dp"
+            sothree:shadowHeight="4dp"
+            sothree:umanoFadeColor="@android:color/transparent"
+            sothree:umanoInitialState="hidden"
+            sothree:umanoOverlay="true">
 
-            <include android:id="@+id/toolbar"
-                layout="@layout/toolbar" />
 
-            <fragment
-                android:id="@+id/toronto_fragment"
-                android:name="com.google.android.gms.maps.MapFragment"
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/content_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:layout="@layout/fragment_bottom_bar" />
+                android:orientation="vertical">
 
-        </LinearLayout>
+                <include
+                    android:id="@+id/toolbar"
+                    layout="@layout/toolbar" />
 
-        <include layout="@layout/slidemenu_content" />
+                <fragment
+                    android:id="@+id/toronto_fragment"
+                    android:name="com.google.android.gms.maps.MapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
-    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+            </LinearLayout>
+
+
+
+            <include layout="@layout/slidemenu_content" />
+
+        </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+
+        <com.melnykov.fab.FloatingActionButton
+            android:id="@+id/sliding_menu_floating_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_directions_white_24dp"
+            fab:fab_colorNormal="@color/green_dark"
+            fab:fab_colorPressed="@color/green_dark_highlight"
+            fab:fab_colorRipple="@color/green_light" />
+
+        <!--<com.melnykov.fab.FloatingActionButton-->
+        <!--android:id="@+id/sliding_menu_floating_button2"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="16dp"-->
+        <!--android:src="@drawable/ic_my_location_grey600_24dp"-->
+        <!--fab:fab_colorNormal="@color/white"-->
+        <!--fab:fab_colorPressed="@color/white_button_press"-->
+        <!--fab:fab_colorRipple="@color/green_light" />-->
+
+
+    </com.sothree.slidinguppanel.FloatingActionButtonLayout>
+
 
     <FrameLayout
         android:id="@+id/menu_content"
         android:layout_width="304dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/green_dark"/>
+        android:background="@color/green_dark" />
+
 </android.support.v4.widget.DrawerLayout>

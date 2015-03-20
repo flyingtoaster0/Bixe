@@ -1,85 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sliding_content_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/green_light">
+    android:layout_height="256dp"
+    android:background="@color/white">
 
-    <View
-        android:id="@+id/slidemenu_top_border"
-        android:layout_width="fill_parent"
-        android:layout_height="@dimen/sliding_panel_border_width"
-        android:background="@color/green_dark" />
+    <!--<View-->
+    <!--android:id="@+id/slidemenu_top_border"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="@dimen/sliding_panel_border_width"-->
+    <!--android:background="@color/green_dark" />-->
 
-    <TextView
-        android:id="@+id/station_name_text_view"
+    <RelativeLayout
+        android:id="@+id/slidemenu_collapsed_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/slidemenu_top_border"
-        android:padding="@dimen/station_title_vertical_padding"
-        android:textColor="@color/sliding_panel_text_color"
-        android:textSize="@dimen/station_title_size"
-        android:text="@string/slidemenu_unselected_text"
-        tools:text="Yonge and Dundas" />
-
-    <LinearLayout
-        android:id="@+id/bikes_amount_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:paddingLeft="@dimen/station_title_vertical_padding"
-        android:paddingRight="@dimen/station_title_vertical_padding"
-        android:paddingBottom="@dimen/station_title_vertical_padding"
-        android:layout_below="@id/station_name_text_view"
+        android:layout_height="@dimen/sliding_panel_collapsed_height"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/bikes_amount_textview"
+            android:id="@+id/station_name_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/station_title_vertical_padding"
+            android:text="@string/slidemenu_unselected_text"
+            android:textColor="@color/grey_1"
+            android:textSize="@dimen/station_title_size"
+            tools:text="Yonge and Dundas" />
+
+
+        <LinearLayout
+            android:id="@+id/bikes_amount_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@color/sliding_panel_text_color"
-            android:textSize="@dimen/item_amount_size"
-            tools:text="@string/zero" />
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/station_name_text_view"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/station_title_vertical_padding"
+            android:paddingLeft="@dimen/station_title_vertical_padding"
+            android:paddingRight="@dimen/station_title_vertical_padding">
 
-        <TextView
+            <TextView
+                android:id="@+id/bikes_amount_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/grey_1"
+                android:textSize="@dimen/item_amount_size"
+                tools:text="@string/zero" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/bikes_amount_label"
+                android:textColor="@color/grey_1"
+                android:textSize="@dimen/item_label_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/docks_amount_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/bikes_amount_label"
-            android:textColor="@color/sliding_panel_text_color"
-            android:textSize="@dimen/item_label_size" />
-    </LinearLayout>
+            android:layout_below="@id/station_name_text_view"
+            android:layout_toRightOf="@id/bikes_amount_layout"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/station_title_vertical_padding"
+            android:paddingLeft="@dimen/station_title_vertical_padding"
+            android:paddingRight="@dimen/station_title_vertical_padding">
 
-    <LinearLayout
-        android:id="@+id/docks_amount_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/station_name_text_view"
-        android:layout_toRightOf="@id/bikes_amount_layout"
-        android:paddingLeft="@dimen/station_title_vertical_padding"
-        android:paddingRight="@dimen/station_title_vertical_padding"
-        android:paddingBottom="@dimen/station_title_vertical_padding"
-        android:orientation="vertical">
+            <TextView
+                android:id="@+id/docks_amount_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/grey_1"
+                android:textSize="@dimen/item_amount_size"
+                tools:text="@string/zero" />
 
-        <TextView
-            android:id="@+id/docks_amount_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@color/sliding_panel_text_color"
-            android:textSize="@dimen/item_amount_size"
-            tools:text="@string/zero" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/docks_amount_label"
-            android:textColor="@color/sliding_panel_text_color"
-            android:textSize="@dimen/item_label_size" />
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/docks_amount_label"
+                android:textColor="@color/grey_1"
+                android:textSize="@dimen/item_label_size" />
+        </LinearLayout>
+    </RelativeLayout>
 
     <ImageButton
         android:id="@+id/navigate_button"
