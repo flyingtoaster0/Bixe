@@ -56,10 +56,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:src="@drawable/ic_directions_white_24dp"
+            android:src="@drawable/directions_darkgreen_white"
             fab:fab_colorNormal="@color/green_dark"
             fab:fab_colorPressed="@color/green_dark_highlight"
-            fab:fab_colorRipple="@color/green_light" />
+            fab:fab_colorRipple="@color/green_dark_highlight" />
 
         <!--<com.melnykov.fab.FloatingActionButton-->
         <!--android:id="@+id/sliding_menu_floating_button2"-->

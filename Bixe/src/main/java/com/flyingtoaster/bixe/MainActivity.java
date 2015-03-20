@@ -4,12 +4,14 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.TransitionDrawable;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -23,8 +25,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -135,6 +140,8 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         mStations = new HashMap<Integer, Station>();
         mMarkerHash = new HashMap<String, Integer>();
 
+        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.sliding_menu_floating_button);
+
         mContentLayout = (LinearLayout) findViewById(R.id.content_layout);
 
         mCollapsedContentView = findViewById(R.id.slidemenu_collapsed_content);
@@ -189,29 +196,9 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
             @Override
             public void onPanelCollapsedStateY(View panel, boolean reached) {
                 if (reached) {
-                    Log.d("TEST", "onPanelCollapsedStateY -- true");
-
-                    ObjectAnimator animator = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.green_white_animator);
-                    animator.setTarget(mCollapsedContentView);
-                    animator.setEvaluator(new ArgbEvaluator());
-                    animator.start();
-
-                    ObjectAnimator animator2 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.white_textcolor_animator);
-                    animator2.setTarget(mStationNameView);
-                    animator2.setEvaluator(new ArgbEvaluator());
-                    animator2.start();
+                    fadePanelToLight();
                 } else {
-                    Log.d("TEST", "onPanelCollapsedStateY -- false");
-
-                    ObjectAnimator animator = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.white_green_animator);
-                    animator.setTarget(mCollapsedContentView);
-                    animator.setEvaluator(new ArgbEvaluator());
-                    animator.start();
-
-                    ObjectAnimator animator2 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.textcolor_white_animator);
-                    animator2.setTarget(mStationNameView);
-                    animator2.setEvaluator(new ArgbEvaluator());
-                    animator2.start();
+                    fadePanelToDark();
                 }
             }
 
@@ -223,7 +210,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         dragView = findViewById(R.id.sliding_content_view);
 
         mSlidingContentView = (RelativeLayout) findViewById(R.id.sliding_content_view);
-        mFloatingButtonLayout= (FloatingActionButtonLayout) findViewById(R.id.floating_button_layout);
+        mFloatingButtonLayout = (FloatingActionButtonLayout) findViewById(R.id.floating_button_layout);
 
         mFloatingActionButton = (FloatingActionButton) findViewById(R.id.sliding_menu_floating_button);
 
@@ -235,7 +222,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
             }
         });
 
-        mNavigateButton= (ImageButton) findViewById(R.id.navigate_button);
+        mNavigateButton = (ImageButton) findViewById(R.id.navigate_button);
         mNavigateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -307,6 +294,98 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(torontoCoords, 13));
     }
 
+    private void fadePanelToLight() {
+        TextView bikeLabel = (TextView) findViewById(R.id.bikes_amount_label);
+        TextView dockLabel = (TextView) findViewById(R.id.docks_amount_label);
+
+        ObjectAnimator animator = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.green_white_animator);
+        animator.setTarget(mCollapsedContentView);
+        animator.setEvaluator(new ArgbEvaluator());
+
+        ObjectAnimator animator2 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.white_textcolor_animator);
+        animator2.setTarget(mStationNameView);
+        animator2.setEvaluator(new ArgbEvaluator());
+
+        ObjectAnimator animator3 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.white_textcolor_animator);
+        animator3.setTarget(bikeLabel);
+        animator3.setEvaluator(new ArgbEvaluator());
+
+        ObjectAnimator animator4 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.white_textcolor_animator);
+        animator4.setTarget(dockLabel);
+        animator4.setEvaluator(new ArgbEvaluator());
+
+        ObjectAnimator animator5 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.white_textcolor_animator);
+        animator5.setTarget(mDocksAmountView);
+        animator5.setEvaluator(new ArgbEvaluator());
+
+        ObjectAnimator animator6 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.white_textcolor_animator);
+        animator6.setTarget(mBikesAmountView);
+        animator6.setEvaluator(new ArgbEvaluator());
+
+        ObjectAnimator animator7 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.fab_white_green_animator);
+        animator7.setTarget(mFloatingActionButton);
+        animator7.setEvaluator(new ArgbEvaluator());
+
+        animator.start();
+        animator2.start();
+        animator3.start();
+        animator4.start();
+        animator5.start();
+        animator6.start();
+        animator7.start();
+        mFloatingActionButton.setColorPressedResId(R.color.green_dark_highlight);
+
+        TransitionDrawable transitionDrawable = (TransitionDrawable) mFloatingActionButton.getDrawable();
+        transitionDrawable.reverseTransition(250);
+    }
+
+    private void fadePanelToDark() {
+        TextView bikeLabel = (TextView) findViewById(R.id.bikes_amount_label);
+        TextView dockLabel = (TextView) findViewById(R.id.docks_amount_label);
+
+        ObjectAnimator animator = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.white_green_animator);
+        animator.setTarget(mCollapsedContentView);
+        animator.setEvaluator(new ArgbEvaluator());
+        animator.start();
+
+        ObjectAnimator animator2 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.textcolor_white_animator);
+        animator2.setTarget(mStationNameView);
+        animator2.setEvaluator(new ArgbEvaluator());
+        animator2.start();
+
+        ObjectAnimator animator3 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.textcolor_white_animator);
+        animator3.setTarget(bikeLabel);
+        animator3.setEvaluator(new ArgbEvaluator());
+
+        ObjectAnimator animator4 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.textcolor_white_animator);
+        animator4.setTarget(dockLabel);
+        animator4.setEvaluator(new ArgbEvaluator());
+
+        ObjectAnimator animator5 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.textcolor_white_animator);
+        animator5.setTarget(mDocksAmountView);
+        animator5.setEvaluator(new ArgbEvaluator());
+
+        ObjectAnimator animator6 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.textcolor_white_animator);
+        animator6.setTarget(mBikesAmountView);
+        animator6.setEvaluator(new ArgbEvaluator());
+
+        ObjectAnimator animator7 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.fab_green_white_animator);
+        animator7.setTarget(mFloatingActionButton);
+        animator7.setEvaluator(new ArgbEvaluator());
+
+        animator.start();
+        animator2.start();
+        animator3.start();
+        animator4.start();
+        animator5.start();
+        animator6.start();
+        animator7.start();
+        mFloatingActionButton.setColorPressedResId(R.color.white_button_press);
+
+        TransitionDrawable transitionDrawable = (TransitionDrawable) mFloatingActionButton.getDrawable();
+        transitionDrawable.startTransition(250);
+    }
+
     public void updateStations() {
         if (mJSONTask != null) {
             mJSONTask.cancel(true);
@@ -317,7 +396,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -337,7 +416,6 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
 
         return mActionBarDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
-
 
 
     /**
@@ -405,7 +483,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+                                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
@@ -416,9 +494,11 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
     public void onJSONArrayPreExecute() {
 
     }
+
     public void onJSONArrayProgressUpdate(String... params) {
 
     }
+
     public void onJSONArrayPostExecute(JSONArray jArray) {
         try {
             mGoogleMap.clear();
@@ -452,6 +532,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
 
         Log.d("MainActivity", "GetJSONArrayTask complete");
     }
+
     public void onJSONArrayCancelled() {
         Log.d("MainActivity", "GetJSONArrayTask cancelled");
     }
@@ -497,7 +578,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
 
     public static BitmapDescriptor getBitmapDescriptor(Station station) {
         BitmapDescriptor bitmapDescriptor = null;
-        float percent = (float)station.getAvailableBikes() / (float)station.getTotalDocks();
+        float percent = (float) station.getAvailableBikes() / (float) station.getTotalDocks();
 
         if (percent == 1) {
             bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_5);

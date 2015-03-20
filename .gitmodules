@@ -1,6 +1,3 @@
-[submodule "SlidingPanel"]
-	path = SlidingPanel
-	url = git@github.com:flyingtoaster0/AndroidSlidingUpPanel.git
 [submodule "AndroidSlidingUpPanel"]
 	path = AndroidSlidingUpPanel
 	url = git@github.com:flyingtoaster0/AndroidSlidingUpPanel.git
