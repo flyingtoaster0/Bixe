@@ -10,6 +10,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.drawable.TransitionDrawable;
+import android.location.Location;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -18,11 +19,14 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -34,6 +38,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -70,7 +75,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
     private final double STARTING_LAT = 43.652992;
     private final double STARTING_LNG = -79.383657;
 
-    private MapFragment mTorontoFragment;
+    private TouchableMapFragment mTorontoFragment;
 
     private GoogleMap mGoogleMap;
     private GetJSONArrayTask mJSONTask;
@@ -103,7 +108,8 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
 
-    private FloatingActionButton mFloatingActionButton;
+    private FloatingActionButton mDirectionsFab;
+    private FloatingActionButton mLocationFab;
     private FloatingActionButtonLayout mFloatingButtonLayout;
 
     @Override
@@ -134,7 +140,17 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         mStations = new HashMap<Integer, Station>();
         mMarkerHash = new HashMap<String, Integer>();
 
-        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.sliding_menu_floating_button);
+        mDirectionsFab = (FloatingActionButton) findViewById(R.id.sliding_menu_floating_button_directions);
+        mLocationFab = (FloatingActionButton) findViewById(R.id.sliding_menu_floating_button_location);
+
+        mLocationFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mGoogleMap != null) {
+                    showMyLocation();
+                }
+            }
+        });
 
         mContentLayout = (LinearLayout) findViewById(R.id.content_layout);
 
@@ -146,6 +162,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
 
         mSlidingUpPanelLayout.setPanelHeight(getResources().getDimensionPixelSize(R.dimen.sliding_panel_collapsed_height));
         mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        mSlidingUpPanelLayout.setTouchEnabled(false);
         mSlidingUpPanelLayout.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
@@ -206,7 +223,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         mSlidingContentView = (RelativeLayout) findViewById(R.id.sliding_content_view);
         mFloatingButtonLayout = (FloatingActionButtonLayout) findViewById(R.id.floating_button_layout);
 
-        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.sliding_menu_floating_button);
+        mDirectionsFab = (FloatingActionButton) findViewById(R.id.sliding_menu_floating_button_directions);
 
         // TODO put this in the onmenuoptionselected
 //        refreshButton.setOnClickListener(new View.OnClickListener() {
@@ -249,9 +266,9 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
             }
         });
 
-        mTorontoFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.toronto_fragment);
+        mTorontoFragment = (TouchableMapFragment) getFragmentManager().findFragmentById(R.id.toronto_fragment);
 
-//        mSlidingUpPanelLayout.attachFloatingActionButton(mFloatingActionButton, 0, 100, 0, 1000);
+//        mSlidingUpPanelLayout.attachFloatingActionButton(mDirectionsFab, 0, 100, 0, 1000);
         updateStations();
 
         // Create the adapter that will return a fragment for each of the three
@@ -286,6 +303,54 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         mGoogleMap.getUiSettings().setRotateGesturesEnabled(false);
         mGoogleMap.getUiSettings().setTiltGesturesEnabled(false);
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(torontoCoords, 13));
+
+    }
+
+    private void showMyLocation() {
+        double myLat = mGoogleMap.getMyLocation().getLatitude();
+        double myLng = mGoogleMap.getMyLocation().getLongitude();
+
+        LatLng myLocation = new LatLng(myLat, myLng);
+
+
+        mGoogleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location location) {
+                double myLat = location.getLatitude();
+                double myLng = location.getLongitude();
+                LatLng myLocation = new LatLng(myLat, myLng);
+
+                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(myLocation));
+            }
+        });
+
+        mTorontoFragment.setTouchListener(new TouchableWrapper.OnTouchListener() {
+            @Override
+            public void onTouch() {
+
+            }
+
+            @Override
+            public void onRelease() {
+
+            }
+
+            @Override
+            public void onDrag() {
+                mGoogleMap.setOnMyLocationChangeListener(null);
+                mLocationFab.setImageDrawable(getResources().getDrawable(R.drawable.ic_my_location_grey600_24dp));
+                mTorontoFragment.setTouchListener(null);
+            }
+        });
+
+        mLocationFab.setImageDrawable(getResources().getDrawable(R.drawable.ic_my_location_darkgreen_24px));
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(myLocation));
+    }
+
+    @Override
+    protected void onPause() {
+        mGoogleMap.setOnMyLocationChangeListener(null);
+        super.onPause();
     }
 
     private void fadePanelToLight() {
@@ -317,7 +382,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         animator6.setEvaluator(new ArgbEvaluator());
 
         ObjectAnimator animator7 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.fab_white_green_animator);
-        animator7.setTarget(mFloatingActionButton);
+        animator7.setTarget(mDirectionsFab);
         animator7.setEvaluator(new ArgbEvaluator());
 
         animator.start();
@@ -327,9 +392,9 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         animator5.start();
         animator6.start();
         animator7.start();
-        mFloatingActionButton.setColorPressedResId(R.color.green_dark_highlight);
+        mDirectionsFab.setColorPressedResId(R.color.green_dark_highlight);
 
-        TransitionDrawable transitionDrawable = (TransitionDrawable) mFloatingActionButton.getDrawable();
+        TransitionDrawable transitionDrawable = (TransitionDrawable) mDirectionsFab.getDrawable();
         transitionDrawable.reverseTransition(250);
     }
 
@@ -364,7 +429,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         animator6.setEvaluator(new ArgbEvaluator());
 
         ObjectAnimator animator7 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.fab_green_white_animator);
-        animator7.setTarget(mFloatingActionButton);
+        animator7.setTarget(mDirectionsFab);
         animator7.setEvaluator(new ArgbEvaluator());
 
         animator.start();
@@ -374,9 +439,9 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         animator5.start();
         animator6.start();
         animator7.start();
-        mFloatingActionButton.setColorPressedResId(R.color.white_button_press);
+        mDirectionsFab.setColorPressedResId(R.color.white_button_press);
 
-        TransitionDrawable transitionDrawable = (TransitionDrawable) mFloatingActionButton.getDrawable();
+        TransitionDrawable transitionDrawable = (TransitionDrawable) mDirectionsFab.getDrawable();
         transitionDrawable.startTransition(250);
     }
 
@@ -560,6 +625,53 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         mStationNameView.setText(stationName);
         mBikesAmountView.setText(availableBikes.toString());
         mDocksAmountView.setText(availableDocks.toString());
+
+        if (mDirectionsFab.getVisibility() != View.VISIBLE) {
+            Animation fadeInDirectionsFab = AnimationUtils.loadAnimation(this, R.anim.fade_scale_in);
+            fadeInDirectionsFab.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    mDirectionsFab.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+
+            mDirectionsFab.startAnimation(fadeInDirectionsFab);
+        }
+
+        if (mLocationFab.getVisibility() != View.VISIBLE) {
+
+            Animation fadeInLocationFab = AnimationUtils.loadAnimation(this, R.anim.fade_scale_in);
+            fadeInLocationFab.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    mLocationFab.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+
+            mLocationFab.startAnimation(fadeInLocationFab);
+        }
+
+        mSlidingUpPanelLayout.setTouchEnabled(true);
     }
 
     @Override

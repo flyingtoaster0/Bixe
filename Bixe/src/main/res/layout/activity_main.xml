@@ -1,17 +1,17 @@
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <com.sothree.slidinguppanel.FloatingActionButtonLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:fab="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/floating_button_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity"
-        fab:umanoFabMode="circular_reveal">
+        fab:umanoFabMode="circular_reveal"
+        tools:context=".MainActivity">
 
         <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
             android:id="@+id/sliding_layout"
@@ -36,14 +36,33 @@
                     android:id="@+id/toolbar"
                     layout="@layout/toolbar" />
 
-                <fragment
-                    android:id="@+id/toronto_fragment"
-                    android:name="com.google.android.gms.maps.MapFragment"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent">
+
+                    <fragment
+                        android:id="@+id/toronto_fragment"
+                        android:name="com.flyingtoaster.bixe.TouchableMapFragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+
+                    <com.melnykov.fab.FloatingActionButton
+                        android:id="@+id/sliding_menu_floating_button_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="176dp"
+                        android:layout_marginRight="16dp"
+                        android:layout_gravity="bottom|right"
+                        android:visibility="invisible"
+                        android:src="@drawable/ic_my_location_grey600_24dp"
+                        fab:fab_colorNormal="@color/white"
+                        fab:fab_colorPressed="@color/white_button_press"
+                        fab:fab_colorRipple="@color/white_button_press" />
+
+                </FrameLayout>
 
             </LinearLayout>
-
 
 
             <include layout="@layout/slidemenu_content" />
@@ -52,10 +71,11 @@
 
 
         <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/sliding_menu_floating_button"
+            android:id="@+id/sliding_menu_floating_button_directions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
+            android:visibility="invisible"
             android:src="@drawable/directions_darkgreen_white"
             fab:fab_colorNormal="@color/green_dark"
             fab:fab_colorPressed="@color/green_dark_highlight"
