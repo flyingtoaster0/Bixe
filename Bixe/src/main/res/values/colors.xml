@@ -7,6 +7,7 @@
     <color name="green_light_highlight">#57c379</color>
     <color name="white">#FFFFFF</color>
     <color name="grey_1">#222222</color>
+    <color name="grey_4">#dbdbdb</color>
     <color name="white_button_press">#EEEEEE</color>
     <color name="sliding_panel_border_color">#000000</color>
 </resources>

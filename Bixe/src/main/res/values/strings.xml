@@ -28,5 +28,7 @@
 
     <string name="remove_ads_dialog_text">Please purchase ad removal to support the continued development of this app.</string>
     <string name="slidemenu_unselected_text">Select a bike station</string>
+    <string name="button_share">SHARE</string>
+    <string name="button_save">SAVE</string>
 
 </resources>

@@ -47,18 +47,18 @@
                         android:layout_height="match_parent" />
 
 
-                    <com.melnykov.fab.FloatingActionButton
-                        android:id="@+id/sliding_menu_floating_button_location"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="176dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_gravity="bottom|right"
-                        android:visibility="invisible"
-                        android:src="@drawable/ic_my_location_grey600_24dp"
-                        fab:fab_colorNormal="@color/white"
-                        fab:fab_colorPressed="@color/white_button_press"
-                        fab:fab_colorRipple="@color/white_button_press" />
+                    <!--<com.melnykov.fab.FloatingActionButton-->
+                        <!--android:id="@+id/sliding_menu_floating_button_location"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_marginBottom="176dp"-->
+                        <!--android:layout_marginRight="16dp"-->
+                        <!--android:layout_gravity="bottom|right"-->
+                        <!--android:visibility="invisible"-->
+                        <!--android:src="@drawable/ic_my_location_grey600_24dp"-->
+                        <!--fab:fab_colorNormal="@color/white"-->
+                        <!--fab:fab_colorPressed="@color/white_button_press"-->
+                        <!--fab:fab_colorRipple="@color/white_button_press" />-->
 
                 </FrameLayout>
 
@@ -71,12 +71,12 @@
 
 
         <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/sliding_menu_floating_button_directions"
+            android:id="@+id/sliding_menu_floating_button_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:visibility="invisible"
-            android:src="@drawable/directions_darkgreen_white"
+            android:visibility="visible"
+            android:src="@drawable/location_darkgreen_white"
             fab:fab_colorNormal="@color/green_dark"
             fab:fab_colorPressed="@color/green_dark_highlight"
             fab:fab_colorRipple="@color/green_dark_highlight" />

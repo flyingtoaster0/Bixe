@@ -26,6 +26,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
     //    compile 'com.sothree.slidinguppanel:library:3.0.0'
     compile 'com.melnykov:floatingactionbutton:1.2.0'
+    compile 'com.pnikosis:materialish-progress:1.5'
     compile project(':ViewPagerIndicator')
     compile project(':SlidingUpPanel')
 }

@@ -104,6 +104,7 @@ class GetJSONArrayTask extends AsyncTask<Void, Void, JSONArray> {
                 }
                 catch (Exception e) //Couldn't grab the string from HttpEntity for some reason
                 {
+                    listener.onJSONArrayFailed();
                     Log.e("Exceptions", "Error converting result -> " + e.toString());
                 }
 
@@ -119,10 +120,12 @@ class GetJSONArrayTask extends AsyncTask<Void, Void, JSONArray> {
                 {
                     Log.d("Debug","Error parsing JSON");
                     Log.e("Exceptions", e.toString());
+                    listener.onJSONArrayFailed();
                 }
             }
             else //The HttpEntity was null
             {
+                listener.onJSONArrayFailed();
                 return null;
             }
         }
@@ -131,6 +134,7 @@ class GetJSONArrayTask extends AsyncTask<Void, Void, JSONArray> {
             Log.d("Debug","Getting URL failed!");
             Log.e("Exceptions",e.toString());
             e.printStackTrace();
+            listener.onJSONArrayFailed();
             return null;
         }
         return null;

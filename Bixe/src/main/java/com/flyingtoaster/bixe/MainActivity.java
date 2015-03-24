@@ -1,44 +1,39 @@
 package com.flyingtoaster.bixe;
 
 import java.util.HashMap;
-import java.util.Locale;
 
 import android.animation.AnimatorInflater;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.drawable.TransitionDrawable;
 import android.location.Location;
-import android.support.v13.app.FragmentPagerAdapter;
+import android.os.Handler;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.DragEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -50,30 +45,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 
-//import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 public class MainActivity extends ActionBarActivity implements GetJSONArrayListener {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v13.app.FragmentStatePagerAdapter}.
-     */
-    SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    ViewPager mViewPager;
-
     private final String TAG = "ManActivity";
 
+    private final String GOOGLE_MAPS_URL_PREFIX = "http://maps.google.com/maps?q=";
     private final String API_URL = "http://www.bikesharetoronto.com/stations/json";
     private final double STARTING_LAT = 43.652992;
     private final double STARTING_LNG = -79.383657;
+
+    public static final int UPDATE_INTERVAL = 5000;
+    private static final int FASTEST_INTERVAL = 2000;
+
+    private static final int NO_ID = -1;
 
     private TouchableMapFragment mTorontoFragment;
 
@@ -90,7 +75,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
     private RelativeLayout mSlidingContentView;
     private LinearLayout mContentLayout;
 
-    private int mStationID;
+    private int mStationID = NO_ID;
     private int mBikes;
     private int mDocks;
     private int mTotalDocks;
@@ -101,6 +86,18 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
     private TextView mBikesAmountView;
     private TextView mDocksAmountView;
 
+    private View mBikesAmountLayout;
+    private View mDocksAmountLayout;
+
+    private View mBikesLabelView;
+    private View mDocksLabelView;
+
+    private View mSaveButton;
+    private View mShareButton;
+
+    private MenuItem mRefreshProgressBarItem;
+    private MenuItem mRefreshButtonItem;
+
     private LatLng mStationLatLng;
     private String mStationName;
 
@@ -108,9 +105,13 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
 
-    private FloatingActionButton mDirectionsFab;
+    //    private FloatingActionButton mDirectionsFab;
     private FloatingActionButton mLocationFab;
     private FloatingActionButtonLayout mFloatingButtonLayout;
+
+    private LocationClient mLocationClient;
+    private LocationRequest mLocationRequest;
+    private LatLng mLastLatLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +141,13 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         mStations = new HashMap<Integer, Station>();
         mMarkerHash = new HashMap<String, Integer>();
 
-        mDirectionsFab = (FloatingActionButton) findViewById(R.id.sliding_menu_floating_button_directions);
+        mBikesAmountLayout = findViewById(R.id.bikes_amount_layout);
+        mDocksAmountLayout = findViewById(R.id.docks_amount_layout);
+
+        mBikesLabelView = findViewById(R.id.bikes_amount_label);
+        mDocksLabelView = findViewById(R.id.docks_amount_label);
+
+//        mDirectionsFab = (FloatingActionButton) findViewById(R.id.sliding_menu_floating_button_directions);
         mLocationFab = (FloatingActionButton) findViewById(R.id.sliding_menu_floating_button_location);
 
         mLocationFab.setOnClickListener(new View.OnClickListener() {
@@ -153,6 +160,22 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         });
 
         mContentLayout = (LinearLayout) findViewById(R.id.content_layout);
+
+        mSaveButton = findViewById(R.id.slidemenu_button_save);
+        mShareButton = findViewById(R.id.slidemenu_button_share);
+
+        mShareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent sendIntent = new Intent();
+
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, getShareText());
+                sendIntent.setType("text/plain");
+
+                startActivity(sendIntent);
+            }
+        });
 
         mCollapsedContentView = findViewById(R.id.slidemenu_collapsed_content);
         mStationNameView = (TextView) findViewById(R.id.station_name_text_view);
@@ -223,15 +246,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         mSlidingContentView = (RelativeLayout) findViewById(R.id.sliding_content_view);
         mFloatingButtonLayout = (FloatingActionButtonLayout) findViewById(R.id.floating_button_layout);
 
-        mDirectionsFab = (FloatingActionButton) findViewById(R.id.sliding_menu_floating_button_directions);
-
-        // TODO put this in the onmenuoptionselected
-//        refreshButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-////            public void onClick(View v) {
-//                updateStations();
-//            }
-//        });
+//        mDirectionsFab = (FloatingActionButton) findViewById(R.id.sliding_menu_floating_button_directions);
 
         mNavigateButton = (ImageButton) findViewById(R.id.navigate_button);
         mNavigateButton.setOnClickListener(new View.OnClickListener() {
@@ -263,6 +278,25 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         mSlidingContentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mStationID == NO_ID) {
+                    return;
+                }
+
+                SlidingUpPanelLayout.PanelState nextState;
+
+                switch (mSlidingUpPanelLayout.getPanelState()) {
+                    case COLLAPSED:
+                    case HIDDEN:
+                        nextState = SlidingUpPanelLayout.PanelState.EXPANDED;
+                        break;
+                    case EXPANDED:
+                    case ANCHORED:
+                    default:
+                        nextState= SlidingUpPanelLayout.PanelState.COLLAPSED;
+                        break;
+                }
+
+                mSlidingUpPanelLayout.setPanelState(nextState);
             }
         });
 
@@ -270,16 +304,6 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
 
 //        mSlidingUpPanelLayout.attachFloatingActionButton(mDirectionsFab, 0, 100, 0, 1000);
         updateStations();
-
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        //mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
-        //mViewPager = (ViewPager) findViewById(R.id.pager);
-        //mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        //mStationNameView.setText("DUNDAS OR SOMETHING");
     }
 
     @Override
@@ -292,7 +316,10 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
             @Override
             public boolean onMarkerClick(Marker marker) {
                 updateStationInfoView(marker);
-                //mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+
+                if (mBikesAmountLayout.getVisibility() != View.VISIBLE) {
+                    showAmounts();
+                }
                 return true;
             }
         });
@@ -302,27 +329,21 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
         mGoogleMap.getUiSettings().setRotateGesturesEnabled(false);
         mGoogleMap.getUiSettings().setTiltGesturesEnabled(false);
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(torontoCoords, 13));
+
+        if (mLastLatLng == null) {
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(torontoCoords, 13));
+        }
+
+        setupLocationClient();
 
     }
 
     private void showMyLocation() {
-        double myLat = mGoogleMap.getMyLocation().getLatitude();
-        double myLng = mGoogleMap.getMyLocation().getLongitude();
+        if (mLastLatLng == null) {
+            return;
+        }
 
-        LatLng myLocation = new LatLng(myLat, myLng);
-
-
-        mGoogleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-            @Override
-            public void onMyLocationChange(Location location) {
-                double myLat = location.getLatitude();
-                double myLng = location.getLongitude();
-                LatLng myLocation = new LatLng(myLat, myLng);
-
-                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(myLocation));
-            }
-        });
+        mGoogleMap.setOnMyLocationChangeListener(getOnMyLocationChangeListener());
 
         mTorontoFragment.setTouchListener(new TouchableWrapper.OnTouchListener() {
             @Override
@@ -338,18 +359,19 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
             @Override
             public void onDrag() {
                 mGoogleMap.setOnMyLocationChangeListener(null);
-                mLocationFab.setImageDrawable(getResources().getDrawable(R.drawable.ic_my_location_grey600_24dp));
                 mTorontoFragment.setTouchListener(null);
             }
         });
 
-        mLocationFab.setImageDrawable(getResources().getDrawable(R.drawable.ic_my_location_darkgreen_24px));
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(myLocation));
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(mLastLatLng));
     }
 
     @Override
     protected void onPause() {
         mGoogleMap.setOnMyLocationChangeListener(null);
+
+        setRefreshVisible(true);
+
         super.onPause();
     }
 
@@ -382,7 +404,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         animator6.setEvaluator(new ArgbEvaluator());
 
         ObjectAnimator animator7 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.fab_white_green_animator);
-        animator7.setTarget(mDirectionsFab);
+        animator7.setTarget(mLocationFab);
         animator7.setEvaluator(new ArgbEvaluator());
 
         animator.start();
@@ -392,9 +414,9 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         animator5.start();
         animator6.start();
         animator7.start();
-        mDirectionsFab.setColorPressedResId(R.color.green_dark_highlight);
+        mLocationFab.setColorPressedResId(R.color.green_dark_highlight);
 
-        TransitionDrawable transitionDrawable = (TransitionDrawable) mDirectionsFab.getDrawable();
+        TransitionDrawable transitionDrawable = (TransitionDrawable) mLocationFab.getDrawable();
         transitionDrawable.reverseTransition(250);
     }
 
@@ -429,7 +451,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         animator6.setEvaluator(new ArgbEvaluator());
 
         ObjectAnimator animator7 = (ObjectAnimator) AnimatorInflater.loadAnimator(MainActivity.this, R.animator.fab_green_white_animator);
-        animator7.setTarget(mDirectionsFab);
+        animator7.setTarget(mLocationFab);
         animator7.setEvaluator(new ArgbEvaluator());
 
         animator.start();
@@ -439,10 +461,11 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         animator5.start();
         animator6.start();
         animator7.start();
-        mDirectionsFab.setColorPressedResId(R.color.white_button_press);
+        mLocationFab.setColorPressedResId(R.color.white_button_press);
 
-        TransitionDrawable transitionDrawable = (TransitionDrawable) mDirectionsFab.getDrawable();
+        TransitionDrawable transitionDrawable = (TransitionDrawable) mLocationFab.getDrawable();
         transitionDrawable.startTransition(250);
+
     }
 
     public void updateStations() {
@@ -462,93 +485,23 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        mRefreshProgressBarItem = menu.findItem(R.id.menu_progress);
+        mRefreshButtonItem = menu.findItem(R.id.action_refresh);
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
+            setRefreshVisible(false);
             updateStations();
-//            Intent intent = new Intent(MainActivity.this, AboutActivity.class);
-//            startActivity(intent);
             return true;
         }
 
         return mActionBarDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
-    }
-
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
-        }
-
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return 3;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            Locale l = Locale.getDefault();
-            switch (position) {
-                case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
-                case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
-            }
-            return null;
-        }
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
     }
 
     public void onJSONArrayPreExecute() {
@@ -586,14 +539,25 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
                 mMarkerHash.put(markerId, stationId);
             }
         } catch (JSONException e) {
+            setRefreshVisible(true);
             Log.e("MainActivity", "Could not get JSONObject");
         }
 
+
+        setRefreshVisible(true);
 
         Log.d("MainActivity", "GetJSONArrayTask complete");
     }
 
     public void onJSONArrayCancelled() {
+        setRefreshVisible(true);
+
+        Log.d("MainActivity", "GetJSONArrayTask cancelled");
+    }
+
+    public void onJSONArrayFailed() {
+        setRefreshVisible(true);
+
         Log.d("MainActivity", "GetJSONArrayTask cancelled");
     }
 
@@ -626,51 +590,6 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         mBikesAmountView.setText(availableBikes.toString());
         mDocksAmountView.setText(availableDocks.toString());
 
-        if (mDirectionsFab.getVisibility() != View.VISIBLE) {
-            Animation fadeInDirectionsFab = AnimationUtils.loadAnimation(this, R.anim.fade_scale_in);
-            fadeInDirectionsFab.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    mDirectionsFab.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-
-            mDirectionsFab.startAnimation(fadeInDirectionsFab);
-        }
-
-        if (mLocationFab.getVisibility() != View.VISIBLE) {
-
-            Animation fadeInLocationFab = AnimationUtils.loadAnimation(this, R.anim.fade_scale_in);
-            fadeInLocationFab.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    mLocationFab.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-
-            mLocationFab.startAnimation(fadeInLocationFab);
-        }
-
         mSlidingUpPanelLayout.setTouchEnabled(true);
     }
 
@@ -702,5 +621,113 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         }
 
         return bitmapDescriptor;
+    }
+
+    private void setupLocationClient() {
+        mLocationClient = new LocationClient(this, new GooglePlayServicesClient.ConnectionCallbacks() {
+            @Override
+            public void onConnected(Bundle bundle) {
+                double myLat = mLocationClient.getLastLocation().getLatitude();
+                double myLng = mLocationClient.getLastLocation().getLongitude();
+
+                if (mLastLatLng == null) {
+                    mLastLatLng = new LatLng(myLat, myLng);
+                    mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLastLatLng, 15));
+                }
+
+                mLastLatLng = new LatLng(myLat, myLng);
+            }
+
+            @Override
+            public void onDisconnected() {
+
+            }
+        }, new GoogleApiClient.OnConnectionFailedListener() {
+            @Override
+            public void onConnectionFailed(ConnectionResult connectionResult) {
+                // NOOP
+            }
+        });
+        mLocationClient.connect();
+
+        // Create the LocationRequest object
+        mLocationRequest = LocationRequest.create();
+        // Use high accuracy
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        // Set the update interval to 5 seconds
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        // Set the fastest update interval to 1 second
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+    }
+
+    private LocationListener getLocationListener() {
+        return new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                double myLat = location.getLatitude();
+                double myLng = location.getLongitude();
+
+                mLastLatLng = new LatLng(myLat, myLng);
+            }
+        };
+    }
+
+    private GoogleMap.OnMyLocationChangeListener getOnMyLocationChangeListener() {
+        return new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location location) {
+                double myLat = location.getLatitude();
+                double myLng = location.getLongitude();
+                LatLng myLocation = new LatLng(myLat, myLng);
+
+                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLng(myLocation));
+            }
+        };
+    }
+
+    private String getShareText() {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(mStationName);
+        builder.append("\n\n");
+        builder.append(getLatLngUrl());
+
+        return builder.toString();
+    }
+
+    private String getLatLngUrl() {
+        return GOOGLE_MAPS_URL_PREFIX + mStationLatLng.latitude + "+" + mStationLatLng.longitude;
+    }
+
+    private void showAmounts() {
+        circularRevealView(mBikesAmountLayout);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                circularRevealView(mDocksAmountLayout);
+            }
+        }, 75);
+    }
+
+    private void circularRevealView(View view) {
+        view.setAlpha(0.0f);
+        view.setVisibility(View.VISIBLE);
+        view.setScaleX(0.5f);
+        view.setScaleY(0.5f);
+        view.setTranslationX(0.25f);
+        view.setTranslationY(0.25f);
+
+        view.animate().alpha(1.0f).scaleX(1.0f).scaleY(1.0f).translationX(0.0f).translationY(0.0f).setDuration(200).setInterpolator(new MaterialInterpolator()).start();
+    }
+
+    private void setRefreshVisible(boolean visible) {
+        if (mRefreshButtonItem != null) {
+            mRefreshButtonItem.setVisible(visible);
+        }
+
+        if (mRefreshProgressBarItem != null) {
+            mRefreshProgressBarItem.setVisible(!visible);
+        }
     }
 }

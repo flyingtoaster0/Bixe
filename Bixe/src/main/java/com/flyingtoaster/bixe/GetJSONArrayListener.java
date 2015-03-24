@@ -10,5 +10,6 @@ public interface GetJSONArrayListener {
     public void onJSONArrayProgressUpdate(String... params);
     public void onJSONArrayPostExecute(JSONArray jArray);
     public void onJSONArrayCancelled();
+    public void onJSONArrayFailed();
 
 }

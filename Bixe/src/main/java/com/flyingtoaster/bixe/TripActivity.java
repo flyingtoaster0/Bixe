@@ -150,8 +150,7 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         // Create the LocationRequest object
         mLocationRequest = LocationRequest.create();
         // Use high accuracy
-        mLocationRequest.setPriority(
-                LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         // Set the update interval to 5 seconds
         mLocationRequest.setInterval(UPDATE_INTERVAL);
         // Set the fastest update interval to 1 second
@@ -447,6 +446,11 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
     }
     public void onJSONArrayCancelled() {
         Log.d("MainActivity", "GetJSONArrayTask cancelled");
+    }
+
+    @Override
+    public void onJSONArrayFailed() {
+
     }
 
 

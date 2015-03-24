@@ -6,4 +6,11 @@
         android:title="@string/action_refresh"
         android:icon="@drawable/ic_refresh_white"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_progress"
+        android:title="Loading..."
+        android:visible="true"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"
+        app:actionLayout="@layout/action_view_progress" />
 </menu>
