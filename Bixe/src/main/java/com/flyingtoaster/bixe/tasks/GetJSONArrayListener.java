@@ -1,4 +1,4 @@
-package com.flyingtoaster.bixe;
+package com.flyingtoaster.bixe.tasks;
 
 import org.json.JSONArray;
 

@@ -1,10 +1,12 @@
-package com.flyingtoaster.bixe;
+package com.flyingtoaster.bixe.activities;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+
+import com.flyingtoaster.bixe.R;
 
 public class AboutActivity extends Activity{
     private final String URL_SLIDINGUP_PANEL = "https://github.com/umano/AndroidSlidingUpPanel";

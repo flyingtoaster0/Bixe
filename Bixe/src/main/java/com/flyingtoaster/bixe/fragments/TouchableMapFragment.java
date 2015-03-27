@@ -1,10 +1,11 @@
-package com.flyingtoaster.bixe;
+package com.flyingtoaster.bixe.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.flyingtoaster.bixe.fragments.wrappers.TouchableWrapper;
 import com.google.android.gms.maps.MapFragment;
 
 public class TouchableMapFragment extends MapFragment {

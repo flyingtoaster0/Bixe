@@ -1,4 +1,4 @@
-package com.flyingtoaster.bixe;
+package com.flyingtoaster.bixe.activities;
 
 import java.util.HashMap;
 
@@ -24,6 +24,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.flyingtoaster.bixe.tasks.GetJSONArrayListener;
+import com.flyingtoaster.bixe.tasks.GetJSONArrayTask;
+import com.flyingtoaster.bixe.interpolators.MaterialInterpolator;
+import com.flyingtoaster.bixe.R;
+import com.flyingtoaster.bixe.models.Station;
+import com.flyingtoaster.bixe.fragments.TouchableMapFragment;
+import com.flyingtoaster.bixe.fragments.wrappers.TouchableWrapper;
+import com.flyingtoaster.bixe.TripActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.api.GoogleApiClient;

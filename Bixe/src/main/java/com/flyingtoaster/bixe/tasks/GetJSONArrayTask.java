@@ -1,4 +1,4 @@
-package com.flyingtoaster.bixe;
+package com.flyingtoaster.bixe.tasks;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -36,7 +36,7 @@ import android.os.AsyncTask;
  * <br/>
  * A NameValuePair is essentially just a group of two strings - one is a key, the other, a value.
  */
-class GetJSONArrayTask extends AsyncTask<Void, Void, JSONArray> {
+public class GetJSONArrayTask extends AsyncTask<Void, Void, JSONArray> {
 
     public static final String TAG = "GetJsonArrayTask";
     //listener is the object that created this AsyncTask. It implements a callback function.

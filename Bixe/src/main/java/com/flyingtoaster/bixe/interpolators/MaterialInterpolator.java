@@ -1,4 +1,4 @@
-package com.flyingtoaster.bixe;
+package com.flyingtoaster.bixe.interpolators;
 
 import android.view.animation.Interpolator;
 

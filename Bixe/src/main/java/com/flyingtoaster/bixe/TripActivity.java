@@ -5,6 +5,9 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.IntentSender;
 import android.location.Location;
+
+import com.flyingtoaster.bixe.tasks.GetJSONArrayListener;
+import com.flyingtoaster.bixe.tasks.GetJSONArrayTask;
 import com.google.android.gms.location.LocationListener;
 import android.os.Bundle;
 
@@ -35,7 +38,7 @@ import com.viewpagerindicator.LinePageIndicator;
  */
 public class TripActivity extends Activity implements GooglePlayServicesClient.ConnectionCallbacks,
         GooglePlayServicesClient.OnConnectionFailedListener, SensorEventListener, LocationListener,
-        GetJSONArrayListener{
+        GetJSONArrayListener {
 
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     private final static String TAG = "TripActivity";

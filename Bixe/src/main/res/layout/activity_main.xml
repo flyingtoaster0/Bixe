@@ -42,7 +42,7 @@
 
                     <fragment
                         android:id="@+id/toronto_fragment"
-                        android:name="com.flyingtoaster.bixe.TouchableMapFragment"
+                        android:name="com.flyingtoaster.bixe.fragments.TouchableMapFragment"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 

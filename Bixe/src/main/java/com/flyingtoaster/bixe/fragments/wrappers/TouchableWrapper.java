@@ -1,4 +1,4 @@
-package com.flyingtoaster.bixe;
+package com.flyingtoaster.bixe.fragments.wrappers;
 
 import android.content.Context;
 import android.view.MotionEvent;
