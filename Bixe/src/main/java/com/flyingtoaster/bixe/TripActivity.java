@@ -31,6 +31,7 @@ import com.google.android.gms.location.LocationRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import com.google.gson.JsonArray;
 import com.viewpagerindicator.LinePageIndicator;
 
 /**
@@ -428,22 +429,18 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
     public void onJSONArrayProgressUpdate(String... params) {
 
     }
-    public void onJSONArrayPostExecute(JSONArray jArray) {
-        try {
-            for (int i = 0; i < jArray.length(); i++) {
-                if(jArray.getJSONObject(i).getInt("id") == mStationID) {
-                    mBikes = jArray.getJSONObject(i).getInt("availableBikes");
-                    mDocks = jArray.getJSONObject(i).getInt("availableDocks");
-                    mTotalDocks = jArray.getJSONObject(i).getInt("totalDocks");
-                    mBikesAmountView.setText(String.valueOf(mBikes));
-                    mDocksAmountView.setText(String.valueOf(mDocks));
+    public void onJSONArrayPostExecute(JsonArray jArray) {
+        for (int i = 0; i < jArray.size(); i++) {
+            if(jArray.get(i).getAsJsonObject().get("id").getAsInt() == mStationID) {
+                mBikes = jArray.getAsJsonObject().get("availableBikes").getAsInt();
+                mDocks = jArray.getAsJsonObject().get("availableDocks").getAsInt();
+                mTotalDocks = jArray.getAsJsonObject().get("totalDocks").getAsInt();
+                mBikesAmountView.setText(String.valueOf(mBikes));
+                mDocksAmountView.setText(String.valueOf(mDocks));
 
-                    mMiniMapFragment.setBikeInfo(mBikes, mTotalDocks);
-                    break;
-                }
+                mMiniMapFragment.setBikeInfo(mBikes, mTotalDocks);
+                break;
             }
-        } catch (JSONException e) {
-            Log.e("MainActivity", "Could not get JSONObject");
         }
         Log.d("MainActivity", "GetJSONArrayTask complete");
     }

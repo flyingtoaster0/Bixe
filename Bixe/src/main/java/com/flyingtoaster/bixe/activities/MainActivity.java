@@ -45,6 +45,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.JsonArray;
 import com.melnykov.fab.FloatingActionButton;
 import com.sothree.slidinguppanel.FloatingActionButtonLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -520,35 +521,30 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
 
     }
 
-    public void onJSONArrayPostExecute(JSONArray jArray) {
-        try {
-            mGoogleMap.clear();
+    public void onJSONArrayPostExecute(JsonArray jArray) {
+        mGoogleMap.clear();
 
-            for (int i = 0; i < jArray.length(); i++) {
-                Station station = new Station(jArray.getJSONObject(i));
-                mStations.put(station.getId(), station);
+        for (int i = 0; i < jArray.size(); i++) {
+            Station station = new Station(jArray.get(i).getAsJsonObject());
+            mStations.put(station.getId(), station);
 
-                BitmapDescriptor bitmapDescriptor = getBitmapDescriptor(station);
+            BitmapDescriptor bitmapDescriptor = getBitmapDescriptor(station);
 
-                MarkerOptions options = new MarkerOptions()
-                        .title(station.getStationName())
-                        .snippet(availabilityString(station))
-                        .position(station.getLatLng());
+            MarkerOptions options = new MarkerOptions()
+                    .title(station.getStationName())
+                    .snippet(availabilityString(station))
+                    .position(station.getLatLng());
 
-                if (bitmapDescriptor != null) {
-                    options.icon(bitmapDescriptor);
-                }
-
-                Marker marker = mGoogleMap.addMarker(options);
-
-                String markerId = marker.getId();
-                Integer stationId = station.getId();
-
-                mMarkerHash.put(markerId, stationId);
+            if (bitmapDescriptor != null) {
+                options.icon(bitmapDescriptor);
             }
-        } catch (JSONException e) {
-            setRefreshVisible(true);
-            Log.e("MainActivity", "Could not get JSONObject");
+
+            Marker marker = mGoogleMap.addMarker(options);
+
+            String markerId = marker.getId();
+            Integer stationId = station.getId();
+
+            mMarkerHash.put(markerId, stationId);
         }
 
 
