@@ -7,7 +7,7 @@ import android.content.IntentSender;
 import android.location.Location;
 
 import com.flyingtoaster.bixe.tasks.GetJSONArrayListener;
-import com.flyingtoaster.bixe.tasks.GetJSONArrayTask;
+import com.flyingtoaster.bixe.tasks.GetJsonArrayTask;
 import com.google.android.gms.location.LocationListener;
 import android.os.Bundle;
 
@@ -27,9 +27,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationRequest;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import com.google.gson.JsonArray;
 import com.viewpagerindicator.LinePageIndicator;
@@ -74,7 +71,7 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
     private LocationRequest mLocationRequest;
 
     private Thread mUpdateThread;
-    private GetJSONArrayTask mJSONTask;
+    private GetJsonArrayTask mJSONTask;
 
     private TextView mStationNameView;
     private TextView mDirectionView;
@@ -458,7 +455,7 @@ public class TripActivity extends Activity implements GooglePlayServicesClient.C
         if (mJSONTask != null) {
             mJSONTask.cancel(true);
         }
-        mJSONTask = new GetJSONArrayTask(this, API_URL);
+        mJSONTask = new GetJsonArrayTask(this, API_URL);
         mJSONTask.execute();
     }
 

@@ -29,9 +29,8 @@ import android.widget.TextView;
 
 import com.flyingtoaster.bixe.datasets.BixeContentProvider;
 import com.flyingtoaster.bixe.datasets.StationDataSource;
-import com.flyingtoaster.bixe.datasets.StationDatabaseHelper;
 import com.flyingtoaster.bixe.tasks.GetJSONArrayListener;
-import com.flyingtoaster.bixe.tasks.GetJSONArrayTask;
+import com.flyingtoaster.bixe.tasks.GetJsonArrayTask;
 import com.flyingtoaster.bixe.interpolators.MaterialInterpolator;
 import com.flyingtoaster.bixe.R;
 import com.flyingtoaster.bixe.models.Station;
@@ -56,17 +55,13 @@ import com.melnykov.fab.FloatingActionButton;
 import com.sothree.slidinguppanel.FloatingActionButtonLayout;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
-
 
 public class MainActivity extends ActionBarActivity implements GetJSONArrayListener {
 
     private final String TAG = "ManActivity";
 
     private final String GOOGLE_MAPS_URL_PREFIX = "http://maps.google.com/maps?q=";
-    private final String API_URL = "http://www.bikesharetoronto.com/stations/json";
+    public static final String API_URL = "http://www.bikesharetoronto.com/stations/json";
     private final double STARTING_LAT = 43.652992;
     private final double STARTING_LNG = -79.383657;
 
@@ -78,7 +73,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
     private TouchableMapFragment mTorontoFragment;
 
     private GoogleMap mGoogleMap;
-    private GetJSONArrayTask mJSONTask;
+    private GetJsonArrayTask mJSONTask;
 
     private HashMap<Integer, Station> mStations;
     private HashMap<String, Integer> mMarkerHash;
@@ -510,7 +505,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         if (mJSONTask != null) {
             mJSONTask.cancel(true);
         }
-        mJSONTask = new GetJSONArrayTask(this, API_URL);
+        mJSONTask = new GetJsonArrayTask(this, API_URL);
         mJSONTask.execute();
     }
 
