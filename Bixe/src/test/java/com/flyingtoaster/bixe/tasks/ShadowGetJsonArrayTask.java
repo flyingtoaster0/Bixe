@@ -9,8 +9,8 @@ import java.io.IOException;
 
 @Implements(GetJsonArrayTask.class)
 public class ShadowGetJsonArrayTask extends GetJsonArrayTask {
-    public ShadowGetJsonArrayTask(GetJSONArrayListener listener, String url) {
-        super(listener, url);
+    public ShadowGetJsonArrayTask(String url) {
+        super(null, url);
     }
 
     @Implementation

@@ -18,7 +18,7 @@ public class GetJsonArrayTaskTest {
     @Test
     public void shouldInsertStationsToDatabase() {
         String expectedFirstStationName = "Jarvis St. and Carleton St.";
-        ShadowGetJsonArrayTask jsonArrayTask = new ShadowGetJsonArrayTask(null, MainActivity.API_URL);
+        ShadowGetJsonArrayTask jsonArrayTask = new ShadowGetJsonArrayTask(MainActivity.API_URL);
         StationDataSource dataSource = new StationDataSource(BixeApplication.getAppContext());
         dataSource.open();
 
