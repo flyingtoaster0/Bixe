@@ -1,11 +1,14 @@
 package com.flyingtoaster.bixe.activities;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import android.animation.AnimatorInflater;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.database.ContentObserver;
 import android.graphics.drawable.TransitionDrawable;
 import android.location.Location;
 import android.os.Handler;
@@ -24,6 +27,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.flyingtoaster.bixe.datasets.BixeContentProvider;
+import com.flyingtoaster.bixe.datasets.StationDataSource;
+import com.flyingtoaster.bixe.datasets.StationDatabaseHelper;
 import com.flyingtoaster.bixe.tasks.GetJSONArrayListener;
 import com.flyingtoaster.bixe.tasks.GetJSONArrayTask;
 import com.flyingtoaster.bixe.interpolators.MaterialInterpolator;
@@ -121,6 +127,8 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
     private LocationClient mLocationClient;
     private LocationRequest mLocationRequest;
     private LatLng mLastLatLng;
+
+    private ContentObserver mStationContentObserver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -311,6 +319,14 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
 
         mTorontoFragment = (TouchableMapFragment) getFragmentManager().findFragmentById(R.id.toronto_fragment);
 
+        mStationContentObserver = new ContentObserver(new Handler()) {
+            @Override
+            public void onChange(boolean selfChange) {
+                super.onChange(selfChange);
+                loadStoredMarkers();
+            }
+        };
+
 //        mSlidingUpPanelLayout.attachFloatingActionButton(mDirectionsFab, 0, 100, 0, 1000);
         updateStations();
     }
@@ -318,6 +334,8 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
     @Override
     public void onResume() {
         super.onResume();
+        getContentResolver().registerContentObserver(BixeContentProvider.CONTENT_URI, false, mStationContentObserver);
+
         mGoogleMap = mTorontoFragment.getMap();
         LatLng torontoCoords = new LatLng(STARTING_LAT, STARTING_LNG);
 
@@ -344,7 +362,17 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         }
 
         setupLocationClient();
+        loadStoredMarkers();
+    }
 
+    private void loadStoredMarkers() {
+        StationDataSource dataSource = new StationDataSource(MainActivity.this);
+        dataSource.open();
+
+        ArrayList<Station> stationList = dataSource.getAllStations();
+        dataSource.close();
+
+        updateMarkers(stationList);
     }
 
     private void showMyLocation() {
@@ -378,6 +406,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
     @Override
     protected void onPause() {
         mGoogleMap.setOnMyLocationChangeListener(null);
+        getContentResolver().unregisterContentObserver(mStationContentObserver);
 
         setRefreshVisible(true);
 
@@ -522,12 +551,16 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
     }
 
     public void onJSONArrayPostExecute(JsonArray jArray) {
+        setRefreshVisible(true);
+
+        Log.d(TAG, "GetJSONArrayTask complete");
+    }
+
+    private void updateMarkers(List<Station> stations) {
         mGoogleMap.clear();
 
-        for (int i = 0; i < jArray.size(); i++) {
-            Station station = new Station(jArray.get(i).getAsJsonObject());
+        for(Station station : stations) {
             mStations.put(station.getId(), station);
-
             BitmapDescriptor bitmapDescriptor = getBitmapDescriptor(station);
 
             MarkerOptions options = new MarkerOptions()
@@ -546,11 +579,6 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
 
             mMarkerHash.put(markerId, stationId);
         }
-
-
-        setRefreshVisible(true);
-
-        Log.d("MainActivity", "GetJSONArrayTask complete");
     }
 
     public void onJSONArrayCancelled() {

@@ -4,6 +4,7 @@ import com.flyingtoaster.bixe.FakeDataUtil;
 import com.flyingtoaster.bixe.datasets.StationDataSource;
 import com.flyingtoaster.bixe.models.Station;
 
+import org.fest.assertions.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -41,6 +42,61 @@ public class StationDataSourceTest {
         assertThat(expectedStation.getLatitude()).isEqualTo(43.7);
         assertThat(expectedStation.getLongitude()).isEqualTo(79.4);
         assertThat(expectedStation.isInService()).isEqualTo(true);
+    }
+
+    @Test
+    public void shouldRetrieveCorrectValuesAfterUpdate() {
+        StationDataSource dataSource = getStationDataSource();
+        Station stationToInsert = FakeDataUtil.getStation();
+        List<Station> stationList;
+        Station expectedStation;
+
+        dataSource.open();
+        dataSource.createStation(stationToInsert);
+
+        stationToInsert.setAvailableBikes(8);
+        stationToInsert.setAvailableDocks(2);
+        dataSource.createStation(stationToInsert);
+
+        stationList = dataSource.getAllStations();
+        dataSource.close();
+
+        assertThat(stationList).isNotEmpty();
+
+        expectedStation = stationList.get(0);
+        assertThat(expectedStation.getId()).isEqualTo(1);
+        assertThat(expectedStation.getStationName()).isEqualTo("Yonge St. and Dundas St.");
+        assertThat(expectedStation.getAvailableBikes()).isEqualTo(8);
+        assertThat(expectedStation.getAvailableDocks()).isEqualTo(2);
+        assertThat(expectedStation.getTotalDocks()).isEqualTo(10);
+        assertThat(expectedStation.getLatitude()).isEqualTo(43.7);
+        assertThat(expectedStation.getLongitude()).isEqualTo(79.4);
+        assertThat(expectedStation.isInService()).isEqualTo(true);
+    }
+
+    @Test
+    public void shouldInsertMultipleStations() {
+        StationDataSource dataSource = getStationDataSource();
+        ArrayList<Station> stationsToInsert = FakeDataUtil.getStations();
+        List<Station> expectedStationList;
+        Station firstExpectedStation;
+        Station secondExpectedStation;
+
+        dataSource.open();
+        dataSource.createStations(stationsToInsert);
+
+        expectedStationList = dataSource.getAllStations();
+        dataSource.close();
+
+        assertThat(expectedStationList).isNotEmpty();
+
+        firstExpectedStation = expectedStationList.get(0);
+        assertThat(firstExpectedStation.getId()).isEqualTo(1);
+        assertThat(firstExpectedStation.getStationName()).isEqualTo("Yonge St. and Dundas St.");
+
+        secondExpectedStation = expectedStationList.get(1);
+        assertThat(secondExpectedStation.getId()).isEqualTo(2);
+        assertThat(secondExpectedStation.getStationName()).isEqualTo("Yonge St. and Adelaide St.");
     }
 
     private StationDataSource getStationDataSource() {

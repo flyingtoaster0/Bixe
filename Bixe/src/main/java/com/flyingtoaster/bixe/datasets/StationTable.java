@@ -1,7 +1,13 @@
 package com.flyingtoaster.bixe.datasets;
 
+import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
+import com.flyingtoaster.bixe.models.Station;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StationTable {
     public static final String TABLE_NAME = "station_table";
@@ -21,8 +27,8 @@ public class StationTable {
     private static final String DATABASE_CREATE = "create table "
             + TABLE_NAME
             + "("
-            + Columns._ID + " integer primary key autoincrement, "
-            + Columns.STATION_ID + " integer not null, "
+//            + Columns._ID + " integer primary key autoincrement, "
+            + Columns.STATION_ID + " integer primary key not null, "
             + Columns.STATION_NAME + " text,"
             + Columns.AVAILABLE_BIKES + " integer,"
             + Columns.AVAILABLE_DOCKS + " integer,"
@@ -44,5 +50,30 @@ public class StationTable {
                 + ", which will destroy all old data");
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(database);
+    }
+
+    public static ContentValues[] getContentValues(List<Station> stations) {
+        final ArrayList<ContentValues> values = new ArrayList<>();
+
+        for (Station station : stations) {
+            values.add(getContentValue(station));
+        }
+
+        return values.toArray(new ContentValues[values.size()]);
+    }
+
+    public static ContentValues getContentValue(Station station) {
+        ContentValues values = new ContentValues();
+
+        values.put(StationTable.Columns.STATION_ID, station.getId());
+        values.put(StationTable.Columns.STATION_NAME, station.getStationName());
+        values.put(StationTable.Columns.AVAILABLE_BIKES, station.getAvailableBikes());
+        values.put(StationTable.Columns.AVAILABLE_DOCKS, station.getAvailableDocks());
+        values.put(StationTable.Columns.TOTAL_DOCKS, station.getTotalDocks());
+        values.put(StationTable.Columns.LATITUDE, station.getLatitude());
+        values.put(StationTable.Columns.LONGITUDE, station.getLongitude());
+        values.put(StationTable.Columns.IN_SERVICE, station.isInService());
+
+        return values;
     }
 }

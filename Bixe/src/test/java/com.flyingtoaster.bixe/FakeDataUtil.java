@@ -3,6 +3,8 @@ package com.flyingtoaster.bixe;
 import com.flyingtoaster.bixe.models.Station;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
+
 public class FakeDataUtil {
 
     public static JsonObject getStationJsonObject() {
@@ -22,5 +24,25 @@ public class FakeDataUtil {
 
     public static Station getStation() {
         return new Station(FakeDataUtil.getStationJsonObject());
+    }
+
+    public static ArrayList<Station> getStations() {
+        ArrayList<Station> stations = new ArrayList<>();
+
+        Station firstStation = getStation();
+        Station secondStation = new Station();
+        secondStation.setId(2);
+        secondStation.setStationName("Yonge St. and Adelaide St.");
+        secondStation.setAvailableBikes(5);
+        secondStation.setAvailableDocks(7);
+        secondStation.setTotalDocks(12);
+        secondStation.setInService(true);
+        secondStation.setLatitude(43.6504161);
+        secondStation.setLongitude(79.378426);
+
+        stations.add(firstStation);
+        stations.add(secondStation);
+
+        return stations;
     }
 }

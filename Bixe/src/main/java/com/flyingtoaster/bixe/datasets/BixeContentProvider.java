@@ -13,6 +13,8 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.flyingtoaster.bixe.BixeApplication;
+
 public class BixeContentProvider extends ContentProvider {
 
     // database
@@ -24,7 +26,7 @@ public class BixeContentProvider extends ContentProvider {
 
     private static final String AUTHORITY = "com.flyingtoaster.bixe";
 
-    private static final String BASE_PATH = "todos";
+    private static final String BASE_PATH = "stations";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
             + "/" + BASE_PATH);
 
@@ -89,18 +91,35 @@ public class BixeContentProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         int uriType = sURIMatcher.match(uri);
-        SQLiteDatabase sqlDB = database.getWritableDatabase();
-        int rowsDeleted = 0;
+        SQLiteDatabase sqlDB = new StationDatabaseHelper(getContext()).getWritableDatabase();
+
         long id = 0;
-        switch (uriType) {
-            case TODOS:
-                id = sqlDB.insert(StationTable.TABLE_NAME, null, values);
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown URI: " + uri);
-        }
+
+//        switch (uriType) {
+//            case TODOS:
+                id = sqlDB.insertWithOnConflict(StationTable.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+//                break;
+//            default:
+//                throw new IllegalArgumentException("Unknown URI: " + uri);
+//        }
+
         getContext().getContentResolver().notifyChange(uri, null);
+
         return Uri.parse(BASE_PATH + "/" + id);
+    }
+
+    public void insert(Uri uri, ContentValues[] values) {
+        SQLiteDatabase sqlDB = new StationDatabaseHelper(BixeApplication.getAppContext()).getWritableDatabase();
+
+        for (ContentValues value : values) {
+            sqlDB.insertWithOnConflict(StationTable.TABLE_NAME, null, value, SQLiteDatabase.CONFLICT_REPLACE);
+        }
+
+        if (sqlDB.isOpen()) {
+            sqlDB.close();
+        }
+
+        BixeApplication.getAppContext().getContentResolver().notifyChange(uri, null);
     }
 
     @Override
@@ -129,7 +148,7 @@ public class BixeContentProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
-        getContext().getContentResolver().notifyChange(uri, null);
+        BixeApplication.getAppContext().getContentResolver().notifyChange(uri, null);
         return rowsDeleted;
     }
 

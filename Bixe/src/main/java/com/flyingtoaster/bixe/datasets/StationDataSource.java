@@ -38,24 +38,23 @@ public class StationDataSource {
     }
 
     public Station createStation(Station station) {
-        ContentValues values = new ContentValues();
+        ContentValues values = StationTable.getContentValue(station);
 
-        values.put(StationTable.Columns.STATION_ID, station.getId());
-        values.put(StationTable.Columns.STATION_NAME, station.getStationName());
-        values.put(StationTable.Columns.AVAILABLE_BIKES, station.getAvailableBikes());
-        values.put(StationTable.Columns.AVAILABLE_DOCKS, station.getAvailableDocks());
-        values.put(StationTable.Columns.TOTAL_DOCKS, station.getTotalDocks());
-        values.put(StationTable.Columns.LATITUDE, station.getLatitude());
-        values.put(StationTable.Columns.LONGITUDE, station.getLongitude());
-        values.put(StationTable.Columns.IN_SERVICE, station.isInService());
+        BixeContentProvider contentProvider = new BixeContentProvider();
+        contentProvider.insert(BixeContentProvider.CONTENT_URI, values);
 
-        long insertId = database.insert(StationTable.TABLE_NAME, null, values);
-        Cursor cursor = database.query(StationTable.TABLE_NAME, allColumns, StationTable.Columns.STATION_ID + " = " + insertId, null,
-                null, null, null);
+        Cursor cursor = database.query(StationTable.TABLE_NAME, allColumns, null, null, null, null, null);
         cursor.moveToFirst();
-        Station newComment = cursorToComment(cursor);
+        Station newStation = cursorToComment(cursor);
         cursor.close();
-        return newComment;
+        return newStation;
+    }
+
+    public void createStations(List<Station> stations) {
+        BixeContentProvider contentProvider = new BixeContentProvider();
+        ContentValues[] values = StationTable.getContentValues(stations);
+
+        contentProvider.insert(BixeContentProvider.CONTENT_URI, values);
     }
 
     public void deleteStation(Station station) {
@@ -64,11 +63,10 @@ public class StationDataSource {
         database.delete(StationTable.TABLE_NAME, StationTable.Columns.STATION_ID + " = " + id, null);
     }
 
-    public List<Station> getAllStations() {
-        List<Station> stations = new ArrayList<Station>();
+    public ArrayList<Station> getAllStations() {
+        ArrayList<Station> stations = new ArrayList<Station>();
 
-        Cursor cursor = database.query(StationTable.TABLE_NAME,
-                allColumns, null, null, null, null, null);
+        Cursor cursor = database.query(StationTable.TABLE_NAME, allColumns, null, null, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
