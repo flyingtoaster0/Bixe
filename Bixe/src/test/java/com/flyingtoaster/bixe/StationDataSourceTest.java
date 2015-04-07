@@ -1,10 +1,8 @@
 package com.flyingtoaster.bixe;
 
-import com.flyingtoaster.bixe.FakeDataUtil;
 import com.flyingtoaster.bixe.datasets.StationDataSource;
 import com.flyingtoaster.bixe.models.Station;
 
-import org.fest.assertions.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

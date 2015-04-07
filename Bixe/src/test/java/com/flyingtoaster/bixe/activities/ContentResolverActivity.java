@@ -10,7 +10,7 @@ import com.flyingtoaster.bixe.datasets.BixeContentProvider;
 public class ContentResolverActivity extends Activity {
 
     private boolean updated = false;
-    ContentObserver mContentObserver;
+    private ContentObserver mContentObserver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,5 +41,9 @@ public class ContentResolverActivity extends Activity {
 
     public boolean didUpdate() {
         return updated;
+    }
+
+    public ContentObserver getContentObserver() {
+        return mContentObserver;
     }
 }

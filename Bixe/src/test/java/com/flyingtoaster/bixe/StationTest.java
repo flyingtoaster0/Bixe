@@ -1,7 +1,5 @@
 package com.flyingtoaster.bixe;
 
-import com.flyingtoaster.bixe.BixeTestRunner;
-import com.flyingtoaster.bixe.FakeDataUtil;
 import com.flyingtoaster.bixe.models.Station;
 import com.google.gson.JsonObject;
 

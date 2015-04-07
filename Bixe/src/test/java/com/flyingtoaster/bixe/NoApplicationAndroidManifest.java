@@ -337,7 +337,7 @@ public class NoApplicationAndroidManifest extends AndroidManifest {
             } catch (IllegalArgumentException e) {
             /* Not a color */
             }
-        } else if (value.contains(".")) {
+        } else if (value.contains("")) {
             // most likely a float
             try {
                 return Float.parseFloat(value);
@@ -377,7 +377,7 @@ public class NoApplicationAndroidManifest extends AndroidManifest {
     }
 
     private String resolveClassRef(String maybePartialClassName) {
-        return (maybePartialClassName.startsWith(".")) ? packageName + maybePartialClassName : maybePartialClassName;
+        return (maybePartialClassName.startsWith("")) ? packageName + maybePartialClassName : maybePartialClassName;
     }
 
     private List<Node> getChildrenTags(final Node node, final String tagName) {

@@ -1,7 +1,10 @@
 package com.flyingtoaster.bixe;
 
+import android.database.Cursor;
+
 import com.flyingtoaster.bixe.activities.ContentResolverActivity;
 
+import com.flyingtoaster.bixe.datasets.BixeContentProvider;
 import com.flyingtoaster.bixe.datasets.StationDataSource;
 import com.flyingtoaster.bixe.models.Station;
 
@@ -29,7 +32,7 @@ public class BixeContentResolverTest {
         ContentResolverActivity activity;
         activity = mController.create().start().resume().get();
 
-        assertThat(activity.mContentObserver).isNotNull();
+        assertThat(activity.getContentObserver()).isNotNull();
     }
 
     @Test
