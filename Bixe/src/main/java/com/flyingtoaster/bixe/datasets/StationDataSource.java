@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.flyingtoaster.bixe.BixeApplication;
 import com.flyingtoaster.bixe.models.Station;
 
 public class StationDataSource {
@@ -37,24 +38,23 @@ public class StationDataSource {
         dbHelper.close();
     }
 
-    public Station createStation(Station station) {
+    public void createStation(Station station) {
         ContentValues values = StationTable.getContentValue(station);
 
-        BixeContentProvider contentProvider = new BixeContentProvider();
-        contentProvider.insert(BixeContentProvider.CONTENT_URI, values);
+        database.insertWithOnConflict(StationTable.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 
-        Cursor cursor = database.query(StationTable.TABLE_NAME, allColumns, null, null, null, null, null);
-        cursor.moveToFirst();
-        Station newStation = cursorToComment(cursor);
-        cursor.close();
-        return newStation;
+        BixeApplication.getAppContext().getContentResolver().notifyChange(BixeContentProvider.CONTENT_URI, null);
     }
 
     public void createStations(List<Station> stations) {
-        BixeContentProvider contentProvider = new BixeContentProvider();
         ContentValues[] values = StationTable.getContentValues(stations);
 
-        contentProvider.insert(BixeContentProvider.CONTENT_URI, values);
+
+        for (ContentValues value : values) {
+            database.insertWithOnConflict(StationTable.TABLE_NAME, null, value, SQLiteDatabase.CONFLICT_REPLACE);
+        }
+
+        BixeApplication.getAppContext().getContentResolver().notifyChange(BixeContentProvider.CONTENT_URI, null);
     }
 
     public void deleteStation(Station station) {
