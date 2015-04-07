@@ -8,7 +8,7 @@ public class StringUtils {
 
         if (original != null) {
             outputName = original.replaceAll(" ?\\\\/ ?", " and ");
-//            outputName = original.replaceAll(" ?/ ?", " And ").replaceAll("\\(.*\\)", "");
+            outputName = outputName.replaceAll(" ?/ ?", " and ");
         }
 
         return outputName;

@@ -20,6 +20,15 @@ public class StringUtilsTest {
     }
 
     @Test
+    public void shouldReplaceSingleSlashes() {
+        String originalStationName = "Dundas St / Yonge St";
+
+        String expectedStationName = StringUtils.removeSlashesAndBackSlashes(originalStationName);
+
+        assertThat(expectedStationName).isEqualTo("Dundas St and Yonge St");
+    }
+
+    @Test
     public void shouldAddPeriodToStreet() {
         String originalStreetName = "Dundas St";
         String originalStreetNameWithCompass = "Queen St E";
@@ -51,6 +60,5 @@ public class StringUtilsTest {
         expectedStationName = StringUtils.removeSlashesAndBackSlashes(expectedStationName);
 
         assertThat(expectedStationName).isEqualTo("Queen St. W. and Spadina Ave.");
-
     }
 }
