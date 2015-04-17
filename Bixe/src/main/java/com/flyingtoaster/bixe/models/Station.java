@@ -92,6 +92,7 @@ public class Station {
         if (stationName != null) {
             fixedStationName = StringUtils.addPeriodToStreetNames(stationName);
             fixedStationName = StringUtils.removeSlashesAndBackSlashes(fixedStationName);
+            fixedStationName = StringUtils.removeBracketsAndContents(fixedStationName);
         }
 
         return fixedStationName;

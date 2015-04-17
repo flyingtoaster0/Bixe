@@ -36,4 +36,12 @@ public class StringUtils {
 
         return outputName;
     }
+
+    public static String removeBracketsAndContents(String original) {
+        String output = "";
+
+        output = original.replaceAll(" ?\\(.*\\)", "");
+
+        return output;
+    }
 }

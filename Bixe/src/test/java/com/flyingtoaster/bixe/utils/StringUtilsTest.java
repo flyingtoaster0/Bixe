@@ -61,4 +61,15 @@ public class StringUtilsTest {
 
         assertThat(expectedStationName).isEqualTo("Queen St. W. and Spadina Ave.");
     }
+
+    @Test
+    public void shouldRemoveBracketsAndContents() {
+        String originalStationName = "Queen St W \\/ Spadina Ave (That's Chinatown btw)";
+
+        String expectedStationName = StringUtils.addPeriodToStreetNames(originalStationName);
+        expectedStationName = StringUtils.removeSlashesAndBackSlashes(expectedStationName);
+        expectedStationName = StringUtils.removeBracketsAndContents(expectedStationName);
+
+        assertThat(expectedStationName).isEqualTo("Queen St. W. and Spadina Ave.");
+    }
 }
