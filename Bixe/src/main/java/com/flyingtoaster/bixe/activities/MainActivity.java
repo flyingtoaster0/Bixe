@@ -46,7 +46,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -556,7 +555,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
 
         for(Station station : stations) {
             mStations.put(station.getId(), station);
-            BitmapDescriptor bitmapDescriptor = getBitmapDescriptor(station);
+            BitmapDescriptor bitmapDescriptor = station.getMarkerBitmapDescriptor();
 
             MarkerOptions options = new MarkerOptions()
                     .title(station.getStationName())
@@ -627,27 +626,6 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         } else {
             super.onBackPressed();
         }
-    }
-
-    public static BitmapDescriptor getBitmapDescriptor(Station station) {
-        BitmapDescriptor bitmapDescriptor = null;
-        float percent = (float) station.getAvailableBikes() / (float) station.getTotalDocks();
-
-        if (percent == 1) {
-            bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_5);
-        } else if (percent >= 0.8) {
-            bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_4);
-        } else if (percent >= 0.6) {
-            bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_3);
-        } else if (percent >= 0.4) {
-            bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_2);
-        } else if (percent >= 0.2) {
-            bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_1);
-        } else {
-            bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_0);
-        }
-
-        return bitmapDescriptor;
     }
 
     private void setupLocationClient() {

@@ -2,7 +2,10 @@ package com.flyingtoaster.bixe.models;
 
 import android.util.Log;
 
+import com.flyingtoaster.bixe.R;
 import com.flyingtoaster.bixe.utils.StringUtils;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonObject;
 
@@ -137,5 +140,35 @@ public class Station {
 
     public void setLongitude(double mLongitude) {
         this.mLongitude = mLongitude;
+    }
+
+    public BitmapDescriptor getMarkerBitmapDescriptor() {
+        BitmapDescriptor bitmapDescriptor = null;
+        int markerResource = getMarkerResourceId();
+
+        bitmapDescriptor = BitmapDescriptorFactory.fromResource(markerResource);
+
+        return bitmapDescriptor;
+    }
+
+    public int getMarkerResourceId() {
+        int percent = (int)(((float) getAvailableBikes() / (float) getTotalDocks())*100);
+        int markerResourceId;
+
+        if (percent == 0) {
+            markerResourceId = R.drawable.ic_marker_0;
+        } else if (percent <= 20) {
+            markerResourceId = R.drawable.ic_marker_1;
+        } else if (percent <= 40) {
+            markerResourceId = R.drawable.ic_marker_2;
+        } else if (percent <= 60) {
+            markerResourceId = R.drawable.ic_marker_3;
+        } else if (percent <= 80) {
+            markerResourceId = R.drawable.ic_marker_4;
+        } else {
+            markerResourceId = R.drawable.ic_marker_5;
+        }
+
+        return markerResourceId;
     }
 }
