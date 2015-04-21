@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sliding_content_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:background="@color/white">
-
-    <!--<View-->
-    <!--android:id="@+id/slidemenu_top_border"-->
-    <!--android:layout_width="fill_parent"-->
-    <!--android:layout_height="@dimen/sliding_panel_border_width"-->
-    <!--android:background="@color/green_dark" />-->
 
     <RelativeLayout
         android:id="@+id/slidemenu_collapsed_content"
@@ -23,11 +18,14 @@
             android:id="@+id/station_name_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/station_title_vertical_padding"
+            android:paddingLeft="@dimen/station_title_vertical_padding"
+            android:paddingRight="64dp"
+            android:paddingTop="@dimen/station_title_vertical_padding"
+            android:paddingBottom="@dimen/station_title_vertical_padding"
             android:text="@string/slidemenu_unselected_text"
             android:textColor="@color/grey_1"
             android:textSize="@dimen/station_title_size"
-            tools:text="Yonge and Dundas" />
+            tools:text="Yonge and Dundas and Spadina and Spadina" />
 
 
         <LinearLayout
@@ -35,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@id/station_name_text_view"
+            android:layout_alignParentBottom="true"
             android:orientation="vertical"
             android:paddingBottom="@dimen/station_title_vertical_padding"
             android:paddingLeft="@dimen/station_title_vertical_padding"
@@ -66,8 +64,8 @@
             android:id="@+id/docks_amount_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/station_name_text_view"
             android:layout_toRightOf="@id/bikes_amount_layout"
+            android:layout_alignParentBottom="true"
             android:orientation="vertical"
             android:paddingBottom="@dimen/station_title_vertical_padding"
             android:paddingLeft="@dimen/station_title_vertical_padding"
@@ -181,4 +179,4 @@
         android:padding="8dp"
         android:src="@drawable/ic_action_directions"
         android:visibility="gone" />
-</RelativeLayout>
+</LinearLayout>

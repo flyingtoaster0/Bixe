@@ -151,6 +151,15 @@ public class Station {
         return bitmapDescriptor;
     }
 
+    public BitmapDescriptor getSelectedMarkerBitmapDescriptor() {
+        BitmapDescriptor bitmapDescriptor = null;
+        int markerResource = getSelectedMarkerResourceId();
+
+        bitmapDescriptor = BitmapDescriptorFactory.fromResource(markerResource);
+
+        return bitmapDescriptor;
+    }
+
     public int getMarkerResourceId() {
         int percent = (int)(((float) getAvailableBikes() / (float) getTotalDocks())*100);
         int markerResourceId;
@@ -167,6 +176,25 @@ public class Station {
             markerResourceId = R.drawable.ic_marker_4;
         } else {
             markerResourceId = R.drawable.ic_marker_5;
+        }
+
+        return markerResourceId;
+    }
+    public int getSelectedMarkerResourceId() {int percent = (int)(((float) getAvailableBikes() / (float) getTotalDocks())*100);
+        int markerResourceId;
+
+        if (percent == 0) {
+            markerResourceId = R.drawable.ic_marker_0_selected;
+        } else if (percent <= 20) {
+            markerResourceId = R.drawable.ic_marker_1_selected;
+        } else if (percent <= 40) {
+            markerResourceId = R.drawable.ic_marker_2_selected;
+        } else if (percent <= 60) {
+            markerResourceId = R.drawable.ic_marker_3_selected;
+        } else if (percent <= 80) {
+            markerResourceId = R.drawable.ic_marker_4_selected;
+        } else {
+            markerResourceId = R.drawable.ic_marker_5_selected;
         }
 
         return markerResourceId;

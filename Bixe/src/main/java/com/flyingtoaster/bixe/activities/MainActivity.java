@@ -24,7 +24,6 @@ import android.view.View;
 import android.view.animation.Interpolator;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.flyingtoaster.bixe.datasets.BixeContentProvider;
@@ -76,12 +75,13 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
 
     private HashMap<Integer, Station> mStations;
     private HashMap<String, Integer> mMarkerHash;
+    private HashMap<Integer, Marker> mStationMarkerHash;
 
     private ImageButton mNavigateButton;
 
     private SlidingUpPanelLayout mSlidingUpPanelLayout;
     private View dragView;
-    private RelativeLayout mSlidingContentView;
+    private LinearLayout mSlidingContentView;
     private LinearLayout mContentLayout;
 
     private int mStationID = NO_ID;
@@ -124,6 +124,8 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
 
     private ContentObserver mStationContentObserver;
 
+    private Integer mLastSelectedStationId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,8 +151,9 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         mActionBarDrawerToggle.syncState();
 
 
-        mStations = new HashMap<Integer, Station>();
-        mMarkerHash = new HashMap<String, Integer>();
+        mStations = new HashMap<>();
+        mMarkerHash = new HashMap<>();
+        mStationMarkerHash = new HashMap<>();
 
         mBikesAmountLayout = findViewById(R.id.bikes_amount_layout);
         mDocksAmountLayout = findViewById(R.id.docks_amount_layout);
@@ -254,7 +257,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         });
         dragView = findViewById(R.id.sliding_content_view);
 
-        mSlidingContentView = (RelativeLayout) findViewById(R.id.sliding_content_view);
+        mSlidingContentView = (LinearLayout) findViewById(R.id.sliding_content_view);
         mFloatingButtonLayout = (FloatingActionButtonLayout) findViewById(R.id.floating_button_layout);
 
 //        mDirectionsFab = (FloatingActionButton) findViewById(R.id.sliding_menu_floating_button_directions);
@@ -336,7 +339,13 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                updateStationInfoView(marker);
+                Integer stationId = mMarkerHash.get(marker.getId());
+                Station station = mStations.get(stationId);
+
+                updateStationInfoView(station);
+                resetLastMarkerIcon();
+                mLastSelectedStationId = station.getId();
+                marker.setIcon(station.getSelectedMarkerBitmapDescriptor());
 
                 if (mBikesAmountLayout.getVisibility() != View.VISIBLE) {
                     showAmounts();
@@ -357,6 +366,18 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
 
         setupLocationClient();
         loadStoredMarkers();
+    }
+
+    private void resetLastMarkerIcon() {
+        Marker lastMarker = mStationMarkerHash.get(mLastSelectedStationId);
+        if (lastMarker == null) {
+            return;
+        }
+
+        Station lastStation = mStations.get(mLastSelectedStationId);
+
+        BitmapDescriptor bitmapDescriptor = lastStation.getMarkerBitmapDescriptor();
+        lastMarker.setIcon(bitmapDescriptor);
     }
 
     private void loadStoredMarkers() {
@@ -555,7 +576,14 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
 
         for(Station station : stations) {
             mStations.put(station.getId(), station);
-            BitmapDescriptor bitmapDescriptor = station.getMarkerBitmapDescriptor();
+
+            BitmapDescriptor bitmapDescriptor;
+
+            if (mLastSelectedStationId != null && mLastSelectedStationId == station.getId()) {
+                bitmapDescriptor = station.getSelectedMarkerBitmapDescriptor();
+            } else {
+                bitmapDescriptor = station.getMarkerBitmapDescriptor();
+            }
 
             MarkerOptions options = new MarkerOptions()
                     .title(station.getStationName())
@@ -572,6 +600,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
             Integer stationId = station.getId();
 
             mMarkerHash.put(markerId, stationId);
+            mStationMarkerHash.put(stationId, marker);
         }
     }
 
@@ -592,13 +621,9 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         return "Available Bikes: " + station.getAvailableBikes() + "\nAvailable Docks: " + station.getAvailableDocks();
     }
 
-    private void updateStationInfoView(Marker marker) {
-        if (marker == null || mMarkerHash == null) return;
+    private void updateStationInfoView(Station station) {
 
-        Integer stationId = mMarkerHash.get(marker.getId());
-        if (stationId == null) return;
-
-        Station theStation = mStations.get(stationId);
+        Station theStation = station;
 
         String stationName = theStation.getStationName();
         Integer availableBikes = theStation.getAvailableBikes();
@@ -607,7 +632,7 @@ public class MainActivity extends ActionBarActivity implements GetJSONArrayListe
         mStationLatLng = theStation.getLatLng();
         mStationName = theStation.getStationName();
 
-        mStationID = stationId;
+        mStationID = theStation.getId();
         mBikes = availableBikes;
         mDocks = availableDocks;
         mTotalDocks = totalDocks;

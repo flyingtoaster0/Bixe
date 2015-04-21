@@ -1,6 +1,5 @@
 package com.flyingtoaster.bixe;
 
-import com.flyingtoaster.bixe.activities.MainActivity;
 import com.flyingtoaster.bixe.models.Station;
 import com.google.gson.JsonObject;
 
@@ -86,6 +85,66 @@ public class StationTest {
         station.setAvailableBikes(10);
         expectedResourceId = R.drawable.ic_marker_5;
         actualResourceId = station.getMarkerResourceId();
+        assertThat(actualResourceId).isEqualTo(expectedResourceId);
+    }
+    @Test
+    public void shouldReturnCorrectSelectedMarkerDrawable() {
+        Station station = FakeDataUtil.getStation();
+        station.setTotalDocks(10);
+
+        station.setAvailableBikes(0);
+        int expectedResourceId = R.drawable.ic_marker_0_selected;
+        int actualResourceId = station.getSelectedMarkerResourceId();
+        assertThat(actualResourceId).isEqualTo(expectedResourceId);
+
+        station.setAvailableBikes(1);
+        expectedResourceId = R.drawable.ic_marker_1_selected;
+        actualResourceId = station.getSelectedMarkerResourceId();
+        assertThat(actualResourceId).isEqualTo(expectedResourceId);
+
+        station.setAvailableBikes(2);
+        expectedResourceId = R.drawable.ic_marker_1_selected;
+        actualResourceId = station.getSelectedMarkerResourceId();
+        assertThat(actualResourceId).isEqualTo(expectedResourceId);
+
+        station.setAvailableBikes(3);
+        expectedResourceId = R.drawable.ic_marker_2_selected;
+        actualResourceId = station.getSelectedMarkerResourceId();
+        assertThat(actualResourceId).isEqualTo(expectedResourceId);
+
+        station.setAvailableBikes(4);
+        expectedResourceId = R.drawable.ic_marker_2_selected;
+        actualResourceId = station.getSelectedMarkerResourceId();
+        assertThat(actualResourceId).isEqualTo(expectedResourceId);
+
+        station.setAvailableBikes(5);
+        expectedResourceId = R.drawable.ic_marker_3_selected;
+        actualResourceId = station.getSelectedMarkerResourceId();
+        assertThat(actualResourceId).isEqualTo(expectedResourceId);
+
+        station.setAvailableBikes(6);
+        expectedResourceId = R.drawable.ic_marker_3_selected;
+        actualResourceId = station.getSelectedMarkerResourceId();
+        assertThat(actualResourceId).isEqualTo(expectedResourceId);
+
+        station.setAvailableBikes(7);
+        expectedResourceId = R.drawable.ic_marker_4_selected;
+        actualResourceId = station.getSelectedMarkerResourceId();
+        assertThat(actualResourceId).isEqualTo(expectedResourceId);
+
+        station.setAvailableBikes(8);
+        expectedResourceId = R.drawable.ic_marker_4_selected;
+        actualResourceId = station.getSelectedMarkerResourceId();
+        assertThat(actualResourceId).isEqualTo(expectedResourceId);
+
+        station.setAvailableBikes(9);
+        expectedResourceId = R.drawable.ic_marker_5_selected;
+        actualResourceId = station.getSelectedMarkerResourceId();
+        assertThat(actualResourceId).isEqualTo(expectedResourceId);
+
+        station.setAvailableBikes(10);
+        expectedResourceId = R.drawable.ic_marker_5_selected;
+        actualResourceId = station.getSelectedMarkerResourceId();
         assertThat(actualResourceId).isEqualTo(expectedResourceId);
     }
 }
