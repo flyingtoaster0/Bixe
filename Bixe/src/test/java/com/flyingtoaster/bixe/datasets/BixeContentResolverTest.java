@@ -1,7 +1,10 @@
-package com.flyingtoaster.bixe;
+package com.flyingtoaster.bixe.datasets;
 
 import android.database.Cursor;
 
+import com.flyingtoaster.bixe.BixeApplication;
+import com.flyingtoaster.bixe.BixeTestRunner;
+import com.flyingtoaster.bixe.FakeDataUtil;
 import com.flyingtoaster.bixe.activities.ContentResolverActivity;
 
 import com.flyingtoaster.bixe.datasets.BixeContentProvider;

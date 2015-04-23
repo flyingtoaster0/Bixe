@@ -1,5 +1,8 @@
-package com.flyingtoaster.bixe;
+package com.flyingtoaster.bixe.models;
 
+import com.flyingtoaster.bixe.BixeTestRunner;
+import com.flyingtoaster.bixe.FakeDataUtil;
+import com.flyingtoaster.bixe.R;
 import com.flyingtoaster.bixe.models.Station;
 import com.google.gson.JsonObject;
 
