@@ -17,24 +17,22 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 public class GetJsonArrayTask extends AsyncTask<Void, Void, JsonArray> {
 
+    public static final String API_URL = "http://www.bikesharetoronto.com/stations/json";
     public static final String TAG = "GetJsonArrayTask";
     private GetJSONArrayListener listener;
 
-    private String mUrl;
     private JsonArray jArray;
     private OkHttpClient client = new OkHttpClient();
 
-    public GetJsonArrayTask(GetJSONArrayListener listener, String url) {
+    public GetJsonArrayTask(GetJSONArrayListener listener) {
         this.listener = listener;
-        this.mUrl = url;
     }
 
     protected JsonArray doInBackground(Void... params) {
-        if (mUrl == null) return null;
         String result;
 
         try {
-            result = makeRequest(mUrl);
+            result = makeRequest(API_URL);
         } catch (IOException e) {
             Log.i(TAG, e.toString());
             listener.onJSONArrayFailed();
@@ -89,7 +87,9 @@ public class GetJsonArrayTask extends AsyncTask<Void, Void, JsonArray> {
             Log.i(TAG, "onPostExecute() Received JSON -> " + jArray.toString());
 
 
-            listener.onJSONArrayPostExecute(jArray);
+            if (listener != null) {
+                listener.onJSONArrayPostExecute(jArray);
+            }
         }
     }
 }

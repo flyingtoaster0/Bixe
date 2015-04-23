@@ -1,7 +1,7 @@
 package com.flyingtoaster.bixe;
 
 import org.junit.runners.model.InitializationError;
-import org.robolectric.AndroidManifest;
+import org.robolectric.manifest.AndroidManifest;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.res.Fs;
@@ -23,6 +23,6 @@ public class BixeTestRunner extends RobolectricTestRunner {
       FsFile customManifest = Fs.fileFromPath(manifestPath);
       FsFile appBaseDir = customManifest.getParent();
 
-    return new com.flyingtoaster.bixe.NoApplicationAndroidManifest(customManifest, appBaseDir.join("res"), appBaseDir.join("assets"));
+    return new AndroidManifest(customManifest, appBaseDir.join("res"), appBaseDir.join("assets"));
   }
 }

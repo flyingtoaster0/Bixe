@@ -1,6 +1,8 @@
 package com.flyingtoaster.bixe.utils;
 
 import com.flyingtoaster.bixe.BixeTestRunner;
+import com.flyingtoaster.bixe.FakeDataUtil;
+import com.flyingtoaster.bixe.models.Station;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,5 +73,26 @@ public class StringUtilsTest {
         expectedStationName = StringUtils.removeBracketsAndContents(expectedStationName);
 
         assertThat(expectedStationName).isEqualTo("Queen St. W. and Spadina Ave.");
+    }
+
+    @Test
+    public void shouldReturnCorrectGoogleMapsUrl() {
+        double latitude = 12.345;
+        double longitude = 54.321;
+
+        String expectedGoogleMapsUrl = StringUtils.GOOGLE_MAPS_URL_PREFIX  + latitude + "+" + longitude;
+        String actualGoogleMapsUrl = StringUtils.getLatLngUrl(latitude, longitude);
+
+        assertThat(expectedGoogleMapsUrl).isEqualTo(actualGoogleMapsUrl);
+    }
+
+    @Test
+    public void givenStation_shouldReturnCorrectShareText() {
+        Station station = FakeDataUtil.getStation();
+
+        String expectedShareText = station.getStationName() + "\n\n" + StringUtils.GOOGLE_MAPS_URL_PREFIX  + station.getLatitude() + "+" + station.getLongitude();
+        String actualShareText = StringUtils.getShareText(station);
+
+        assertThat(expectedShareText).isEqualTo(actualShareText);
     }
 }

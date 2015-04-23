@@ -7,13 +7,12 @@ import org.robolectric.annotation.Implements;
 
 import java.io.IOException;
 
-@Implements(GetJsonArrayTask.class)
-public class ShadowGetJsonArrayTask extends GetJsonArrayTask {
-    public ShadowGetJsonArrayTask(String url) {
-        super(null, url);
+public class MockGetJsonArrayTask extends GetJsonArrayTask {
+    public MockGetJsonArrayTask() {
+        super(null);
     }
 
-    @Implementation
+    @Override
     protected String makeRequest(String url) throws IOException {
         String result;
 

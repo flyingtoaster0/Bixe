@@ -1,7 +1,11 @@
 package com.flyingtoaster.bixe.utils;
 
 
+import com.flyingtoaster.bixe.models.Station;
+
 public class StringUtils {
+
+    public static final String GOOGLE_MAPS_URL_PREFIX = "http://maps.google.com/maps?q=";
 
     public static String removeSlashesAndBackSlashes(String original) {
         String outputName = "";
@@ -43,5 +47,21 @@ public class StringUtils {
         output = original.replaceAll(" ?\\(.*\\)", "");
 
         return output;
+    }
+
+    public static String getShareText(Station station) {
+        StringBuilder builder = new StringBuilder();
+        double latitude = station.getLatitude();
+        double longitude = station.getLongitude();
+
+        builder.append(station.getStationName());
+        builder.append("\n\n");
+        builder.append(getLatLngUrl(latitude, longitude));
+
+        return builder.toString();
+    }
+
+    public static String getLatLngUrl(double latitude, double longitude) {
+        return GOOGLE_MAPS_URL_PREFIX + latitude + "+" + longitude;
     }
 }

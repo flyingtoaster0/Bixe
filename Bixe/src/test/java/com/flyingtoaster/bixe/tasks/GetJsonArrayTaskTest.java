@@ -2,12 +2,12 @@ package com.flyingtoaster.bixe.tasks;
 
 import com.flyingtoaster.bixe.BixeApplication;
 import com.flyingtoaster.bixe.BixeTestRunner;
-import com.flyingtoaster.bixe.activities.MainActivity;
 import com.flyingtoaster.bixe.datasets.StationDataSource;
 import com.flyingtoaster.bixe.models.Station;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 
@@ -18,11 +18,11 @@ public class GetJsonArrayTaskTest {
     @Test
     public void shouldInsertStationsToDatabase() {
         String expectedFirstStationName = "Jarvis St. and Carleton St.";
-        ShadowGetJsonArrayTask jsonArrayTask = new ShadowGetJsonArrayTask(MainActivity.API_URL);
+        MockGetJsonArrayTask jsonArrayTask = new MockGetJsonArrayTask();
         StationDataSource dataSource = new StationDataSource(BixeApplication.getAppContext());
         dataSource.open();
 
-        jsonArrayTask.doInBackground();
+        jsonArrayTask.execute();
         ArrayList<Station> stationList = dataSource.getAllStations();
         Station firstStation = stationList.get(0);
 
