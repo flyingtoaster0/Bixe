@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import com.flyingtoaster.bixe.R;
 import com.flyingtoaster.bixe.datasets.BixeContentProvider;
 import com.flyingtoaster.bixe.datasets.StationDataSource;
-import com.flyingtoaster.bixe.fragments.base.AbsMarkerCallbackMapFragment;
 import com.flyingtoaster.bixe.fragments.wrappers.TouchableWrapper;
 import com.flyingtoaster.bixe.models.Station;
 import com.flyingtoaster.bixe.tasks.GetJSONArrayListener;
@@ -40,7 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class BixeMapFragment extends AbsMarkerCallbackMapFragment implements LocationListener, GetJSONArrayListener, GoogleApiClient.ConnectionCallbacks {
+public class BixeMapFragment extends SupportMapFragment implements LocationListener, GetJSONArrayListener, GoogleApiClient.ConnectionCallbacks {
 
     private View mOriginalContentView;
     private TouchableWrapper mTouchView;
@@ -69,6 +68,7 @@ public class BixeMapFragment extends AbsMarkerCallbackMapFragment implements Loc
 
     private boolean mLocationLatched = false;
 
+    LocationLatchListener mInternalLocationLatchListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -90,10 +90,11 @@ public class BixeMapFragment extends AbsMarkerCallbackMapFragment implements Loc
 
             @Override
             public void onDrag() {
-                mLocationLatched = false;
+                if (mLocationLatched) {
+                    setLocationLatched(false);
+                }
             }
         });
-
 
         mStations = new HashMap<>();
         mMarkerHash = new HashMap<>();
@@ -114,8 +115,7 @@ public class BixeMapFragment extends AbsMarkerCallbackMapFragment implements Loc
         return mTouchView;
     }
 
-    @Override
-    public void setupGoogleApi() {
+    protected void setupGoogleApi() {
         buildGoogleApiClient();
         createLocationRequest();
     }
@@ -164,8 +164,15 @@ public class BixeMapFragment extends AbsMarkerCallbackMapFragment implements Loc
     }
 
     public synchronized void latchMyLocation() {
-        mLocationLatched = true;
+        setLocationLatched(true);
         animateMyLocation();
+    }
+
+    private void setLocationLatched(boolean latched) {
+        mLocationLatched = latched;
+        if (mInternalLocationLatchListener != null) {
+            mInternalLocationLatchListener.onLocationLatched(latched);
+        }
     }
 
     protected void createLocationRequest() {
@@ -355,7 +362,6 @@ public class BixeMapFragment extends AbsMarkerCallbackMapFragment implements Loc
         });
     }
 
-    @Override
     public Station getStationForMarker(Marker marker) {
         Integer stationId = mMarkerHash.get(marker.getId());
         Station selectedStation = mStations.get(stationId);
@@ -378,7 +384,6 @@ public class BixeMapFragment extends AbsMarkerCallbackMapFragment implements Loc
         lastMarker.setIcon(bitmapDescriptor);
     }
 
-    @Override
     public void setOnMarkerClickListener(final GoogleMap.OnMarkerClickListener onMarkerClickListener) {
         getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -386,5 +391,13 @@ public class BixeMapFragment extends AbsMarkerCallbackMapFragment implements Loc
                 googleMap.setOnMarkerClickListener(onMarkerClickListener);
             }
         });
+    }
+
+    public void setLocationLatchListener(LocationLatchListener listener) {
+        mInternalLocationLatchListener = listener;
+    }
+
+    public abstract static class LocationLatchListener {
+        public abstract void onLocationLatched(boolean isLatched);
     }
 }

@@ -4,8 +4,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.flyingtoaster.bixe.fragments.BixeMapFragment;
-import com.flyingtoaster.bixe.fragments.base.AbsMarkerCallbackMapFragment;
 import com.flyingtoaster.bixe.models.Station;
+import com.melnykov.fab.FloatingActionButton;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.robolectric.annotation.Implementation;
@@ -24,7 +24,7 @@ public class ShadowMainActivity extends ShadowActivity {
     }
 
     @Implementation
-    public void setMapFragment(AbsMarkerCallbackMapFragment mapFragment) {
+    public void setMapFragment(BixeMapFragment mapFragment) {
         ReflectionHelpers.setField(realMainActivity, "mTorontoFragment", mapFragment);
     }
 
@@ -66,5 +66,10 @@ public class ShadowMainActivity extends ShadowActivity {
     @Implementation
     public View getSaveButton() {
         return (View)ReflectionHelpers.getField(realMainActivity, "mSaveButton");
+    }
+
+    @Implementation
+    public FloatingActionButton getLocationFab() {
+        return (FloatingActionButton)ReflectionHelpers.getField(realMainActivity, "mLocationFab");
     }
 }

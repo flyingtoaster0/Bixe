@@ -14,12 +14,10 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.animation.Interpolator;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.flyingtoaster.bixe.fragments.base.AbsMarkerCallbackMapFragment;
 import com.flyingtoaster.bixe.interpolators.MaterialInterpolator;
 import com.flyingtoaster.bixe.R;
 import com.flyingtoaster.bixe.models.Station;
@@ -34,7 +32,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarkerClickListener {
 
-    private AbsMarkerCallbackMapFragment mTorontoFragment;
+    private BixeMapFragment mTorontoFragment;
 
     private ImageButton mNavigateButton;
 

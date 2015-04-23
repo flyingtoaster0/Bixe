@@ -5,12 +5,13 @@ import android.view.View;
 
 import com.flyingtoaster.bixe.BixeTestRunner;
 import com.flyingtoaster.bixe.FakeDataUtil;
-import com.flyingtoaster.bixe.fragments.base.AbsMarkerCallbackMapFragment;
+import com.flyingtoaster.bixe.fragments.BixeMapFragment;
 import com.flyingtoaster.bixe.models.Station;
 import com.flyingtoaster.bixe.tasks.MockGetJsonArrayTask;
 import com.flyingtoaster.bixe.utils.StringUtils;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
+import com.melnykov.fab.FloatingActionButton;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.junit.Before;
@@ -23,6 +24,8 @@ import org.robolectric.annotation.Config;
 import org.robolectric.internal.ShadowExtractor;
 import org.robolectric.shadows.ShadowIntent;
 import org.robolectric.util.ActivityController;
+
+import java.util.concurrent.CountDownLatch;
 
 import static org.fest.assertions.api.ANDROID.assertThat;
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -196,7 +199,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void whenSlidingPanelIsCollapse_onBackPressShouldFinishActivity() {
+    public void whenSlidingPanelIsCollapsed_onBackPressShouldFinishActivity() {
         mController.create().start().resume();
 
         NoUiMockBixeMapFragment mapFragment = new NoUiMockBixeMapFragment();
@@ -210,8 +213,27 @@ public class MainActivityTest {
         assertThat(shadowMainActivity.isFinishing()).isTrue();
     }
 
+    @Test
+    public void whenLocationFabIsPressed_mapFragmentShouldLatchLocation() {
+        mController.create().start().resume();
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        FloatingActionButton locationFab = mShadowActivity.getLocationFab();
 
-    public static class NoUiMockBixeMapFragment extends AbsMarkerCallbackMapFragment {
+        BixeMapFragment.LocationLatchListener locationLatchListener = new BixeMapFragment.LocationLatchListener() {
+            @Override
+            public void onLocationLatched(boolean isLatched) {
+                assertThat(isLatched).isEqualTo(true);
+                countDownLatch.countDown();
+            }
+        };
+
+        mMapFragment.setLocationLatchListener(locationLatchListener);
+
+        locationFab.callOnClick();
+        assertThat(countDownLatch.getCount()).isEqualTo(0);
+    }
+
+    public static class NoUiMockBixeMapFragment extends BixeMapFragment {
         GoogleMap.OnMarkerClickListener mOnMarkerClickListener;
 
         @Override
@@ -223,11 +245,6 @@ public class MainActivityTest {
         public Station getStationForMarker(Marker marker) {
             Station station = FakeDataUtil.getStation();
             return station;
-        }
-
-        @Override
-        public void latchMyLocation() {
-            /* NO OP */
         }
 
         @Override
@@ -250,6 +267,4 @@ public class MainActivityTest {
             return false;
         }
     }
-
-
 }
