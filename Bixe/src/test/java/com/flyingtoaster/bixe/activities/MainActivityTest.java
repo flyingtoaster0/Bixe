@@ -236,6 +236,11 @@ public class MainActivityTest {
             jsonTask.execute();
         }
 
+        @Override
+        protected void setupGoogleApi() {
+            /* NO OP */
+        }
+
         public boolean onMarkerClick() {
             if (mOnMarkerClickListener != null) {
                 mOnMarkerClickListener.onMarkerClick(null);

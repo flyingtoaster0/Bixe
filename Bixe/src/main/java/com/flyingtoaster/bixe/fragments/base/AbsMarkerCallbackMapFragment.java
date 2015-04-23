@@ -11,4 +11,5 @@ public abstract class AbsMarkerCallbackMapFragment extends SupportMapFragment {
     public abstract Station getStationForMarker(Marker marker);
     public abstract void latchMyLocation();
     protected abstract void makeRefreshCall();
+    protected abstract void setupGoogleApi();
 }

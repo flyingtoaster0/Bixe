@@ -64,7 +64,6 @@ public class BixeMapFragment extends AbsMarkerCallbackMapFragment implements Loc
 
     private GetJsonArrayTask mJSONTask;
 
-
     private MenuItem mRefreshProgressBarItem;
     private MenuItem mRefreshButtonItem;
 
@@ -100,6 +99,8 @@ public class BixeMapFragment extends AbsMarkerCallbackMapFragment implements Loc
         mMarkerHash = new HashMap<>();
         mStationMarkerHash = new HashMap<>();
 
+        setupGoogleApi();
+
         mStationContentObserver = new ContentObserver(new Handler()) {
             @Override
             public void onChange(boolean selfChange) {
@@ -111,6 +112,12 @@ public class BixeMapFragment extends AbsMarkerCallbackMapFragment implements Loc
         makeRefreshCall();
 
         return mTouchView;
+    }
+
+    @Override
+    public void setupGoogleApi() {
+        buildGoogleApiClient();
+        createLocationRequest();
     }
 
     @Override
