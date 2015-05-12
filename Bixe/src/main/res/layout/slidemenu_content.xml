@@ -100,36 +100,36 @@
         android:layout_below="@+id/slidemenu_collapsed_content"
         android:orientation="horizontal">
 
-        <Space
-            android:layout_width="16dp"
-            android:layout_height="match_parent" />
+        <!--<Space-->
+            <!--android:layout_width="16dp"-->
+            <!--android:layout_height="match_parent" />-->
 
-        <LinearLayout
-            android:id="@+id/slidemenu_button_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/button_white"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingBottom="16dp"
-            android:paddingTop="16dp">
+        <!--<LinearLayout-->
+            <!--android:id="@+id/slidemenu_button_save"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@drawable/button_white"-->
+            <!--android:clickable="true"-->
+            <!--android:focusable="true"-->
+            <!--android:gravity="center"-->
+            <!--android:orientation="vertical"-->
+            <!--android:paddingBottom="16dp"-->
+            <!--android:paddingTop="16dp">-->
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_star_darkgreen_24px" />
+            <!--<ImageView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:src="@drawable/ic_star_darkgreen_24px" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="16dp"
-                android:text="@string/button_save"
-                android:textColor="@color/green_dark"
-                android:textStyle="bold" />
-        </LinearLayout>
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:paddingTop="16dp"-->
+                <!--android:text="@string/button_save"-->
+                <!--android:textColor="@color/green_dark"-->
+                <!--android:textStyle="bold" />-->
+        <!--</LinearLayout>-->
 
         <Space
             android:layout_width="16dp"

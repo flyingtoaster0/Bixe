@@ -80,6 +80,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
+        /*
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mActionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.drawer_open_content_description, R.string.drawer_close_content_description) {
 
@@ -90,11 +91,12 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
             }
         };
         mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
+        */
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setHomeButtonEnabled(true);
 
-        mActionBarDrawerToggle.syncState();
+//        mActionBarDrawerToggle.syncState();
 
         mBikesAmountLayout = findViewById(R.id.bikes_amount_layout);
         mDocksAmountLayout = findViewById(R.id.docks_amount_layout);
@@ -113,7 +115,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
 
         mContentLayout = (LinearLayout) findViewById(R.id.content_layout);
 
-        mSaveButton = findViewById(R.id.slidemenu_button_save);
+//        mSaveButton = findViewById(R.id.slidemenu_button_save);
         mShareButton = findViewById(R.id.slidemenu_button_share);
 
         mShareButton.setOnClickListener(new View.OnClickListener() {
@@ -133,14 +135,14 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
             }
         });
 
-        mSaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mLastSelectedStation == null) {
-                    throw new IllegalStateException("A station must be selected before sharing");
-                }
-            }
-        });
+//        mSaveButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (mLastSelectedStation == null) {
+//                    throw new IllegalStateException("A station must be selected before sharing");
+//                }
+//            }
+//        });
 
         mCollapsedContentView = findViewById(R.id.slidemenu_collapsed_content);
         mStationNameTextView = (TextView) findViewById(R.id.station_name_text_view);
