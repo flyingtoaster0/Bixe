@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -218,6 +219,16 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
         super.onResume();
 
         mTorontoFragment.setOnMarkerClickListener(this);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        final int keycode = event.getKeyCode();
+        final int action = event.getAction();
+        if (keycode == KeyEvent.KEYCODE_MENU && action == KeyEvent.ACTION_UP) {
+            return true;
+        }
+        return super.dispatchKeyEvent(event);
     }
 
     @Override
