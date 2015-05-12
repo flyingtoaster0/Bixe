@@ -157,6 +157,7 @@ public class MainActivityTest {
         assertThat(expectedType).isEqualTo(actualType);
     }
 
+    @Ignore
     @Test
     public void beforeMarkerIsClicked_saveButtonThrowsException() {
         mController.create().start().resume().visible();
