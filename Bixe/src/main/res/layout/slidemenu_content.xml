@@ -98,7 +98,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/slidemenu_collapsed_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <!--<Space-->
             <!--android:layout_width="16dp"-->
