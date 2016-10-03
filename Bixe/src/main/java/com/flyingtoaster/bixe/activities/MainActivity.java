@@ -40,7 +40,6 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setSupportActionBar(mToolbar);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mStationNameTextView = (TextView) findViewById(R.id.station_name_text_view);
@@ -52,6 +51,8 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
         mShareButton = findViewById(R.id.slidemenu_button_share);
         mSlidingContentView = findViewById(R.id.sliding_content_view);
 
+        setSupportActionBar(mToolbar);
+        
         mLocationFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
