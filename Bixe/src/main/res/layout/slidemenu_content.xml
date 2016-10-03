@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/sliding_content_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/slidemenu_collapsed_content"
+        android:id="@+id/sliding_content_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sliding_panel_collapsed_height"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/white">
 
         <TextView
             android:id="@+id/station_name_text_view"
@@ -26,7 +24,6 @@
             android:textColor="@color/grey_1"
             android:textSize="@dimen/station_title_size"
             tools:text="Yonge and Dundas and Spadina and Spadina" />
-
 
         <LinearLayout
             android:id="@+id/bikes_amount_layout"
@@ -93,48 +90,12 @@
         </LinearLayout>
     </RelativeLayout>
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/slidemenu_collapsed_content"
         android:orientation="horizontal"
         android:visibility="gone">
-
-        <!--<Space-->
-            <!--android:layout_width="16dp"-->
-            <!--android:layout_height="match_parent" />-->
-
-        <!--<LinearLayout-->
-            <!--android:id="@+id/slidemenu_button_save"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:background="@drawable/button_white"-->
-            <!--android:clickable="true"-->
-            <!--android:focusable="true"-->
-            <!--android:gravity="center"-->
-            <!--android:orientation="vertical"-->
-            <!--android:paddingBottom="16dp"-->
-            <!--android:paddingTop="16dp">-->
-
-            <!--<ImageView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:src="@drawable/ic_star_darkgreen_24px" />-->
-
-            <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:paddingTop="16dp"-->
-                <!--android:text="@string/button_save"-->
-                <!--android:textColor="@color/green_dark"-->
-                <!--android:textStyle="bold" />-->
-        <!--</LinearLayout>-->
-
-        <Space
-            android:layout_width="16dp"
-            android:layout_height="match_parent" />
 
         <LinearLayout
             android:id="@+id/slidemenu_button_share"
