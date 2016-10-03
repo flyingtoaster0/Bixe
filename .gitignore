@@ -35,10 +35,6 @@ proguard/
 *.iws
 .idea/
 
-# god damn gradle shit
-.gradle/
-gradlew
-
 # Android Studio
 .idea/
 .gradle
@@ -51,7 +47,4 @@ gradlew
 *.ipr
 *~
 *.swp
-gradle/wrapper/gradle-wrapper.jar
-gradle.bat
-gradlew.bat
 build/*
