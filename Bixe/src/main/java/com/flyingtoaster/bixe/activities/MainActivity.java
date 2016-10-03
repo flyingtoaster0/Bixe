@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Handler;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -27,9 +28,6 @@ import com.flyingtoaster.bixe.utils.StringUtils;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.melnykov.fab.FloatingActionButton;
-import com.sothree.slidinguppanel.FloatingActionButtonLayout;
-import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarkerClickListener {
 
@@ -37,7 +35,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
 
     private ImageButton mNavigateButton;
 
-    private SlidingUpPanelLayout mSlidingUpPanelLayout;
+    private View mSlidingUpPanelLayout;
     private View dragView;
     private LinearLayout mSlidingContentView;
     private LinearLayout mContentLayout;
@@ -68,8 +66,8 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
 
-    private FloatingActionButton mLocationFab;
-    private FloatingActionButtonLayout mFloatingButtonLayout;
+    private View mLocationFab;
+    private View mFloatingButtonLayout;
 
     private Station mLastSelectedStation;
 
@@ -149,30 +147,30 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
         mStationNameTextView = (TextView) findViewById(R.id.station_name_text_view);
         mBikesAmountTextView = (TextView) findViewById(R.id.bikes_amount_textview);
         mDocksAmountTextView = (TextView) findViewById(R.id.docks_amount_textview);
-        mSlidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
-
-        mSlidingUpPanelLayout.setPanelHeight(getResources().getDimensionPixelSize(R.dimen.sliding_panel_collapsed_height));
-        mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-        mSlidingUpPanelLayout.setTouchEnabled(false);
-        mSlidingUpPanelLayout.setPanelSlideListener(new SlidingUpPanelLayout.SimplePanelSlideListener() {
-            @Override
-            public void onPanelCollapsedStateY(View panel, boolean reached) {
-                if (reached) {
-                    fadePanelToLight();
-                } else {
-                    fadePanelToDark();
-                }
-            }
-        });
+//        mSlidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+//
+//        mSlidingUpPanelLayout.setPanelHeight(getResources().getDimensionPixelSize(R.dimen.sliding_panel_collapsed_height));
+//        mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+//        mSlidingUpPanelLayout.setTouchEnabled(false);
+//        mSlidingUpPanelLayout.setPanelSlideListener(new SlidingUpPanelLayout.SimplePanelSlideListener() {
+//            @Override
+//            public void onPanelCollapsedStateY(View panel, boolean reached) {
+//                if (reached) {
+//                    fadePanelToLight();
+//                } else {
+//                    fadePanelToDark();
+//                }
+//            }
+//        });
         dragView = findViewById(R.id.sliding_content_view);
 
         mSlidingContentView = (LinearLayout) findViewById(R.id.sliding_content_view);
-        mFloatingButtonLayout = (FloatingActionButtonLayout) findViewById(R.id.floating_button_layout);
+//        mFloatingButtonLayout = (FloatingActionButtonLayout) findViewById(R.id.floating_button_layout);
 
         mNavigateButton = (ImageButton) findViewById(R.id.navigate_button);
 
         // This sets the "handle" of the SlidingUpPanel
-        mSlidingUpPanelLayout.setDragView(dragView);
+//        mSlidingUpPanelLayout.setDragView(dragView);
 
         // Prevent presses from "bleeding" through below the SlidingUpPanel
         mSlidingContentView.setOnClickListener(new View.OnClickListener() {
@@ -182,6 +180,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
                     return;
                 }
 
+                /*
                 SlidingUpPanelLayout.PanelState nextState;
 
                 switch (mSlidingUpPanelLayout.getPanelState()) {
@@ -197,6 +196,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
                 }
 
                 mSlidingUpPanelLayout.setPanelState(nextState);
+                */
             }
         });
 
@@ -282,10 +282,10 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
         animator5.start();
         animator6.start();
         animator7.start();
-        mLocationFab.setColorPressedResId(R.color.green_dark_highlight);
+//        mLocationFab.setColorPressedResId(R.color.green_dark_highlight);
 
-        TransitionDrawable transitionDrawable = (TransitionDrawable) mLocationFab.getDrawable();
-        transitionDrawable.reverseTransition(250);
+//        TransitionDrawable transitionDrawable = (TransitionDrawable) mLocationFab.getDrawable();
+//        transitionDrawable.reverseTransition(250);
     }
 
     private void fadePanelToDark() {
@@ -329,10 +329,10 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
         animator5.start();
         animator6.start();
         animator7.start();
-        mLocationFab.setColorPressedResId(R.color.white_button_press);
+//        mLocationFab.setColorPressedResId(R.color.white_button_press);
 
-        TransitionDrawable transitionDrawable = (TransitionDrawable) mLocationFab.getDrawable();
-        transitionDrawable.startTransition(250);
+//        TransitionDrawable transitionDrawable = (TransitionDrawable) mLocationFab.getDrawable();
+//        transitionDrawable.startTransition(250);
     }
 
     private void updateStationInfoView(Station station) {
@@ -352,16 +352,16 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
         mBikesAmountTextView.setText(availableBikes.toString());
         mDocksAmountTextView.setText(availableDocks.toString());
 
-        mSlidingUpPanelLayout.setTouchEnabled(true);
+//        mSlidingUpPanelLayout.setTouchEnabled(true);
     }
 
     @Override
     public void onBackPressed() {
-        if (mSlidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || mSlidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED) {
-            mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-        } else {
+//        if (mSlidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || mSlidingUpPanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED) {
+//            mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+//        } else {
             super.onBackPressed();
-        }
+//        }
     }
 
     private void showAmounts() {

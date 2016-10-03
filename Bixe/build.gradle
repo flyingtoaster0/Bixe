@@ -12,12 +12,12 @@ buildscript {
 }
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion 24
     buildToolsVersion "21.1.2"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 21
+        targetSdkVersion 24
         versionCode 4
         versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -41,9 +41,10 @@ idea {
 }
 
 dependencies {
-
-    compile 'com.android.support:appcompat-v7:22.0.0'
-    compile 'com.google.android.gms:play-services:7.0.0'
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:design:24.2.1'
+    compile 'com.google.android.gms:play-services-location:7.0.0'
+    compile 'com.google.android.gms:play-services-maps:7.0.0'
     testCompile('junit:junit:4.11') {
         exclude(group: 'org.hamcrest')
     }
@@ -54,10 +55,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.3.0'
     compile 'com.squareup.okhttp:mockwebserver:2.3.0'
     //    compile 'com.sothree.slidinguppanel:library:3.0.0'
-    compile 'com.melnykov:floatingactionbutton:1.2.0'
         compile 'com.pnikosis:materialish-progress:1.5'
-    compile project(':ViewPagerIndicator')
-    compile project(':SlidingUpPanel')
     // TODO: requires special build of robolectric right now. working on this...
 //    testCompile 'junit:junit:4.12'
     testCompile('org.robolectric:robolectric:3.0-rc2')
