@@ -72,7 +72,6 @@ public class StationTable {
         values.put(StationTable.Columns.TOTAL_DOCKS, station.getTotalDocks());
         values.put(StationTable.Columns.LATITUDE, station.getLatitude());
         values.put(StationTable.Columns.LONGITUDE, station.getLongitude());
-        values.put(StationTable.Columns.IN_SERVICE, station.isInService());
 
         return values;
     }

@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class BixeMapFragment extends SupportMapFragment implements LocationListener, GetJSONArrayListener, GoogleApiClient.ConnectionCallbacks {
+public class BixeMapFragment extends SupportMapFragment implements LocationListener, GoogleApiClient.ConnectionCallbacks {
 
     private View mOriginalContentView;
     private TouchableWrapper mTouchView;
@@ -62,9 +62,6 @@ public class BixeMapFragment extends SupportMapFragment implements LocationListe
     private Integer mLastSelectedStationId;
 
     private GetJsonArrayTask mJSONTask;
-
-    private MenuItem mRefreshProgressBarItem;
-    private MenuItem mRefreshButtonItem;
 
     private boolean mLocationLatched = false;
 
@@ -109,8 +106,6 @@ public class BixeMapFragment extends SupportMapFragment implements LocationListe
                 loadStoredMarkers();
             }
         };
-
-        makeRefreshCall();
 
         return mTouchView;
     }
@@ -265,66 +260,7 @@ public class BixeMapFragment extends SupportMapFragment implements LocationListe
         });
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.main, menu);
-
-        mRefreshProgressBarItem = menu.findItem(R.id.menu_progress);
-        mRefreshButtonItem = menu.findItem(R.id.action_refresh);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_refresh:
-                setRefreshVisible(false);
-                makeRefreshCall();
-                return true;
-        }
-
-        return false;
-    }
-
-    private void setRefreshVisible(boolean visible) {
-        if (mRefreshButtonItem != null) {
-            mRefreshButtonItem.setVisible(visible);
-        }
-
-        if (mRefreshProgressBarItem != null) {
-            mRefreshProgressBarItem.setVisible(!visible);
-        }
-    }
-
-   protected void makeRefreshCall() {
-        if (mJSONTask != null) {
-            mJSONTask.cancel(true);
-        }
-        mJSONTask = new GetJsonArrayTask(this);
-        mJSONTask.execute();
-    }
-
-    public void onJSONArrayPreExecute() {
-
-    }
-
-    public void onJSONArrayProgressUpdate(String... params) {
-
-    }
-
-    public void onJSONArrayPostExecute(JsonArray jArray) {
-        setRefreshVisible(true);
-    }
-
-    public void onJSONArrayCancelled() {
-        setRefreshVisible(true);
-    }
-
-    public void onJSONArrayFailed() {
-        setRefreshVisible(true);
-    }
-
-    private void updateMarkers(final List<Station> stations) {
+    public void updateMarkers(final List<Station> stations) {
         getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {

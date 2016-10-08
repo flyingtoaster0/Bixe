@@ -89,7 +89,6 @@ public class StationDataSource {
         station.setTotalDocks(cursor.getInt(4));
         station.setLatitude(cursor.getDouble(5));
         station.setLongitude(cursor.getDouble(6));
-        station.setInService(cursor.getInt(7) == 1);
 
         return station;
     }

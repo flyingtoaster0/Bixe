@@ -8,19 +8,27 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Station {
+
+    @SerializedName("id")
     private int mId;
+    @SerializedName("stationName")
     private String mStationName;
+    @SerializedName("availableDocks")
     private int mAvailableDocks;
+    @SerializedName("totalDocks")
     private int mTotalDocks;
-    private double mLatitude;
-    private double mLongitude;
-    private boolean inService;
+    @SerializedName("availableBikes")
     private int mAvailableBikes;
+    @SerializedName("latitude")
+    private double mLatitude;
+    @SerializedName("longitude")
+    private double mLongitude;
 
     public Station() {
 
@@ -42,7 +50,6 @@ public class Station {
         mAvailableDocks = stationJson.get("availableDocks").getAsInt();
         mTotalDocks = stationJson.get("totalDocks").getAsInt();
         mAvailableBikes = stationJson.get("availableBikes").getAsInt();
-        inService = stationJson.get("statusValue").getAsString().equals("In Service");
         mLatitude = stationJson.get("latitude").getAsDouble();
         mLongitude = stationJson.get("longitude").getAsDouble();
     }
@@ -54,7 +61,6 @@ public class Station {
             mAvailableDocks = jObj.getInt("availableDocks");
             mTotalDocks = jObj.getInt("totalDocks");
             mAvailableBikes = jObj.getInt("availableBikes");
-            inService = jObj.getString("statusValue").equals("In Service");
 //            mLatLng = new LatLng(jObj.getDouble("latitude"), jObj.getDouble("longitude"));
         } catch (JSONException e) {
             Log.e("Station", "Could not update Station");
@@ -85,10 +91,6 @@ public class Station {
         return new LatLng(mLatitude, mLongitude);
     }
 
-    public boolean isInService() {
-        return inService;
-    }
-
     private String fixStationName(String stationName) {
         String fixedStationName = "";
 
@@ -115,10 +117,6 @@ public class Station {
 
     public void setTotalDocks(int mTotalDocks) {
         this.mTotalDocks = mTotalDocks;
-    }
-
-    public void setInService(boolean inService) {
-        this.inService = inService;
     }
 
     public void setAvailableBikes(int mAvailableBikes) {

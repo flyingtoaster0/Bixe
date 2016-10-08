@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,9 +17,17 @@ import com.flyingtoaster.bixe.R;
 import com.flyingtoaster.bixe.fragments.BixeMapFragment;
 import com.flyingtoaster.bixe.interpolators.MaterialInterpolator;
 import com.flyingtoaster.bixe.models.Station;
+import com.flyingtoaster.bixe.providers.StationProvider;
 import com.flyingtoaster.bixe.utils.StringUtils;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
+
+import java.util.List;
+
+import clients.StationClient;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarkerClickListener {
 
@@ -32,9 +42,15 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
     private View mLocationFab;
     private View mSlidingContentView;
 
+    private MenuItem mRefreshProgressBarItem;
+    private MenuItem mRefreshButtonItem;
+
     private Toolbar mToolbar;
 
     private Station mLastSelectedStation;
+
+    private StationClient mStationClient;
+    private StationProvider mStationProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,10 +101,15 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
             }
         });
 
+        mStationClient = new StationClient();
+        mStationProvider = new StationProvider(mStationClient);
+
         if (mTorontoFragment == null) {
             mTorontoFragment = new BixeMapFragment();
         }
         setupMapFragment();
+
+        refreshMarkers();
     }
 
     @Override
@@ -96,6 +117,36 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
         super.onResume();
 
         mTorontoFragment.setOnMarkerClickListener(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        mRefreshProgressBarItem = menu.findItem(R.id.menu_progress);
+        mRefreshButtonItem = menu.findItem(R.id.action_refresh);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                refreshMarkers();
+                return true;
+        }
+
+        return false;
+    }
+
+    private void showLoading(boolean visible) {
+        if (mRefreshButtonItem != null) {
+            mRefreshButtonItem.setVisible(!visible);
+        }
+
+        if (mRefreshProgressBarItem != null) {
+            mRefreshProgressBarItem.setVisible(visible);
+        }
     }
 
     protected void setupMapFragment() {
@@ -157,5 +208,23 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
         view.setTranslationY(0.25f);
 
         view.animate().alpha(1.0f).scaleX(1.0f).scaleY(1.0f).translationX(0.0f).translationY(0.0f).setDuration(200).setInterpolator(new MaterialInterpolator()).start();
+    }
+
+    private void refreshMarkers() {
+        showLoading(true);
+
+        mStationProvider.getStations().subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Station>>() {
+            @Override
+            public void accept(List<Station> stations) throws Exception {
+                mTorontoFragment.updateMarkers(stations);
+
+                showLoading(false);
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                showLoading(false);
+            }
+        });
     }
 }

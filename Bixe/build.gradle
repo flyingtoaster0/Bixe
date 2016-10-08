@@ -51,6 +51,7 @@ dependencies {
 //    compile 'com.android.support:support-v4:21.0.3'
 //    compile 'com.android.support:support-v13:21.0.3'
     compile 'io.reactivex.rxjava2:rxjava:2.0.0-RC4'
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.0-RC1'
     compile 'com.google.code.gson:gson:2.3'
     compile 'com.squareup.okhttp:okhttp:2.3.0'
     compile 'com.squareup.okhttp:mockwebserver:2.3.0'
