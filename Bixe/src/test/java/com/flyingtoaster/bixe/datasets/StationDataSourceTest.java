@@ -41,7 +41,6 @@ public class StationDataSourceTest {
         assertThat(expectedStation.getTotalDocks()).isEqualTo(10);
         assertThat(expectedStation.getLatitude()).isEqualTo(43.7);
         assertThat(expectedStation.getLongitude()).isEqualTo(79.4);
-        assertThat(expectedStation.isInService()).isEqualTo(true);
     }
 
     @Test
@@ -71,7 +70,6 @@ public class StationDataSourceTest {
         assertThat(expectedStation.getTotalDocks()).isEqualTo(10);
         assertThat(expectedStation.getLatitude()).isEqualTo(43.7);
         assertThat(expectedStation.getLongitude()).isEqualTo(79.4);
-        assertThat(expectedStation.isInService()).isEqualTo(true);
     }
 
     @Test
