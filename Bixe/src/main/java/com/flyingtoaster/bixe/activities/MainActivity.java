@@ -21,7 +21,7 @@ import com.flyingtoaster.bixe.interpolators.MaterialInterpolator;
 import com.flyingtoaster.bixe.models.Station;
 import com.flyingtoaster.bixe.providers.LocalStationProvider;
 import com.flyingtoaster.bixe.providers.StationProvider;
-import com.flyingtoaster.bixe.utils.StringUtils;
+import com.flyingtoaster.bixe.utils.StationUtils;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
@@ -91,7 +91,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
                 Intent sendIntent = new Intent();
 
                 sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, StringUtils.getShareText(mLastSelectedStation));
+                sendIntent.putExtra(Intent.EXTRA_TEXT, StationUtils.getShareText(mLastSelectedStation));
                 sendIntent.setType("text/plain");
 
                 startActivity(sendIntent);
