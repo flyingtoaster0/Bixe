@@ -63,7 +63,7 @@ public class StationDataSource {
         database.delete(StationTable.TABLE_NAME, StationTable.Columns.STATION_ID + " = " + id, null);
     }
 
-    public ArrayList<Station> getAllStations() {
+    public List<Station> getAllStations() {
         ArrayList<Station> stations = new ArrayList<Station>();
 
         Cursor cursor = database.query(StationTable.TABLE_NAME, allColumns, null, null, null, null, null);

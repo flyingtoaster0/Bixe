@@ -15,7 +15,6 @@ public class FakeDataUtil {
         stationJson.addProperty("availableBikes", 4);
         stationJson.addProperty("availableDocks", 6);
         stationJson.addProperty("totalDocks", 10);
-        stationJson.addProperty("statusValue", "In Service");
         stationJson.addProperty("latitude", 43.7000);
         stationJson.addProperty("longitude", 79.4000);
 
@@ -36,7 +35,6 @@ public class FakeDataUtil {
         secondStation.setAvailableBikes(5);
         secondStation.setAvailableDocks(7);
         secondStation.setTotalDocks(12);
-        secondStation.setInService(true);
         secondStation.setLatitude(43.6504161);
         secondStation.setLongitude(79.378426);
 

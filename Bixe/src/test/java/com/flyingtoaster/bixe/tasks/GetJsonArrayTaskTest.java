@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
@@ -23,7 +24,7 @@ public class GetJsonArrayTaskTest {
         dataSource.open();
 
         jsonArrayTask.execute();
-        ArrayList<Station> stationList = dataSource.getAllStations();
+        List<Station> stationList = dataSource.getAllStations();
         Station firstStation = stationList.get(0);
 
         assertThat(stationList).isNotEmpty();

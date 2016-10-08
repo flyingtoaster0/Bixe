@@ -27,7 +27,6 @@ public class StationTest {
         assertThat(station.getTotalDocks()).isEqualTo(10);
         assertThat(station.getLatitude()).isEqualTo(43.7);
         assertThat(station.getLongitude()).isEqualTo(79.4);
-        assertThat(station.isInService()).isEqualTo(true);
     }
 
     @Test

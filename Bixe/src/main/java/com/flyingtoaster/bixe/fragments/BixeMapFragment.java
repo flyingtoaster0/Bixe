@@ -145,7 +145,7 @@ public class BixeMapFragment extends SupportMapFragment implements LocationListe
         StationDataSource dataSource = new StationDataSource(getActivity());
         dataSource.open();
 
-        ArrayList<Station> stationList = dataSource.getAllStations();
+        List<Station> stationList = dataSource.getAllStations();
         dataSource.close();
 
         updateMarkers(stationList);
