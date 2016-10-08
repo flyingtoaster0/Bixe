@@ -1,14 +1,10 @@
 package com.flyingtoaster.bixe.datasets;
 
-import android.database.Cursor;
-
 import com.flyingtoaster.bixe.BixeApplication;
 import com.flyingtoaster.bixe.BixeTestRunner;
 import com.flyingtoaster.bixe.FakeDataUtil;
 import com.flyingtoaster.bixe.activities.ContentResolverActivity;
 
-import com.flyingtoaster.bixe.datasets.BixeContentProvider;
-import com.flyingtoaster.bixe.datasets.StationDataSource;
 import com.flyingtoaster.bixe.models.Station;
 
 import org.junit.Before;
@@ -46,7 +42,7 @@ public class BixeContentResolverTest {
         StationDataSource dataSource = getStationDataSource();
         dataSource.open();
 
-        dataSource.createStation(stationToInsert);
+        dataSource.putStation(stationToInsert);
 
         assertThat(activity.didUpdate()).isTrue();
     }

@@ -2,7 +2,6 @@ package com.flyingtoaster.bixe.datasets;
 
 import com.flyingtoaster.bixe.BixeApplication;
 import com.flyingtoaster.bixe.FakeDataUtil;
-import com.flyingtoaster.bixe.datasets.StationDataSource;
 import com.flyingtoaster.bixe.models.Station;
 
 import org.junit.Test;
@@ -26,7 +25,7 @@ public class StationDataSourceTest {
         Station expectedStation;
 
         dataSource.open();
-        dataSource.createStation(stationToInsert);
+        dataSource.putStation(stationToInsert);
 
         stationList = dataSource.getAllStations();
         dataSource.close();
@@ -51,11 +50,11 @@ public class StationDataSourceTest {
         Station expectedStation;
 
         dataSource.open();
-        dataSource.createStation(stationToInsert);
+        dataSource.putStation(stationToInsert);
 
         stationToInsert.setAvailableBikes(8);
         stationToInsert.setAvailableDocks(2);
-        dataSource.createStation(stationToInsert);
+        dataSource.putStation(stationToInsert);
 
         stationList = dataSource.getAllStations();
         dataSource.close();
@@ -81,7 +80,7 @@ public class StationDataSourceTest {
         Station secondExpectedStation;
 
         dataSource.open();
-        dataSource.createStations(stationsToInsert);
+        dataSource.putStations(stationsToInsert);
 
         expectedStationList = dataSource.getAllStations();
         dataSource.close();

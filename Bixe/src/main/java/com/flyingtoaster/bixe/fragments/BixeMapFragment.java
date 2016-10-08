@@ -3,23 +3,13 @@ package com.flyingtoaster.bixe.fragments;
 import android.database.ContentObserver;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.flyingtoaster.bixe.R;
-import com.flyingtoaster.bixe.datasets.BixeContentProvider;
 import com.flyingtoaster.bixe.datasets.StationDataSource;
 import com.flyingtoaster.bixe.fragments.wrappers.TouchableWrapper;
 import com.flyingtoaster.bixe.models.Station;
-import com.flyingtoaster.bixe.tasks.GetJSONArrayListener;
-import com.flyingtoaster.bixe.tasks.GetJsonArrayTask;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -33,9 +23,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.gson.JsonArray;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -60,8 +48,6 @@ public class BixeMapFragment extends SupportMapFragment implements LocationListe
     private HashMap<Integer, Marker> mStationMarkerHash;
 
     private Integer mLastSelectedStationId;
-
-    private GetJsonArrayTask mJSONTask;
 
     private boolean mLocationLatched = false;
 
@@ -99,14 +85,6 @@ public class BixeMapFragment extends SupportMapFragment implements LocationListe
 
         setupGoogleApi();
 
-        mStationContentObserver = new ContentObserver(new Handler()) {
-            @Override
-            public void onChange(boolean selfChange) {
-                super.onChange(selfChange);
-                loadStoredMarkers();
-            }
-        };
-
         return mTouchView;
     }
 
@@ -119,10 +97,6 @@ public class BixeMapFragment extends SupportMapFragment implements LocationListe
     public void onResume() {
         super.onResume();
 
-        if (mStationContentObserver != null) {
-            getActivity().getContentResolver().registerContentObserver(BixeContentProvider.CONTENT_URI, false, mStationContentObserver);
-        }
-
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
         }
@@ -131,10 +105,6 @@ public class BixeMapFragment extends SupportMapFragment implements LocationListe
     @Override
     public void onPause() {
         super.onPause();
-
-        if (mStationContentObserver != null) {
-            getActivity().getContentResolver().unregisterContentObserver(mStationContentObserver);
-        }
 
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();

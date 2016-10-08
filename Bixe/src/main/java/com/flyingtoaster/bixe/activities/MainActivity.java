@@ -14,9 +14,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.flyingtoaster.bixe.R;
+import com.flyingtoaster.bixe.clients.StationClient;
+import com.flyingtoaster.bixe.datasets.StationDataSource;
 import com.flyingtoaster.bixe.fragments.BixeMapFragment;
 import com.flyingtoaster.bixe.interpolators.MaterialInterpolator;
 import com.flyingtoaster.bixe.models.Station;
+import com.flyingtoaster.bixe.providers.LocalStationProvider;
 import com.flyingtoaster.bixe.providers.StationProvider;
 import com.flyingtoaster.bixe.utils.StringUtils;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,7 +27,6 @@ import com.google.android.gms.maps.model.Marker;
 
 import java.util.List;
 
-import com.flyingtoaster.bixe.clients.StationClient;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -51,6 +53,9 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
 
     private StationClient mStationClient;
     private StationProvider mStationProvider;
+
+    private StationDataSource mStationDataSource;
+    private LocalStationProvider mLocalStationProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,12 +109,15 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
         mStationClient = new StationClient();
         mStationProvider = new StationProvider(mStationClient);
 
+        mStationDataSource = new StationDataSource(this);
+        mLocalStationProvider = new LocalStationProvider(mStationDataSource);
+
         if (mTorontoFragment == null) {
             mTorontoFragment = new BixeMapFragment();
         }
         setupMapFragment();
 
-        refreshMarkers();
+        loadStoredMarkers();
     }
 
     @Override
@@ -210,14 +218,33 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
         view.animate().alpha(1.0f).scaleX(1.0f).scaleY(1.0f).translationX(0.0f).translationY(0.0f).setDuration(200).setInterpolator(new MaterialInterpolator()).start();
     }
 
-    private void refreshMarkers() {
-        showLoading(true);
-
-        mStationProvider.getStations().subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Station>>() {
+    private void loadStoredMarkers() {
+        mLocalStationProvider.getStations().subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Station>>() {
             @Override
             public void accept(List<Station> stations) throws Exception {
                 mTorontoFragment.updateMarkers(stations);
+                refreshMarkers();
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
 
+            }
+        });
+    }
+
+    private void refreshMarkers() {
+        showLoading(true);
+
+        mStationProvider.getStations().doOnNext(new Consumer<List<Station>>() {
+            @Override
+            public void accept(List<Station> stations) throws Exception {
+                mLocalStationProvider.putStations(stations);
+            }
+        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Station>>() {
+            @Override
+            public void accept(List<Station> stations) throws Exception {
+                mTorontoFragment.updateMarkers(stations);
                 showLoading(false);
             }
         }, new Consumer<Throwable>() {

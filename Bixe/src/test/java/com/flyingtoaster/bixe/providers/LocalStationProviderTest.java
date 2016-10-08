@@ -22,7 +22,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(BixeTestRunner.class)
 public class LocalStationProviderTest {
 
     @Mock
@@ -37,7 +36,7 @@ public class LocalStationProviderTest {
     }
 
     @Test
-    public void getStationsShouldGetStationsFromDataSource() {
+    public void getStations_shouldGetStationsFromDataSource() {
         Station station = mock(Station.class);
         when(mDataSource.getAllStations()).thenReturn(Lists.newArrayList(station));
         TestObserver<List<Station>> observer = new TestObserver<>();
@@ -45,11 +44,25 @@ public class LocalStationProviderTest {
         Observable<List<Station>> observable = mSubject.getStations();
         observable.subscribe(observer);
 
+        verify(mDataSource).open();
+        verify(mDataSource).close();
         List<List<Station>> emittedResponse = observer.values();
         assertThat(emittedResponse).isNotEmpty();
         List<Station> stationList = emittedResponse.get(0);
         assertThat(stationList).contains(station, Index.atIndex(0));
+    }
+
+    @Test
+    public void putStations_shouldPutStationsInDataSource() {
+        Station station = mock(Station.class);
+        List<Station> stations = Lists.newArrayList(station);
+        TestObserver<List<Station>> observer = new TestObserver<>();
+
+        Observable<List<Station>> observable = mSubject.putStations(stations);
+        observable.subscribe(observer);
+
         verify(mDataSource).open();
         verify(mDataSource).close();
+        verify(mDataSource).putStations(stations);
     }
 }

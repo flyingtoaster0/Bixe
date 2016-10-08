@@ -38,7 +38,7 @@ public class StationDataSource {
         dbHelper.close();
     }
 
-    public void createStation(Station station) {
+    public void putStation(Station station) {
         ContentValues values = StationTable.getContentValue(station);
 
         database.insertWithOnConflict(StationTable.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
@@ -46,9 +46,8 @@ public class StationDataSource {
         BixeApplication.getAppContext().getContentResolver().notifyChange(BixeContentProvider.CONTENT_URI, null);
     }
 
-    public void createStations(List<Station> stations) {
+    public void putStations(List<Station> stations) {
         ContentValues[] values = StationTable.getContentValues(stations);
-
 
         for (ContentValues value : values) {
             database.insertWithOnConflict(StationTable.TABLE_NAME, null, value, SQLiteDatabase.CONFLICT_REPLACE);

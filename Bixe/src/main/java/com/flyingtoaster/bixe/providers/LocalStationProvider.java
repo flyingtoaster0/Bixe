@@ -30,4 +30,16 @@ public class LocalStationProvider {
             }
         });
     }
+
+    public Observable<List<Station>> putStations(final List<Station> stations) {
+        return Observable.create(new ObservableOnSubscribe<List<Station>>() {
+            @Override
+            public void subscribe(ObservableEmitter<List<Station>> e) throws Exception {
+                mDataSource.open();
+                mDataSource.putStations(stations);
+                mDataSource.close();
+                e.onComplete();
+            }
+        });
+    }
 }
