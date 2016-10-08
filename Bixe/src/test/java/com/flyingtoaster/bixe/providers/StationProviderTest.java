@@ -41,8 +41,8 @@ public class StationProviderTest {
         when(mClient.getStations()).thenReturn(Lists.newArrayList(station));
         TestObserver<List<Station>> observer = new TestObserver<>();
 
-        Observable<List<Station>> stationsObservable = mSubject.getStations();
-        stationsObservable.subscribe(observer);
+        Observable<List<Station>> observable = mSubject.getStations();
+        observable.subscribe(observer);
 
         List<List<Station>> emittedResponse = observer.values();
         assertThat(emittedResponse).isNotEmpty();
