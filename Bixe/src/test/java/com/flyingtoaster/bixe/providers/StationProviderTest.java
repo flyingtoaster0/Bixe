@@ -1,10 +1,7 @@
 package com.flyingtoaster.bixe.providers;
 
 import com.flyingtoaster.bixe.models.Station;
-import com.google.gson.JsonArray;
-import com.squareup.okhttp.OkHttpClient;
 
-import org.apache.http.client.HttpClient;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -13,10 +10,9 @@ import org.mockito.MockitoAnnotations;
 import java.util.Collections;
 import java.util.List;
 
-import clients.StationClient;
+import com.flyingtoaster.bixe.clients.StationClient;
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;
-import io.reactivex.subscribers.TestSubscriber;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;

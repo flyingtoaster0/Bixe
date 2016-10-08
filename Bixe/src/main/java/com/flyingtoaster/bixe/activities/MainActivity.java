@@ -24,7 +24,7 @@ import com.google.android.gms.maps.model.Marker;
 
 import java.util.List;
 
-import clients.StationClient;
+import com.flyingtoaster.bixe.clients.StationClient;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;

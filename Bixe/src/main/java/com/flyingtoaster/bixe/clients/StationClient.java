@@ -1,4 +1,4 @@
-package clients;
+package com.flyingtoaster.bixe.clients;
 
 import com.flyingtoaster.bixe.models.Station;
 import com.flyingtoaster.bixe.models.StationsResponse;
