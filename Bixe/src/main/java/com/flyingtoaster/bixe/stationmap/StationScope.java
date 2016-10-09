@@ -1,4 +1,4 @@
-package com.flyingtoaster.bixe.scopes;
+package com.flyingtoaster.bixe.stationmap;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

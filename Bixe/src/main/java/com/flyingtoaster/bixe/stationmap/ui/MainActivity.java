@@ -1,4 +1,4 @@
-package com.flyingtoaster.bixe.activities;
+package com.flyingtoaster.bixe.stationmap.ui;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,13 +13,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.flyingtoaster.bixe.R;
-import com.flyingtoaster.bixe.components.DaggerStationComponent;
-import com.flyingtoaster.bixe.components.StationComponent;
-import com.flyingtoaster.bixe.fragments.BixeMapFragment;
+import com.flyingtoaster.bixe.stationmap.DaggerStationComponent;
+import com.flyingtoaster.bixe.stationmap.StationComponent;
 import com.flyingtoaster.bixe.interpolators.MaterialInterpolator;
-import com.flyingtoaster.bixe.models.Station;
-import com.flyingtoaster.bixe.modules.StationModule;
-import com.flyingtoaster.bixe.providers.StationProvider;
+import com.flyingtoaster.bixe.stationmap.models.Station;
+import com.flyingtoaster.bixe.stationmap.StationModule;
+import com.flyingtoaster.bixe.stationmap.data.providers.StationProvider;
+import com.flyingtoaster.bixe.stationmap.ui.map.BixeMapFragment;
 import com.flyingtoaster.bixe.utils.StringUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;

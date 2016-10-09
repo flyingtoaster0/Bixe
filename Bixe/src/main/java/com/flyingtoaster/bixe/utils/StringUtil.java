@@ -1,7 +1,7 @@
 package com.flyingtoaster.bixe.utils;
 
 
-import com.flyingtoaster.bixe.models.Station;
+import com.flyingtoaster.bixe.stationmap.models.Station;
 
 public class StringUtil {
 

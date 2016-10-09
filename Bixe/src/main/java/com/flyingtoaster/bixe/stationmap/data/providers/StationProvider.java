@@ -1,11 +1,11 @@
-package com.flyingtoaster.bixe.providers;
+package com.flyingtoaster.bixe.stationmap.data.providers;
 
-import com.flyingtoaster.bixe.datasets.StationDataSource;
-import com.flyingtoaster.bixe.models.Station;
+import com.flyingtoaster.bixe.stationmap.data.database.StationDataSource;
+import com.flyingtoaster.bixe.stationmap.models.Station;
 
 import java.util.List;
 
-import com.flyingtoaster.bixe.clients.StationClient;
+import com.flyingtoaster.bixe.stationmap.data.clients.StationClient;
 
 import javax.inject.Inject;
 

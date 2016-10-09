@@ -1,4 +1,4 @@
-package com.flyingtoaster.bixe.fragments.wrappers;
+package com.flyingtoaster.bixe.stationmap.ui.map;
 
 import android.content.Context;
 import android.view.MotionEvent;

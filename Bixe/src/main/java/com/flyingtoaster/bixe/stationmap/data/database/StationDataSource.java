@@ -1,4 +1,4 @@
-package com.flyingtoaster.bixe.datasets;
+package com.flyingtoaster.bixe.stationmap.data.database;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.flyingtoaster.bixe.BixeApplication;
-import com.flyingtoaster.bixe.models.Station;
+import com.flyingtoaster.bixe.stationmap.models.Station;
 
 import javax.inject.Inject;
 

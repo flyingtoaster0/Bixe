@@ -1,4 +1,4 @@
-package com.flyingtoaster.bixe.activities;
+package com.flyingtoaster.bixe.about;
 
 import android.app.Activity;
 import android.content.Intent;

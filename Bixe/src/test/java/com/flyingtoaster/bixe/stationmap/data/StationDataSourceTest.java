@@ -1,7 +1,8 @@
-package com.flyingtoaster.bixe.datasets;
+package com.flyingtoaster.bixe.stationmap.data;
 
 import com.flyingtoaster.bixe.BixeApplication;
-import com.flyingtoaster.bixe.models.Station;
+import com.flyingtoaster.bixe.stationmap.data.database.StationDataSource;
+import com.flyingtoaster.bixe.stationmap.models.Station;
 import com.google.android.collect.Lists;
 
 import org.junit.Test;

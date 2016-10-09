@@ -1,10 +1,10 @@
-package com.flyingtoaster.bixe.datasets;
+package com.flyingtoaster.bixe.stationmap.data.database;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.flyingtoaster.bixe.models.Station;
+import com.flyingtoaster.bixe.stationmap.models.Station;
 
 import java.util.ArrayList;
 import java.util.List;

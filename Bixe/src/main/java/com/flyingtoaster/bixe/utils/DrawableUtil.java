@@ -2,7 +2,7 @@ package com.flyingtoaster.bixe.utils;
 
 
 import com.flyingtoaster.bixe.R;
-import com.flyingtoaster.bixe.models.Station;
+import com.flyingtoaster.bixe.stationmap.models.Station;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 

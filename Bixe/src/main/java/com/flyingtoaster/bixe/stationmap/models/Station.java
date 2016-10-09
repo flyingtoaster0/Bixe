@@ -1,4 +1,4 @@
-package com.flyingtoaster.bixe.models;
+package com.flyingtoaster.bixe.stationmap.models;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;

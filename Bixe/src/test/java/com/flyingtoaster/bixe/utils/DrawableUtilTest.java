@@ -1,13 +1,12 @@
 package com.flyingtoaster.bixe.utils;
 
 import com.flyingtoaster.bixe.R;
-import com.flyingtoaster.bixe.models.Station;
+import com.flyingtoaster.bixe.stationmap.models.Station;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
 public class DrawableUtilTest {

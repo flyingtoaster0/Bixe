@@ -1,4 +1,4 @@
-package com.flyingtoaster.bixe.datasets;
+package com.flyingtoaster.bixe.stationmap.data.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

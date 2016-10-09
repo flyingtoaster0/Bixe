@@ -1,4 +1,4 @@
-package com.flyingtoaster.bixe.fragments;
+package com.flyingtoaster.bixe.stationmap.ui.map;
 
 import android.location.Location;
 import android.os.Bundle;
@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.flyingtoaster.bixe.fragments.wrappers.TouchableWrapper;
-import com.flyingtoaster.bixe.models.Station;
+import com.flyingtoaster.bixe.stationmap.ui.map.TouchableWrapper;
+import com.flyingtoaster.bixe.stationmap.models.Station;
 import com.flyingtoaster.bixe.utils.DrawableUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;

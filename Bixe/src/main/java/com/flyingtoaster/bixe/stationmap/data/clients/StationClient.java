@@ -1,7 +1,7 @@
-package com.flyingtoaster.bixe.clients;
+package com.flyingtoaster.bixe.stationmap.data.clients;
 
-import com.flyingtoaster.bixe.models.Station;
-import com.flyingtoaster.bixe.models.StationsResponse;
+import com.flyingtoaster.bixe.stationmap.models.Station;
+import com.flyingtoaster.bixe.stationmap.models.StationsResponse;
 import com.google.gson.Gson;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;

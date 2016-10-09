@@ -1,9 +1,8 @@
-package com.flyingtoaster.bixe.modules;
+package com.flyingtoaster.bixe.stationmap;
 
 import android.content.Context;
 
 import com.flyingtoaster.bixe.BixeApplication;
-import com.flyingtoaster.bixe.scopes.StationScope;
 
 import dagger.Module;
 import dagger.Provides;
