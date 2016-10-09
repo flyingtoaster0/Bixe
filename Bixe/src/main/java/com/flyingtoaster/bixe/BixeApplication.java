@@ -4,16 +4,15 @@ import android.app.Application;
 import android.content.Context;
 
 public class BixeApplication extends Application {
-    private static Context sAppContext;
+    private static BixeApplication sApplication;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        sAppContext = this;
+        sApplication = this;
     }
 
-    // TODO: Holy crap, get rid of this
-    public static Context getAppContext() {
-        return sAppContext;
+    public static BixeApplication getAppContext() {
+        return sApplication;
     }
 }

@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.flyingtoaster.bixe.R;
 import com.flyingtoaster.bixe.components.DaggerStationComponent;
 import com.flyingtoaster.bixe.components.StationComponent;
-import com.flyingtoaster.bixe.datasets.StationDataSource;
 import com.flyingtoaster.bixe.fragments.BixeMapFragment;
 import com.flyingtoaster.bixe.interpolators.MaterialInterpolator;
 import com.flyingtoaster.bixe.models.Station;
@@ -31,8 +30,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarkerClickListener {
@@ -40,8 +41,10 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
     @Inject
     StationProvider mStationProvider;
 
-    private MenuItem mRefreshProgressBarItem;
+    @Inject
+    LocalStationProvider mLocalStationProvider;
 
+    private MenuItem mRefreshProgressBarItem;
     private BixeMapFragment mTorontoFragment;
     private TextView mStationNameTextView;
     private TextView mBikesAmountTextView;
@@ -50,17 +53,11 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
     private View mDocksAmountLayout;
     private View mShareButton;
     private View mLocationFab;
-
     private View mSlidingContentView;
-
     private MenuItem mRefreshButtonItem;
-
     private Toolbar mToolbar;
 
     private Station mLastSelectedStation;
-
-    private StationDataSource mStationDataSource;
-    private LocalStationProvider mLocalStationProvider;
 
     private StationComponent mStationComponent;
 
@@ -117,9 +114,6 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
                 // Prevent presses from "bleeding" through to the map Fragment
             }
         });
-
-        mStationDataSource = new StationDataSource(this);
-        mLocalStationProvider = new LocalStationProvider(mStationDataSource);
 
         if (mTorontoFragment == null) {
             mTorontoFragment = new BixeMapFragment();
@@ -245,10 +239,10 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
     private void refreshMarkers() {
         showLoading(true);
 
-        mStationProvider.getStations().doOnNext(new Consumer<List<Station>>() {
+        mStationProvider.getStations().flatMap(new Function<List<Station>, ObservableSource<List<Station>>>() {
             @Override
-            public void accept(List<Station> stations) throws Exception {
-                mLocalStationProvider.putStations(stations);
+            public ObservableSource<List<Station>> apply(List<Station> stations) throws Exception {
+                return mLocalStationProvider.putStations(stations);
             }
         }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Station>>() {
             @Override

@@ -1,6 +1,8 @@
 package com.flyingtoaster.bixe.modules;
 
-import com.flyingtoaster.bixe.clients.StationClient;
+import android.content.Context;
+
+import com.flyingtoaster.bixe.BixeApplication;
 import com.flyingtoaster.bixe.scopes.StationScope;
 
 import dagger.Module;
@@ -11,7 +13,7 @@ public class StationModule {
 
     @StationScope
     @Provides
-    StationClient provideStationClient() {
-        return new StationClient();
+    Context provideContext() {
+        return BixeApplication.getAppContext();
     }
 }

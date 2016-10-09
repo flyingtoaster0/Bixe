@@ -6,6 +6,8 @@ import com.flyingtoaster.bixe.models.Station;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -14,6 +16,7 @@ public class LocalStationProvider {
 
     private final StationDataSource mDataSource;
 
+    @Inject
     public LocalStationProvider(StationDataSource dataSource) {
         mDataSource = dataSource;
     }
@@ -38,6 +41,7 @@ public class LocalStationProvider {
                 mDataSource.open();
                 mDataSource.putStations(stations);
                 mDataSource.close();
+                e.onNext(stations);
                 e.onComplete();
             }
         });

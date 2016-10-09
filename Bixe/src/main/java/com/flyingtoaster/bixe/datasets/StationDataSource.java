@@ -12,6 +12,8 @@ import android.database.sqlite.SQLiteDatabase;
 import com.flyingtoaster.bixe.BixeApplication;
 import com.flyingtoaster.bixe.models.Station;
 
+import javax.inject.Inject;
+
 public class StationDataSource {
 
     // Database fields
@@ -26,6 +28,7 @@ public class StationDataSource {
                 StationTable.Columns.LONGITUDE,
                 StationTable.Columns.IN_SERVICE};
 
+    @Inject
     public StationDataSource(Context context) {
         dbHelper = new StationDatabaseHelper(context);
     }
