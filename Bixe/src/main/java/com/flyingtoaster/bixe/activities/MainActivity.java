@@ -20,7 +20,6 @@ import com.flyingtoaster.bixe.fragments.BixeMapFragment;
 import com.flyingtoaster.bixe.interpolators.MaterialInterpolator;
 import com.flyingtoaster.bixe.models.Station;
 import com.flyingtoaster.bixe.modules.StationModule;
-import com.flyingtoaster.bixe.providers.LocalStationProvider;
 import com.flyingtoaster.bixe.providers.StationProvider;
 import com.flyingtoaster.bixe.utils.StationUtils;
 import com.google.android.gms.maps.GoogleMap;
@@ -40,9 +39,6 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
 
     @Inject
     StationProvider mStationProvider;
-
-    @Inject
-    LocalStationProvider mLocalStationProvider;
 
     private MenuItem mRefreshProgressBarItem;
     private BixeMapFragment mTorontoFragment;
@@ -222,7 +218,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
     }
 
     private void loadStoredMarkers() {
-        mLocalStationProvider.getStations().subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Station>>() {
+        mStationProvider.getStationsLocal().subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Station>>() {
             @Override
             public void accept(List<Station> stations) throws Exception {
                 mTorontoFragment.updateMarkers(stations);
@@ -242,7 +238,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
         mStationProvider.getStations().flatMap(new Function<List<Station>, ObservableSource<List<Station>>>() {
             @Override
             public ObservableSource<List<Station>> apply(List<Station> stations) throws Exception {
-                return mLocalStationProvider.putStations(stations);
+                return mStationProvider.putStationsLocal(stations);
             }
         }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Station>>() {
             @Override
