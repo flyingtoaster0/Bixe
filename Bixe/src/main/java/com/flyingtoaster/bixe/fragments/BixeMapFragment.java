@@ -1,13 +1,11 @@
 package com.flyingtoaster.bixe.fragments;
 
-import android.database.ContentObserver;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.flyingtoaster.bixe.datasets.StationDataSource;
 import com.flyingtoaster.bixe.fragments.wrappers.TouchableWrapper;
 import com.flyingtoaster.bixe.models.Station;
 import com.flyingtoaster.bixe.utils.DrawableUtil;
@@ -42,7 +40,6 @@ public class BixeMapFragment extends SupportMapFragment implements LocationListe
     private static final double STARTING_LNG = -79.383657;
 
     private static LatLng DEFAULT_LATLNG = new LatLng(STARTING_LAT, STARTING_LNG);
-    private ContentObserver mStationContentObserver;
 
     private HashMap<Integer, Station> mStations;
     private HashMap<String, Integer> mMarkerHash;
@@ -110,16 +107,6 @@ public class BixeMapFragment extends SupportMapFragment implements LocationListe
         if (mGoogleApiClient != null) {
             mGoogleApiClient.disconnect();
         }
-    }
-
-    private void loadStoredMarkers() {
-        StationDataSource dataSource = new StationDataSource(getActivity());
-        dataSource.open();
-
-        List<Station> stationList = dataSource.getAllStations();
-        dataSource.close();
-
-        updateMarkers(stationList);
     }
 
     protected synchronized void buildGoogleApiClient() {
