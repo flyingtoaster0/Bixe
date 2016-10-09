@@ -20,6 +20,7 @@ import com.flyingtoaster.bixe.interpolators.MaterialInterpolator;
 import com.flyingtoaster.bixe.models.Station;
 import com.flyingtoaster.bixe.modules.StationModule;
 import com.flyingtoaster.bixe.providers.StationProvider;
+import com.flyingtoaster.bixe.utils.StringUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
@@ -168,7 +169,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
     }
 
     private void updateStationInfoView(Station station) {
-        String stationName = station.getStationName();
+        String stationName = StringUtil.fixStationName(station.getStationName());
         Integer availableBikes = station.getAvailableBikes();
         Integer availableDocks = station.getAvailableDocks();
 
