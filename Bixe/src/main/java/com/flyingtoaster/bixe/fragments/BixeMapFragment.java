@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.flyingtoaster.bixe.datasets.StationDataSource;
 import com.flyingtoaster.bixe.fragments.wrappers.TouchableWrapper;
 import com.flyingtoaster.bixe.models.Station;
-import com.flyingtoaster.bixe.utils.StationUtils;
+import com.flyingtoaster.bixe.utils.DrawableUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
@@ -243,9 +243,9 @@ public class BixeMapFragment extends SupportMapFragment implements LocationListe
                     BitmapDescriptor bitmapDescriptor;
 
                     if (mLastSelectedStationId != null && mLastSelectedStationId == station.getId()) {
-                        bitmapDescriptor = StationUtils.getSelectedMarkerBitmapDescriptor(station);
+                        bitmapDescriptor = DrawableUtil.getSelectedMarkerBitmapDescriptor(station);
                     } else {
-                        bitmapDescriptor = StationUtils.getMarkerBitmapDescriptor(station);
+                        bitmapDescriptor = DrawableUtil.getMarkerBitmapDescriptor(station);
                     }
 
                     MarkerOptions options = new MarkerOptions()
@@ -274,7 +274,7 @@ public class BixeMapFragment extends SupportMapFragment implements LocationListe
         Station selectedStation = mStations.get(stationId);
         resetLastMarkerIcon();
         mLastSelectedStationId = selectedStation.getId();
-        marker.setIcon(StationUtils.getSelectedMarkerBitmapDescriptor(selectedStation));
+        marker.setIcon(DrawableUtil.getSelectedMarkerBitmapDescriptor(selectedStation));
 
         return selectedStation;
     }
@@ -287,7 +287,7 @@ public class BixeMapFragment extends SupportMapFragment implements LocationListe
 
         Station lastStation = mStations.get(mLastSelectedStationId);
 
-        BitmapDescriptor bitmapDescriptor = StationUtils.getMarkerBitmapDescriptor(lastStation);
+        BitmapDescriptor bitmapDescriptor = DrawableUtil.getMarkerBitmapDescriptor(lastStation);
         lastMarker.setIcon(bitmapDescriptor);
     }
 
