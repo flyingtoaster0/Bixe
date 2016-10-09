@@ -2,6 +2,7 @@ package com.flyingtoaster.bixe.datasets;
 
 import com.flyingtoaster.bixe.BixeApplication;
 import com.flyingtoaster.bixe.models.Station;
+import com.google.android.collect.Lists;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +13,7 @@ import java.util.List;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.ANDROID.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 @RunWith(com.flyingtoaster.bixe.BixeTestRunner.class)
 public class StationDataSourceTest {
@@ -19,7 +21,7 @@ public class StationDataSourceTest {
     @Test
     public void shouldRetrieveCorrectValues() {
         StationDataSource dataSource = getStationDataSource();
-        Station stationToInsert = FakeDataUtil.getStation();
+        Station stationToInsert = mock(Station.class);
         List<Station> stationList;
         Station expectedStation;
 
@@ -44,7 +46,7 @@ public class StationDataSourceTest {
     @Test
     public void shouldRetrieveCorrectValuesAfterUpdate() {
         StationDataSource dataSource = getStationDataSource();
-        Station stationToInsert = FakeDataUtil.getStation();
+        Station stationToInsert = mock(Station.class);
         List<Station> stationList;
         Station expectedStation;
 
@@ -73,26 +75,15 @@ public class StationDataSourceTest {
     @Test
     public void shouldInsertMultipleStations() {
         StationDataSource dataSource = getStationDataSource();
-        ArrayList<Station> stationsToInsert = FakeDataUtil.getStations();
+        ArrayList<Station> stationsToInsert = Lists.newArrayList(mock(Station.class), mock(Station.class));
         List<Station> expectedStationList;
-        Station firstExpectedStation;
-        Station secondExpectedStation;
 
         dataSource.open();
         dataSource.putStations(stationsToInsert);
-
         expectedStationList = dataSource.getAllStations();
         dataSource.close();
 
-        assertThat(expectedStationList).isNotEmpty();
-
-        firstExpectedStation = expectedStationList.get(0);
-        assertThat(firstExpectedStation.getId()).isEqualTo(1);
-        assertThat(firstExpectedStation.getStationName()).isEqualTo("Yonge St. and Dundas St.");
-
-        secondExpectedStation = expectedStationList.get(1);
-        assertThat(secondExpectedStation.getId()).isEqualTo(2);
-        assertThat(secondExpectedStation.getStationName()).isEqualTo("Yonge St. and Adelaide St.");
+        assertThat(expectedStationList).hasSize(2);
     }
 
     private StationDataSource getStationDataSource() {

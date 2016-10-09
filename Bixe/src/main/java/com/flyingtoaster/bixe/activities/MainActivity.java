@@ -14,11 +14,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.flyingtoaster.bixe.R;
-import com.flyingtoaster.bixe.clients.StationClient;
+import com.flyingtoaster.bixe.components.DaggerStationComponent;
+import com.flyingtoaster.bixe.components.StationComponent;
 import com.flyingtoaster.bixe.datasets.StationDataSource;
 import com.flyingtoaster.bixe.fragments.BixeMapFragment;
 import com.flyingtoaster.bixe.interpolators.MaterialInterpolator;
 import com.flyingtoaster.bixe.models.Station;
+import com.flyingtoaster.bixe.modules.StationModule;
 import com.flyingtoaster.bixe.providers.LocalStationProvider;
 import com.flyingtoaster.bixe.providers.StationProvider;
 import com.flyingtoaster.bixe.utils.StationUtils;
@@ -27,14 +29,20 @@ import com.google.android.gms.maps.model.Marker;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarkerClickListener {
 
-    private BixeMapFragment mTorontoFragment;
+    @Inject
+    StationProvider mStationProvider;
 
+    private MenuItem mRefreshProgressBarItem;
+
+    private BixeMapFragment mTorontoFragment;
     private TextView mStationNameTextView;
     private TextView mBikesAmountTextView;
     private TextView mDocksAmountTextView;
@@ -42,25 +50,29 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
     private View mDocksAmountLayout;
     private View mShareButton;
     private View mLocationFab;
+
     private View mSlidingContentView;
 
-    private MenuItem mRefreshProgressBarItem;
     private MenuItem mRefreshButtonItem;
 
     private Toolbar mToolbar;
 
     private Station mLastSelectedStation;
 
-    private StationClient mStationClient;
-    private StationProvider mStationProvider;
-
     private StationDataSource mStationDataSource;
     private LocalStationProvider mLocalStationProvider;
+
+    private StationComponent mStationComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mStationComponent = DaggerStationComponent.builder()
+                .stationModule(new StationModule())
+                .build();
+        mStationComponent.inject(this);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mStationNameTextView = (TextView) findViewById(R.id.station_name_text_view);
@@ -105,9 +117,6 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
                 // Prevent presses from "bleeding" through to the map Fragment
             }
         });
-
-        mStationClient = new StationClient();
-        mStationProvider = new StationProvider(mStationClient);
 
         mStationDataSource = new StationDataSource(this);
         mLocalStationProvider = new LocalStationProvider(mStationDataSource);

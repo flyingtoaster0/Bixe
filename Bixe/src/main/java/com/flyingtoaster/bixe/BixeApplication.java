@@ -12,6 +12,7 @@ public class BixeApplication extends Application {
         sAppContext = this;
     }
 
+    // TODO: Holy crap, get rid of this
     public static Context getAppContext() {
         return sAppContext;
     }

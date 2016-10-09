@@ -11,9 +11,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class StationClient extends OkHttpClient {
 
     private static final String API_URL = "https://feeds.bikesharetoronto.com/stations/stations.json";
+
+    @Inject
+    public StationClient() {
+    }
 
     public List<Station> getStations() {
         List<Station> stationList = new ArrayList<>();

@@ -13,6 +13,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.util.ActivityController;
 
 import static org.fest.assertions.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 @RunWith(BixeTestRunner.class)
 
@@ -37,7 +38,7 @@ public class BixeContentResolverTest {
     public void contentObserverShouldNotifyOnUpdate() {
         ContentResolverActivity activity;
         activity = mController.create().start().resume().get();
-        Station stationToInsert = FakeDataUtil.getStation();
+        Station stationToInsert = mock(Station.class);
         StationDataSource dataSource = getStationDataSource();
         dataSource.open();
 

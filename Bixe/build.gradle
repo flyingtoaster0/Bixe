@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'idea'
 
 buildscript {
@@ -44,21 +45,19 @@ dependencies {
     compile 'com.android.support:design:24.2.1'
     compile 'com.google.android.gms:play-services-location:7.0.0'
     compile 'com.google.android.gms:play-services-maps:7.0.0'
-    testCompile('junit:junit:4.11') {
-        exclude(group: 'org.hamcrest')
-    }
     compile fileTree(dir: 'libs', include: ['*.jar'])
-//    compile 'com.android.support:support-v4:21.0.3'
-//    compile 'com.android.support:support-v13:21.0.3'
     compile 'io.reactivex.rxjava2:rxjava:2.0.0-RC4'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.0-RC1'
+    compile 'com.google.dagger:dagger:2.7'
+    apt 'com.google.dagger:dagger-compiler:2.7'
+
     compile 'com.google.code.gson:gson:2.3'
     compile 'com.squareup.okhttp:okhttp:2.3.0'
     compile 'com.squareup.okhttp:mockwebserver:2.3.0'
-    //    compile 'com.sothree.slidinguppanel:library:3.0.0'
-        compile 'com.pnikosis:materialish-progress:1.5'
-    // TODO: requires special build of robolectric right now. working on this...
-//    testCompile 'junit:junit:4.12'
+    compile 'com.pnikosis:materialish-progress:1.5'
+    testCompile('junit:junit:4.12') {
+        exclude(group: 'org.hamcrest')
+    }
     testCompile('org.robolectric:robolectric:3.0-rc2')
     testCompile 'org.mockito:mockito-core:2.0.7-beta'
     testCompile 'org.hamcrest:hamcrest-core:1.1'

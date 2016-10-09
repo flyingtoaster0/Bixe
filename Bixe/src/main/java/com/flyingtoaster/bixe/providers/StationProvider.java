@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.flyingtoaster.bixe.clients.StationClient;
 
+import javax.inject.Inject;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -14,6 +16,7 @@ public class StationProvider {
 
     private final StationClient mClient;
 
+    @Inject
     public StationProvider(StationClient client) {
         mClient = client;
     }
