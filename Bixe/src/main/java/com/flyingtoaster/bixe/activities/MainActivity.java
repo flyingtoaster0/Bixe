@@ -1,6 +1,5 @@
 package com.flyingtoaster.bixe.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
@@ -21,7 +20,6 @@ import com.flyingtoaster.bixe.interpolators.MaterialInterpolator;
 import com.flyingtoaster.bixe.models.Station;
 import com.flyingtoaster.bixe.modules.StationModule;
 import com.flyingtoaster.bixe.providers.StationProvider;
-import com.flyingtoaster.bixe.utils.StationUtils;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
@@ -29,6 +27,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -37,21 +38,31 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarkerClickListener {
 
+    @BindView(R.id.station_name_text_view)
+    TextView mStationNameTextView;
+
+    @BindView(R.id.bikes_amount_textview)
+    TextView mBikesAmountTextView;
+
+    @BindView(R.id.docks_amount_textview)
+    TextView mDocksAmountTextView;
+
+    @BindView(R.id.bikes_amount_layout)
+    View mBikesAmountLayout;
+
+    @BindView(R.id.docks_amount_layout)
+    View mDocksAmountLayout;
+
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+
     @Inject
     StationProvider mStationProvider;
 
-    private MenuItem mRefreshProgressBarItem;
-    private BixeMapFragment mTorontoFragment;
-    private TextView mStationNameTextView;
-    private TextView mBikesAmountTextView;
-    private TextView mDocksAmountTextView;
-    private View mBikesAmountLayout;
-    private View mDocksAmountLayout;
-    private View mShareButton;
-    private View mLocationFab;
-    private View mSlidingContentView;
     private MenuItem mRefreshButtonItem;
-    private Toolbar mToolbar;
+    private MenuItem mRefreshProgressBarItem;
+
+    private BixeMapFragment mMapFragment;
 
     private Station mLastSelectedStation;
 
@@ -66,54 +77,10 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
                 .stationModule(new StationModule())
                 .build();
         mStationComponent.inject(this);
-
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mStationNameTextView = (TextView) findViewById(R.id.station_name_text_view);
-        mBikesAmountTextView = (TextView) findViewById(R.id.bikes_amount_textview);
-        mDocksAmountTextView = (TextView) findViewById(R.id.docks_amount_textview);
-        mBikesAmountLayout = findViewById(R.id.bikes_amount_layout);
-        mDocksAmountLayout = findViewById(R.id.docks_amount_layout);
-        mLocationFab = findViewById(R.id.sliding_menu_floating_button_location);
-        mShareButton = findViewById(R.id.slidemenu_button_share);
-        mSlidingContentView = findViewById(R.id.sliding_content_view);
+        ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
-        
-        mLocationFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mTorontoFragment.latchMyLocation();
-            }
-        });
 
-        mShareButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mLastSelectedStation == null) {
-                    throw new IllegalStateException("A station must be selected before sharing");
-                }
-
-                Intent sendIntent = new Intent();
-
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, StationUtils.getShareText(mLastSelectedStation));
-                sendIntent.setType("text/plain");
-
-                startActivity(sendIntent);
-            }
-        });
-
-        mSlidingContentView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // NO-OP
-                // Prevent presses from "bleeding" through to the map Fragment
-            }
-        });
-
-        if (mTorontoFragment == null) {
-            mTorontoFragment = new BixeMapFragment();
-        }
         setupMapFragment();
 
         loadStoredMarkers();
@@ -123,7 +90,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
     public void onResume() {
         super.onResume();
 
-        mTorontoFragment.setOnMarkerClickListener(this);
+        mMapFragment.setOnMarkerClickListener(this);
     }
 
     @Override
@@ -146,6 +113,17 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
         return false;
     }
 
+    @OnClick(R.id.sliding_menu_floating_button_location)
+    void onLocationFabClick() {
+        mMapFragment.latchMyLocation();
+    }
+
+    @OnClick(R.id.sliding_content_view)
+    void onSlidingContentClick() {
+        // NO-OP
+        // Prevent presses from "bleeding" through to the map Fragment
+    }
+
     private void showLoading(boolean visible) {
         if (mRefreshButtonItem != null) {
             mRefreshButtonItem.setVisible(!visible);
@@ -157,9 +135,13 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
     }
 
     protected void setupMapFragment() {
+        if (mMapFragment == null) {
+            mMapFragment = new BixeMapFragment();
+        }
+
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
-        ft.replace(R.id.toronto_fragment, mTorontoFragment);
+        ft.replace(R.id.toronto_fragment, mMapFragment);
         ft.commit();
     }
 
@@ -175,7 +157,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        mLastSelectedStation = mTorontoFragment.getStationForMarker(marker);
+        mLastSelectedStation = mMapFragment.getStationForMarker(marker);
 
         updateStationInfoView(mLastSelectedStation);
 
@@ -221,7 +203,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
         mStationProvider.getStationsLocal().subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Station>>() {
             @Override
             public void accept(List<Station> stations) throws Exception {
-                mTorontoFragment.updateMarkers(stations);
+                mMapFragment.updateMarkers(stations);
                 refreshMarkers();
             }
         }, new Consumer<Throwable>() {
@@ -243,7 +225,7 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
         }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Station>>() {
             @Override
             public void accept(List<Station> stations) throws Exception {
-                mTorontoFragment.updateMarkers(stations);
+                mMapFragment.updateMarkers(stations);
                 showLoading(false);
             }
         }, new Consumer<Throwable>() {
