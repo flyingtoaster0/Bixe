@@ -86,7 +86,7 @@ public class StationDataSourceTest {
     }
 
     private StationDataSource getStationDataSource() {
-        StationDataSource dataSource = new StationDataSource(BixeApplication.getAppContext());
+        StationDataSource dataSource = new StationDataSource(BixeApplication.getApplication());
         return dataSource;
     }
 }

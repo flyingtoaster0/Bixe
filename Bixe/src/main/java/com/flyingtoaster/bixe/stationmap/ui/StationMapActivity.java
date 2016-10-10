@@ -12,13 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.flyingtoaster.bixe.BixeApplication;
 import com.flyingtoaster.bixe.R;
-import com.flyingtoaster.bixe.stationmap.DaggerStationComponent;
-import com.flyingtoaster.bixe.stationmap.StationComponent;
 import com.flyingtoaster.bixe.interpolators.MaterialInterpolator;
 import com.flyingtoaster.bixe.stationmap.models.Station;
-import com.flyingtoaster.bixe.stationmap.StationModule;
-import com.flyingtoaster.bixe.stationmap.data.providers.StationProvider;
 import com.flyingtoaster.bixe.stationmap.ui.map.BixeMapFragment;
 import com.flyingtoaster.bixe.utils.StringUtil;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,11 +28,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.ObservableSource;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 
 public class StationMapActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener, StationMapContract.View {
 
@@ -58,7 +50,7 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
     Toolbar mToolbar;
 
     @Inject
-    StationProvider mStationProvider;
+    StationMapPresenter mPresenter;
 
     private MenuItem mRefreshButtonItem;
     private MenuItem mRefreshProgressBarItem;
@@ -67,18 +59,13 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
 
     private Station mLastSelectedStation;
 
-    private StationComponent mStationComponent;
-
-    StationMapPresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mStationComponent = DaggerStationComponent.builder()
-                .stationModule(new StationModule())
-                .build();
-        mStationComponent.inject(this);
+        BixeApplication.getApplication().getStationComponent().inject(this);
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
@@ -86,7 +73,6 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
 
         setupMapFragment();
 
-        mPresenter = new StationMapPresenter(mStationProvider);
 //        loadStoredMarkers();
         mMapFragment.setOnMarkerClickListener(this);
     }
@@ -257,10 +243,12 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
     @Override
     public void showLoading() {
         mRefreshProgressBarItem.setVisible(true);
+        mRefreshButtonItem.setVisible(false);
     }
 
     @Override
     public void hideLoading() {
-
+        mRefreshProgressBarItem.setVisible(false);
+        mRefreshButtonItem.setVisible(true);
     }
 }
