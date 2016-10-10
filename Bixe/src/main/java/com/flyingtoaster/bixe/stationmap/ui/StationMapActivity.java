@@ -134,10 +134,6 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
     }
 
     protected void setupMapFragment() {
-        if (mMapFragment == null) {
-            mMapFragment = new BixeMapFragment();
-        }
-
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
         ft.replace(R.id.toronto_fragment, mMapFragment);

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.flyingtoaster.bixe.BixeApplication;
 import com.flyingtoaster.bixe.stationmap.data.providers.StationProvider;
 import com.flyingtoaster.bixe.stationmap.ui.StationMapPresenter;
+import com.flyingtoaster.bixe.stationmap.ui.map.StationMapFragment;
 
 import dagger.Module;
 import dagger.Provides;
@@ -28,5 +29,10 @@ public class TestStationModule {
     @Provides
     StationMapPresenter provideStationMapPresenter() {
         return mock(StationMapPresenter.class);
+    }
+
+    @Provides
+    StationMapFragment provideStationMapFragment() {
+        return mock(StationMapFragment.class);
     }
 }

@@ -26,7 +26,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.HashMap;
 import java.util.List;
 
-public class BixeMapFragment extends SupportMapFragment implements LocationListener, GoogleApiClient.ConnectionCallbacks {
+public class StationMapFragment extends SupportMapFragment implements LocationListener, GoogleApiClient.ConnectionCallbacks {
 
     private View mOriginalContentView;
     private TouchableWrapper mTouchView;
@@ -54,7 +54,6 @@ public class BixeMapFragment extends SupportMapFragment implements LocationListe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         mOriginalContentView = super.onCreateView(inflater, parent, savedInstanceState);
-        setHasOptionsMenu(true);
 
         mTouchView = new TouchableWrapper(getActivity());
         mTouchView.addView(mOriginalContentView);
