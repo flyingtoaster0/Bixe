@@ -58,21 +58,19 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
     private MenuItem mRefreshButtonItem;
     private MenuItem mRefreshProgressBarItem;
 
-    private Station mLastSelectedStation;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         BixeApplication.getApplication().getStationComponent().inject(this);
-
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
         setSupportActionBar(mToolbar);
 
-        setupMapFragment();
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction ft = manager.beginTransaction();
+        ft.replace(R.id.map_fragment, mMapFragment);
+        ft.commit();
         mMapFragment.setOnMarkerClickListener(this);
     }
 
@@ -87,6 +85,7 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
     @Override
     protected void onPause() {
         mPresenter.detachView();
+
         super.onPause();
     }
 
@@ -121,23 +120,6 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
         // Prevent presses from "bleeding" through to the map Fragment
     }
 
-    private void showLoading(boolean visible) {
-        if (mRefreshButtonItem != null) {
-            mRefreshButtonItem.setVisible(!visible);
-        }
-
-        if (mRefreshProgressBarItem != null) {
-            mRefreshProgressBarItem.setVisible(visible);
-        }
-    }
-
-    protected void setupMapFragment() {
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction ft = manager.beginTransaction();
-        ft.replace(R.id.toronto_fragment, mMapFragment);
-        ft.commit();
-    }
-
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         final int keycode = event.getKeyCode();
@@ -150,14 +132,35 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        mLastSelectedStation = mMapFragment.getStationForMarker(marker);
+        Station selectedStation = mMapFragment.getStationForMarker(marker);
 
-        updateStationInfoView(mLastSelectedStation);
+        updateStationInfoView(selectedStation);
 
         if (mBikesAmountLayout.getVisibility() != View.VISIBLE) {
             showAmounts();
         }
         return true;
+    }
+
+    @Override
+    public void updateMarkers(List<Station> stations) {
+        mMapFragment.updateMarkers(stations);
+    }
+
+    @Override
+    public void showLoading() {
+        if (mRefreshProgressBarItem != null && mRefreshButtonItem != null) {
+            mRefreshProgressBarItem.setVisible(true);
+            mRefreshButtonItem.setVisible(false);
+        }
+    }
+
+    @Override
+    public void hideLoading() {
+        if (mRefreshProgressBarItem != null && mRefreshButtonItem != null) {
+            mRefreshProgressBarItem.setVisible(false);
+            mRefreshButtonItem.setVisible(true);
+        }
     }
 
     private void updateStationInfoView(Station station) {
@@ -190,26 +193,5 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
         view.setTranslationY(0.25f);
 
         view.animate().alpha(1.0f).scaleX(1.0f).scaleY(1.0f).translationX(0.0f).translationY(0.0f).setDuration(200).setInterpolator(new MaterialInterpolator()).start();
-    }
-
-    @Override
-    public void updateMarkers(List<Station> stations) {
-        mMapFragment.updateMarkers(stations);
-    }
-
-    @Override
-    public void showLoading() {
-        if (mRefreshProgressBarItem != null && mRefreshButtonItem != null) {
-            mRefreshProgressBarItem.setVisible(true);
-            mRefreshButtonItem.setVisible(false);
-        }
-    }
-
-    @Override
-    public void hideLoading() {
-        if (mRefreshProgressBarItem != null && mRefreshButtonItem != null) {
-            mRefreshProgressBarItem.setVisible(false);
-            mRefreshButtonItem.setVisible(true);
-        }
     }
 }
