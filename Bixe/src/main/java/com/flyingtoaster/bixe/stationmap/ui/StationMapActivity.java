@@ -16,7 +16,7 @@ import com.flyingtoaster.bixe.BixeApplication;
 import com.flyingtoaster.bixe.R;
 import com.flyingtoaster.bixe.interpolators.MaterialInterpolator;
 import com.flyingtoaster.bixe.stationmap.models.Station;
-import com.flyingtoaster.bixe.stationmap.ui.map.BixeMapFragment;
+import com.flyingtoaster.bixe.stationmap.ui.map.StationMapFragment;
 import com.flyingtoaster.bixe.utils.StringUtil;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
@@ -52,10 +52,11 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
     @Inject
     StationMapPresenter mPresenter;
 
+    @Inject
+    StationMapFragment mMapFragment;
+
     private MenuItem mRefreshButtonItem;
     private MenuItem mRefreshProgressBarItem;
-
-    private BixeMapFragment mMapFragment;
 
     private Station mLastSelectedStation;
 
@@ -72,7 +73,6 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
         setSupportActionBar(mToolbar);
 
         setupMapFragment();
-
 //        loadStoredMarkers();
         mMapFragment.setOnMarkerClickListener(this);
     }
@@ -112,10 +112,10 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
         return false;
     }
 
-//    @OnClick(R.id.sliding_menu_floating_button_location)
-//    void onLocationFabClick() {
-//        mMapFragment.latchMyLocation();
-//    }
+    @OnClick(R.id.sliding_menu_floating_button_location)
+    void onLocationFabClick() {
+        mMapFragment.latchMyLocation();
+    }
 
     @OnClick(R.id.sliding_content_view)
     void onSlidingContentClick() {
@@ -238,13 +238,17 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
 
     @Override
     public void showLoading() {
-        mRefreshProgressBarItem.setVisible(true);
-        mRefreshButtonItem.setVisible(false);
+        if (mRefreshProgressBarItem != null && mRefreshButtonItem != null) {
+            mRefreshProgressBarItem.setVisible(true);
+            mRefreshButtonItem.setVisible(false);
+        }
     }
 
     @Override
     public void hideLoading() {
-        mRefreshProgressBarItem.setVisible(false);
-        mRefreshButtonItem.setVisible(true);
+        if (mRefreshProgressBarItem != null && mRefreshButtonItem != null) {
+            mRefreshProgressBarItem.setVisible(false);
+            mRefreshButtonItem.setVisible(true);
+        }
     }
 }
