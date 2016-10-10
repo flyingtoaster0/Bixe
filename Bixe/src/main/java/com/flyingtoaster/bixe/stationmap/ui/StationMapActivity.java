@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -37,7 +37,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarkerClickListener {
+public class StationMapActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener, StationMapContract.View {
 
     @BindView(R.id.station_name_text_view)
     TextView mStationNameTextView;
@@ -69,29 +69,40 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
 
     private StationComponent mStationComponent;
 
+    StationMapPresenter mPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         mStationComponent = DaggerStationComponent.builder()
                 .stationModule(new StationModule())
                 .build();
         mStationComponent.inject(this);
+        setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
         setSupportActionBar(mToolbar);
 
         setupMapFragment();
 
-        loadStoredMarkers();
+        mPresenter = new StationMapPresenter(mStationProvider);
+//        loadStoredMarkers();
+        mMapFragment.setOnMarkerClickListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        mMapFragment.setOnMarkerClickListener(this);
+        mPresenter.attachView(this);
+        mPresenter.refreshStations();
+    }
+
+    @Override
+    protected void onPause() {
+        mPresenter.detachView();
+        super.onPause();
     }
 
     @Override
@@ -107,17 +118,18 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                refreshMarkers();
+//                refreshMarkers();
+                mPresenter.refreshStations();
                 return true;
         }
 
         return false;
     }
 
-    @OnClick(R.id.sliding_menu_floating_button_location)
-    void onLocationFabClick() {
-        mMapFragment.latchMyLocation();
-    }
+//    @OnClick(R.id.sliding_menu_floating_button_location)
+//    void onLocationFabClick() {
+//        mMapFragment.latchMyLocation();
+//    }
 
     @OnClick(R.id.sliding_content_view)
     void onSlidingContentClick() {
@@ -200,40 +212,55 @@ public class MainActivity extends ActionBarActivity implements GoogleMap.OnMarke
         view.animate().alpha(1.0f).scaleX(1.0f).scaleY(1.0f).translationX(0.0f).translationY(0.0f).setDuration(200).setInterpolator(new MaterialInterpolator()).start();
     }
 
-    private void loadStoredMarkers() {
-        mStationProvider.getStationsLocal().subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Station>>() {
-            @Override
-            public void accept(List<Station> stations) throws Exception {
-                mMapFragment.updateMarkers(stations);
-                refreshMarkers();
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
+//    private void loadStoredMarkers() {
+//        mStationProvider.getStationsLocal().subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Station>>() {
+//            @Override
+//            public void accept(List<Station> stations) throws Exception {
+//                mMapFragment.updateMarkers(stations);
+//                refreshMarkers();
+//            }
+//        }, new Consumer<Throwable>() {
+//            @Override
+//            public void accept(Throwable throwable) throws Exception {
+//
+//            }
+//        });
+//    }
+//
+//    private void refreshMarkers() {
+//        showLoading(true);
+//
+//        mStationProvider.getStations().flatMap(new Function<List<Station>, ObservableSource<List<Station>>>() {
+//            @Override
+//            public ObservableSource<List<Station>> apply(List<Station> stations) throws Exception {
+//                return mStationProvider.putStationsLocal(stations);
+//            }
+//        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Station>>() {
+//            @Override
+//            public void accept(List<Station> stations) throws Exception {
+//                mMapFragment.updateMarkers(stations);
+//                showLoading(false);
+//            }
+//        }, new Consumer<Throwable>() {
+//            @Override
+//            public void accept(Throwable throwable) throws Exception {
+//                showLoading(false);
+//            }
+//        });
+//    }
 
-            }
-        });
+    @Override
+    public void updateMarkers(List<Station> stations) {
+        mMapFragment.updateMarkers(stations);
     }
 
-    private void refreshMarkers() {
-        showLoading(true);
+    @Override
+    public void showLoading() {
+        mRefreshProgressBarItem.setVisible(true);
+    }
 
-        mStationProvider.getStations().flatMap(new Function<List<Station>, ObservableSource<List<Station>>>() {
-            @Override
-            public ObservableSource<List<Station>> apply(List<Station> stations) throws Exception {
-                return mStationProvider.putStationsLocal(stations);
-            }
-        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Station>>() {
-            @Override
-            public void accept(List<Station> stations) throws Exception {
-                mMapFragment.updateMarkers(stations);
-                showLoading(false);
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                showLoading(false);
-            }
-        });
+    @Override
+    public void hideLoading() {
+
     }
 }

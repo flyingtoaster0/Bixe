@@ -15,12 +15,12 @@ buildscript {
 }
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.3"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 24
+        targetSdkVersion 22
         versionCode 4
         versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -28,7 +28,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     sourceSets {
@@ -45,11 +45,11 @@ idea {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:design:24.2.1'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.android.support:design:23.3.0'
     compile 'com.google.android.gms:play-services-location:7.0.0'
     compile 'com.google.android.gms:play-services-maps:7.0.0'
-    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'io.reactivex.rxjava2:rxjava:2.0.0-RC4'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.0-RC1'
     compile 'com.google.dagger:dagger:2.7'
@@ -74,7 +74,6 @@ dependencies {
         exclude(module: 'support-v4')
     }
 
-    testCompile 'org.robolectric:android-all:4.3_r2-robolectric-0'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
 }

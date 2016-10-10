@@ -11,7 +11,7 @@ import static org.mockito.Mockito.mock;
 
 public class DrawableUtilTest {
 
-    @Ignore("TODO: Test drawables in MainActivity instead")
+    @Ignore("TODO: Test drawables in StationMapActivity instead")
     @Test
     public void shouldReturnCorrectMarkerDrawable() {
         Station station = mock(Station.class);

@@ -3,8 +3,8 @@ package com.flyingtoaster.bixe.stationmap.data;
 import com.flyingtoaster.bixe.BixeApplication;
 import com.flyingtoaster.bixe.stationmap.data.database.StationDataSource;
 import com.flyingtoaster.bixe.stationmap.models.Station;
-import com.google.android.collect.Lists;
 
+import org.fest.util.Lists;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.ANDROID.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 @RunWith(com.flyingtoaster.bixe.BixeTestRunner.class)

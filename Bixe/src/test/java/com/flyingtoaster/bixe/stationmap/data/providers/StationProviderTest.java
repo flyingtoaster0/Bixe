@@ -4,6 +4,7 @@ import com.flyingtoaster.bixe.stationmap.data.database.StationDataSource;
 import com.flyingtoaster.bixe.stationmap.models.Station;
 
 import org.fest.assertions.data.Index;
+import org.fest.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -12,7 +13,6 @@ import org.mockito.MockitoAnnotations;
 import java.util.List;
 
 import com.flyingtoaster.bixe.stationmap.data.clients.StationClient;
-import com.google.android.collect.Lists;
 
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;

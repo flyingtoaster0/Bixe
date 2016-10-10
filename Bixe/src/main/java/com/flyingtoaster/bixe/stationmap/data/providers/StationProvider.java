@@ -12,6 +12,8 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class StationProvider {
 
@@ -32,7 +34,7 @@ public class StationProvider {
                 e.onNext(stations);
                 e.onComplete();
             }
-        });
+        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<List<Station>> getStationsLocal() {
@@ -45,7 +47,7 @@ public class StationProvider {
                 e.onNext(stations);
                 e.onComplete();
             }
-        });
+        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<List<Station>> putStationsLocal(final List<Station> stations) {
@@ -58,6 +60,6 @@ public class StationProvider {
                 e.onNext(stations);
                 e.onComplete();
             }
-        });
+        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread());
     }
 }
