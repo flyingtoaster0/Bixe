@@ -73,7 +73,6 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
         setSupportActionBar(mToolbar);
 
         setupMapFragment();
-//        loadStoredMarkers();
         mMapFragment.setOnMarkerClickListener(this);
     }
 
@@ -104,7 +103,6 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_refresh:
-//                refreshMarkers();
                 mPresenter.refreshStations();
                 return true;
         }
@@ -193,43 +191,6 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
 
         view.animate().alpha(1.0f).scaleX(1.0f).scaleY(1.0f).translationX(0.0f).translationY(0.0f).setDuration(200).setInterpolator(new MaterialInterpolator()).start();
     }
-
-//    private void loadStoredMarkers() {
-//        mStationProvider.getStationsLocal().subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Station>>() {
-//            @Override
-//            public void accept(List<Station> stations) throws Exception {
-//                mMapFragment.updateMarkers(stations);
-//                refreshMarkers();
-//            }
-//        }, new Consumer<Throwable>() {
-//            @Override
-//            public void accept(Throwable throwable) throws Exception {
-//
-//            }
-//        });
-//    }
-//
-//    private void refreshMarkers() {
-//        showLoading(true);
-//
-//        mStationProvider.getStations().flatMap(new Function<List<Station>, ObservableSource<List<Station>>>() {
-//            @Override
-//            public ObservableSource<List<Station>> apply(List<Station> stations) throws Exception {
-//                return mStationProvider.putStationsLocal(stations);
-//            }
-//        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Station>>() {
-//            @Override
-//            public void accept(List<Station> stations) throws Exception {
-//                mMapFragment.updateMarkers(stations);
-//                showLoading(false);
-//            }
-//        }, new Consumer<Throwable>() {
-//            @Override
-//            public void accept(Throwable throwable) throws Exception {
-//                showLoading(false);
-//            }
-//        });
-//    }
 
     @Override
     public void updateMarkers(List<Station> stations) {

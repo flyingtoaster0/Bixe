@@ -4,8 +4,6 @@ import android.view.MenuItem;
 
 import com.flyingtoaster.bixe.BuildConfig;
 import com.flyingtoaster.bixe.R;
-import com.flyingtoaster.bixe.TestBixeApplication;
-import com.flyingtoaster.bixe.stationmap.TestStationComponent;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -36,33 +36,6 @@ public class StationMapPresenter implements StationMapContract.Presenter {
 
     @Override
     public void refreshStations() {
-//        Observable.concat(mStationProvider.getStationsLocal(), mStationProvider.getStations())
-//                .doOnNext(new Consumer<List<Station>>() {
-//                    @Override
-//                    public void accept(List<Station> stations) throws Exception {
-//                        mView.updateMarkers(stations);
-//                    }
-//                })
-//                .takeLast(1)
-//                .flatMap(new Function<List<Station>, ObservableSource<List<Station>>>() {
-//                    @Override
-//                    public ObservableSource<List<Station>> apply(List<Station> stations) throws Exception {
-//                        return mStationProvider.putStationsLocal(stations);
-//                    }
-//                })
-//                .doOnNext(new Consumer<List<Station>>() {
-//                    @Override
-//                    public void accept(List<Station> stations) throws Exception {
-//                        mStationProvider.putStationsLocal(stations);
-//                    }
-//                })
-//                .subscribe(new Consumer<List<Station>>() {
-//                    @Override
-//                    public void accept(List<Station> stations) throws Exception {
-//
-//                    }
-//                });
-
         mView.showLoading();
 
         mStationProvider.getStationsLocal()
