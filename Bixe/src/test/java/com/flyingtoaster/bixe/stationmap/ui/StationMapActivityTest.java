@@ -94,4 +94,11 @@ public class StationMapActivityTest {
 
         verify(mPresenter).refreshStations();
     }
+
+    @Test
+    public void onPause_presenterShouldDetachView() {
+        mController.start().resume().pause();
+
+        verify(mPresenter).detachView();
+    }
 }
