@@ -1,19 +1,25 @@
 package com.flyingtoaster.bixe.stationmap.ui;
 
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.flyingtoaster.bixe.BuildConfig;
 import com.flyingtoaster.bixe.R;
+import com.flyingtoaster.bixe.stationmap.models.Station;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.util.ActivityController;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 import static org.fest.assertions.api.ANDROID.assertThat;
 import static org.mockito.Mockito.verify;
@@ -28,12 +34,26 @@ public class StationMapActivityTest {
     ActivityController<StationMapActivity> mController;
     StationMapActivity mActivity;
 
+
+    @BindView(R.id.station_name_text_view)
+    TextView mStationNameTextView;
+
+    @BindView(R.id.bikes_amount_textview)
+    TextView mBikesAmountTextView;
+
+    @BindView(R.id.docks_amount_textview)
+    TextView mDocksAmountTextView;
+
+    @Mock
+    Station mStation;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         mController = Robolectric.buildActivity(StationMapActivity.class);
         mController.create().visible();
         mActivity = mController.get();
+        ButterKnife.bind(this, mActivity);
         mPresenter = mActivity.mPresenter;
     }
 
@@ -100,5 +120,25 @@ public class StationMapActivityTest {
         mController.start().resume().pause();
 
         verify(mPresenter).detachView();
+    }
+
+    @Test
+    public void onStationSelect_shouldNotifyPresenter() {
+        mController.start().resume();
+
+        mActivity.onStationSelect(mStation);
+
+        verify(mPresenter).onStationSelect(mStation);
+    }
+
+    @Test
+    public void updateSelectedStationView_shouldPopulate_name_availableBikes_availableDocks() {
+        mController.start().resume();
+
+        mActivity.updateSelectedStationView("King and Spadina", "6", "4");
+
+        assertThat(mStationNameTextView).hasText("King and Spadina");
+        assertThat(mBikesAmountTextView).hasText("6");
+        assertThat(mDocksAmountTextView).hasText("4");
     }
 }

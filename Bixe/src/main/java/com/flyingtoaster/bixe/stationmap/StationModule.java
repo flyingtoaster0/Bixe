@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.flyingtoaster.bixe.BixeApplication;
 import com.flyingtoaster.bixe.stationmap.ui.map.StationMapFragment;
+import com.flyingtoaster.bixe.utils.StationFormatter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -20,5 +21,10 @@ public class StationModule {
     @Provides
     StationMapFragment provideStationMapFragment() {
         return new StationMapFragment();
+    }
+
+    @Provides
+    StationFormatter provideStationFormatter() {
+        return new StationFormatter();
     }
 }

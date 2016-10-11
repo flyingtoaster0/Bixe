@@ -17,8 +17,6 @@ import com.flyingtoaster.bixe.R;
 import com.flyingtoaster.bixe.interpolators.MaterialInterpolator;
 import com.flyingtoaster.bixe.stationmap.models.Station;
 import com.flyingtoaster.bixe.stationmap.ui.map.StationMapFragment;
-import com.flyingtoaster.bixe.utils.StringUtil;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 
 import java.util.List;
@@ -29,7 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class StationMapActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener, StationMapContract.View {
+public class StationMapActivity extends AppCompatActivity implements StationMapContract.View, StationMapFragment.OnStationSelectListener {
 
     @BindView(R.id.station_name_text_view)
     TextView mStationNameTextView;
@@ -71,7 +69,7 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
         FragmentTransaction ft = manager.beginTransaction();
         ft.replace(R.id.map_fragment, mMapFragment);
         ft.commit();
-        mMapFragment.setOnMarkerClickListener(this);
+        mMapFragment.setOnStationSelectListener(this);
     }
 
     @Override
@@ -131,23 +129,6 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
     }
 
     @Override
-    public boolean onMarkerClick(Marker marker) {
-        Station selectedStation = mMapFragment.getStationForMarker(marker);
-
-        updateStationInfoView(selectedStation);
-
-        if (mBikesAmountLayout.getVisibility() != View.VISIBLE) {
-            showAmounts();
-        }
-        return true;
-    }
-
-    @Override
-    public void updateMarkers(List<Station> stations) {
-        mMapFragment.updateMarkers(stations);
-    }
-
-    @Override
     public void showLoading() {
         if (mRefreshProgressBarItem != null && mRefreshButtonItem != null) {
             mRefreshProgressBarItem.setVisible(true);
@@ -163,14 +144,20 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
         }
     }
 
-    private void updateStationInfoView(Station station) {
-        String stationName = StringUtil.fixStationName(station.getStationName());
-        Integer availableBikes = station.getAvailableBikes();
-        Integer availableDocks = station.getAvailableDocks();
+    @Override
+    public void updateMarkers(List<Station> stations) {
+        mMapFragment.updateMarkers(stations);
+    }
 
+    @Override
+    public void updateSelectedStationView(String stationName, String availableBikes, String availableDocks) {
         mStationNameTextView.setText(stationName);
-        mBikesAmountTextView.setText(availableBikes.toString());
-        mDocksAmountTextView.setText(availableDocks.toString());
+        mBikesAmountTextView.setText(availableBikes);
+        mDocksAmountTextView.setText(availableDocks);
+
+        if (mBikesAmountLayout.getVisibility() != View.VISIBLE) {
+            showAmounts();
+        }
     }
 
     private void showAmounts() {
@@ -193,5 +180,10 @@ public class StationMapActivity extends AppCompatActivity implements GoogleMap.O
         view.setTranslationY(0.25f);
 
         view.animate().alpha(1.0f).scaleX(1.0f).scaleY(1.0f).translationX(0.0f).translationY(0.0f).setDuration(200).setInterpolator(new MaterialInterpolator()).start();
+    }
+
+    @Override
+    public void onStationSelect(Station station) {
+        mPresenter.onStationSelect(station);
     }
 }

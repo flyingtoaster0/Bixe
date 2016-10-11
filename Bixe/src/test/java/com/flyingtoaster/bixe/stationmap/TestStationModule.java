@@ -6,6 +6,7 @@ import com.flyingtoaster.bixe.BixeApplication;
 import com.flyingtoaster.bixe.stationmap.data.providers.StationProvider;
 import com.flyingtoaster.bixe.stationmap.ui.StationMapPresenter;
 import com.flyingtoaster.bixe.stationmap.ui.map.StationMapFragment;
+import com.flyingtoaster.bixe.utils.StationFormatter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -25,6 +26,11 @@ public class TestStationModule {
     @Provides
     StationProvider provideStationProvider() {
         return mock(StationProvider.class);
+    }
+
+    @Provides
+    StationFormatter provideStationFormatter() {
+        return mock(StationFormatter.class);
     }
 
     @Provides

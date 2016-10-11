@@ -26,7 +26,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.HashMap;
 import java.util.List;
 
-public class StationMapFragment extends SupportMapFragment implements LocationListener, GoogleApiClient.ConnectionCallbacks {
+public class StationMapFragment extends SupportMapFragment implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleMap.OnMarkerClickListener {
 
     private View mOriginalContentView;
     private TouchableWrapper mTouchView;
@@ -50,6 +50,8 @@ public class StationMapFragment extends SupportMapFragment implements LocationLi
     private boolean mLocationLatched = false;
 
     LocationLatchListener mInternalLocationLatchListener;
+
+    private OnStationSelectListener mOnStationSelectListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -213,6 +215,7 @@ public class StationMapFragment extends SupportMapFragment implements LocationLi
                 }
 
                 googleMap.moveCamera(update);
+                googleMap.setOnMarkerClickListener(StationMapFragment.this);
             }
         });
     }
@@ -277,20 +280,39 @@ public class StationMapFragment extends SupportMapFragment implements LocationLi
         lastMarker.setIcon(bitmapDescriptor);
     }
 
-    public void setOnMarkerClickListener(final GoogleMap.OnMarkerClickListener onMarkerClickListener) {
-        getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                googleMap.setOnMarkerClickListener(onMarkerClickListener);
-            }
-        });
-    }
+//    public void setOnMarkerClickListener(final GoogleMap.OnMarkerClickListener onMarkerClickListener) {
+//        getMapAsync(new OnMapReadyCallback() {
+//            @Override
+//            public void onMapReady(GoogleMap googleMap) {
+//
+//            }
+//        });
+//    }
 
     public void setLocationLatchListener(LocationLatchListener listener) {
         mInternalLocationLatchListener = listener;
     }
 
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        if (mOnStationSelectListener != null) {
+            Station selectedStation = getStationForMarker(marker);
+            mOnStationSelectListener.onStationSelect(selectedStation);
+            return true;
+        }
+
+        return false;
+    }
+
+    public void setOnStationSelectListener(OnStationSelectListener onStationSelectListener) {
+        mOnStationSelectListener = onStationSelectListener;
+    }
+
     public abstract static class LocationLatchListener {
         public abstract void onLocationLatched(boolean isLatched);
+    }
+
+    public interface OnStationSelectListener {
+        void onStationSelect(Station station);
     }
 }
