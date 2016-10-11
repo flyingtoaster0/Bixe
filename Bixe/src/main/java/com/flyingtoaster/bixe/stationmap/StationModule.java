@@ -3,7 +3,6 @@ package com.flyingtoaster.bixe.stationmap;
 import android.content.Context;
 
 import com.flyingtoaster.bixe.BixeApplication;
-import com.flyingtoaster.bixe.stationmap.ui.StationMapPresenter;
 import com.flyingtoaster.bixe.stationmap.ui.map.StationMapFragment;
 
 import dagger.Module;

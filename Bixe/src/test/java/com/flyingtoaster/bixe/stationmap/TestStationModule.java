@@ -11,6 +11,7 @@ import dagger.Module;
 import dagger.Provides;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 
 @Module
 public class TestStationModule {
@@ -33,6 +34,6 @@ public class TestStationModule {
 
     @Provides
     StationMapFragment provideStationMapFragment() {
-        return mock(StationMapFragment.class);
+        return spy(new StationMapFragment());
     }
 }
