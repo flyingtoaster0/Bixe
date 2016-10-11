@@ -17,7 +17,6 @@ import com.flyingtoaster.bixe.R;
 import com.flyingtoaster.bixe.interpolators.MaterialInterpolator;
 import com.flyingtoaster.bixe.stationmap.models.Station;
 import com.flyingtoaster.bixe.stationmap.ui.map.StationMapFragment;
-import com.google.android.gms.maps.model.Marker;
 
 import java.util.List;
 

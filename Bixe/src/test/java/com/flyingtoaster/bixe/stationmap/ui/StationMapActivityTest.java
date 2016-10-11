@@ -6,6 +6,7 @@ import android.widget.TextView;
 import com.flyingtoaster.bixe.BuildConfig;
 import com.flyingtoaster.bixe.R;
 import com.flyingtoaster.bixe.stationmap.models.Station;
+import com.flyingtoaster.bixe.stationmap.ui.map.StationMapFragment;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +18,9 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.util.ActivityController;
+
+import java.util.Collections;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,10 +34,7 @@ import static org.robolectric.Shadows.shadowOf;
 public class StationMapActivityTest {
 
     StationMapPresenter mPresenter;
-
-    ActivityController<StationMapActivity> mController;
-    StationMapActivity mActivity;
-
+    StationMapFragment mMapFragment;
 
     @BindView(R.id.station_name_text_view)
     TextView mStationNameTextView;
@@ -47,6 +48,9 @@ public class StationMapActivityTest {
     @Mock
     Station mStation;
 
+    ActivityController<StationMapActivity> mController;
+    StationMapActivity mActivity;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -55,6 +59,7 @@ public class StationMapActivityTest {
         mActivity = mController.get();
         ButterKnife.bind(this, mActivity);
         mPresenter = mActivity.mPresenter;
+        mMapFragment = mActivity.mMapFragment;
     }
 
     @Test
@@ -120,6 +125,26 @@ public class StationMapActivityTest {
         mController.start().resume().pause();
 
         verify(mPresenter).detachView();
+    }
+
+    @Test
+    public void whenRefreshButtonIsClicked_presenterShouldRefreshStations() {
+        ShadowActivity shadowActivity = shadowOf(mActivity);
+        MenuItem refreshButtonItem = shadowActivity.getOptionsMenu().findItem(R.id.action_refresh);
+
+        mActivity.onOptionsItemSelected(refreshButtonItem);
+
+        verify(mPresenter).refreshStations();
+    }
+
+    @Test
+    public void updateMarkers_fragmentShouldUpdateMarkers() {
+        mController.start().resume();
+
+        List<Station> stations = Collections.emptyList();
+        mActivity.updateMarkers(stations);
+
+        verify(mMapFragment).updateMarkers(stations);
     }
 
     @Test
