@@ -2,6 +2,7 @@ package com.flyingtoaster.bixe;
 
 import android.app.Application;
 
+import com.flyingtoaster.bixe.schedulers.ObservableModule;
 import com.flyingtoaster.bixe.stationmap.DaggerStationComponent;
 import com.flyingtoaster.bixe.stationmap.StationComponent;
 import com.flyingtoaster.bixe.stationmap.StationModule;
@@ -18,6 +19,7 @@ public class BixeApplication extends Application {
 
         mStationComponent = DaggerStationComponent.builder()
                 .stationModule(new StationModule())
+                .observableModule(new ObservableModule())
                 .build();
     }
 

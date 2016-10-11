@@ -1,6 +1,7 @@
 package com.flyingtoaster.bixe;
 
 
+import com.flyingtoaster.bixe.schedulers.TestObservableModule;
 import com.flyingtoaster.bixe.stationmap.DaggerTestStationComponent;
 import com.flyingtoaster.bixe.stationmap.StationComponent;
 import com.flyingtoaster.bixe.stationmap.TestStationComponent;
@@ -16,6 +17,7 @@ public class TestBixeApplication extends BixeApplication {
 
         mStationComponent = DaggerTestStationComponent.builder()
                 .testStationModule(new TestStationModule())
+                .testObservableModule(new TestObservableModule())
                 .build();
     }
 

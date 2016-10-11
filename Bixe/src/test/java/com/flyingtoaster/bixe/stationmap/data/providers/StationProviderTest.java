@@ -1,5 +1,7 @@
 package com.flyingtoaster.bixe.stationmap.data.providers;
 
+import com.flyingtoaster.bixe.TestBixeApplication;
+import com.flyingtoaster.bixe.stationmap.data.clients.StationClient;
 import com.flyingtoaster.bixe.stationmap.data.database.StationDataSource;
 import com.flyingtoaster.bixe.stationmap.models.Station;
 
@@ -12,10 +14,9 @@ import org.mockito.MockitoAnnotations;
 
 import java.util.List;
 
-import com.flyingtoaster.bixe.stationmap.data.clients.StationClient;
-
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;
+import io.reactivex.schedulers.Schedulers;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -31,11 +32,10 @@ public class StationProviderTest {
 
     private StationProvider mSubject;
 
-
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        mSubject = new StationProvider(mClient, mDataSource);
+        mSubject = new StationProvider(mClient, mDataSource, Schedulers.trampoline(), Schedulers.trampoline());
     }
 
     @Test
