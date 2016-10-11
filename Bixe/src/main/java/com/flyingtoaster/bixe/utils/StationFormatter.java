@@ -3,11 +3,18 @@ package com.flyingtoaster.bixe.utils;
 
 import com.flyingtoaster.bixe.stationmap.models.Station;
 
-public class StringUtil {
+public class StationFormatter {
 
-    public static final String GOOGLE_MAPS_URL_PREFIX = "http://maps.google.com/maps?q=";
+    public String getFormattedStationName(Station station) {
+        String formatted = station.getStationName();
+        formatted = addPeriodToStreetNames(formatted);
+        formatted = removeSlashesAndBackSlashes(formatted);
+        formatted = removeBracketsAndContents(formatted);
 
-    public static String removeSlashesAndBackSlashes(String original) {
+        return formatted;
+    }
+
+    String removeSlashesAndBackSlashes(String original) {
         String outputName = "";
 
         if (original != null) {
@@ -18,7 +25,7 @@ public class StringUtil {
         return outputName;
     }
 
-    public static String addPeriodToStreetNames(String original) {
+    String addPeriodToStreetNames(String original) {
         String outputName = "";
 
         if (original != null) {
@@ -41,39 +48,11 @@ public class StringUtil {
         return outputName;
     }
 
-    public static String removeBracketsAndContents(String original) {
+    String removeBracketsAndContents(String original) {
         String output = "";
 
         output = original.replaceAll(" ?\\(.*\\)", "");
 
         return output;
-    }
-
-    public static String getShareText(Station station) {
-        StringBuilder builder = new StringBuilder();
-        double latitude = station.getLatitude();
-        double longitude = station.getLongitude();
-
-        builder.append(station.getStationName());
-        builder.append("\n\n");
-        builder.append(getLatLngUrl(latitude, longitude));
-
-        return builder.toString();
-    }
-
-    public static String getLatLngUrl(double latitude, double longitude) {
-        return GOOGLE_MAPS_URL_PREFIX + latitude + "+" + longitude;
-    }
-
-    public static String fixStationName(String stationName) {
-        String fixedStationName = "";
-
-        if (stationName != null) {
-            fixedStationName = StringUtil.addPeriodToStreetNames(stationName);
-            fixedStationName = StringUtil.removeSlashesAndBackSlashes(fixedStationName);
-            fixedStationName = StringUtil.removeBracketsAndContents(fixedStationName);
-        }
-
-        return fixedStationName;
     }
 }

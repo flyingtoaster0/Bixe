@@ -3,6 +3,7 @@ package com.flyingtoaster.bixe.stationmap.ui;
 
 import com.flyingtoaster.bixe.stationmap.data.providers.StationProvider;
 import com.flyingtoaster.bixe.stationmap.models.Station;
+import com.flyingtoaster.bixe.utils.StationFormatter;
 
 import java.util.List;
 
@@ -16,12 +17,14 @@ import io.reactivex.functions.Function;
 public class StationMapPresenter implements StationMapContract.Presenter {
 
     final StationProvider mStationProvider;
+    final StationFormatter mStationFormatter;
 
     StationMapContract.View mView;
 
     @Inject
-    public StationMapPresenter(StationProvider stationProvider) {
+    public StationMapPresenter(StationProvider stationProvider, StationFormatter stationFormatter) {
         mStationProvider = stationProvider;
+        mStationFormatter = stationFormatter;
     }
 
     @Override
@@ -69,5 +72,14 @@ public class StationMapPresenter implements StationMapContract.Presenter {
                         mView.hideLoading();
                     }
                 });
+    }
+
+    @Override
+    public void onStationSelect(Station station) {
+        String formattedStationName = mStationFormatter.getFormattedStationName(station);
+        String availableBikes = String.valueOf(station.getAvailableBikes());
+        String availableDocks = String.valueOf(station.getAvailableDocks());
+
+        mView.updateSelectedStationView(formattedStationName, availableBikes, availableDocks);
     }
 }

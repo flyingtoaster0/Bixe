@@ -2,6 +2,7 @@ package com.flyingtoaster.bixe.stationmap.ui;
 
 import com.flyingtoaster.bixe.stationmap.data.providers.StationProvider;
 import com.flyingtoaster.bixe.stationmap.models.Station;
+import com.flyingtoaster.bixe.utils.StationFormatter;
 
 import org.fest.util.Lists;
 import org.junit.Before;
@@ -23,14 +24,17 @@ public class StationMapPresenterTest {
     @Mock
     private StationProvider mStationProvider;
     @Mock
+    private Station mStation;
+    @Mock
     private StationMapContract.View mView;
+    @Mock
+    private StationFormatter mStationFormatter;
 
     private StationMapPresenter mSubject;
-
     Observable<List<Station>> mLocalStationsObservable;
     Observable<List<Station>> mNetworkStationsObservable;
-    TestObserver<List<Station>> mTestObserver;
 
+    TestObserver<List<Station>> mTestObserver;
     List<Station> mLocalStations;
     List<Station> mNetworkStations;
 
@@ -47,7 +51,7 @@ public class StationMapPresenterTest {
         when(mStationProvider.getStations()).thenReturn(mNetworkStationsObservable);
         when(mStationProvider.putStationsLocal(mNetworkStations)).thenReturn(mNetworkStationsObservable);
 
-        mSubject = new StationMapPresenter(mStationProvider);
+        mSubject = new StationMapPresenter(mStationProvider, mStationFormatter);
         mSubject.attachView(mView);
     }
 
@@ -108,5 +112,16 @@ public class StationMapPresenterTest {
         mTestObserver.onNext(mLocalStations);
 
         verify(mView).hideLoading();
+    }
+
+    @Test
+    public void onStationSelect_notifiesViewWithFormattedStationName_bikes_andDocks() {
+        when(mStationFormatter.getFormattedStationName(mStation)).thenReturn("Bathurst and Front");
+        when(mStation.getAvailableBikes()).thenReturn(6);
+        when(mStation.getAvailableDocks()).thenReturn(4);
+
+        mSubject.onStationSelect(mStation);
+
+        verify(mView).updateSelectedStationView("Bathurst and Front", "6", "4");
     }
 }
