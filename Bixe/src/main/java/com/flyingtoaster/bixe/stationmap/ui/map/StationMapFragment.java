@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.flyingtoaster.bixe.stationmap.ui.map.TouchableWrapper;
+import com.flyingtoaster.bixe.BixeApplication;
 import com.flyingtoaster.bixe.stationmap.models.Station;
 import com.flyingtoaster.bixe.utils.DrawableUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -26,14 +26,18 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class StationMapFragment extends SupportMapFragment implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleMap.OnMarkerClickListener {
 
+    @Inject
+    GoogleApiClient mGoogleApiClient;
+
     private View mOriginalContentView;
+
     private TouchableWrapper mTouchView;
 
     private Location mLastLocation;
-
-    private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
     private static final double STARTING_LAT = 43.652992;
@@ -56,6 +60,8 @@ public class StationMapFragment extends SupportMapFragment implements LocationLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         mOriginalContentView = super.onCreateView(inflater, parent, savedInstanceState);
+
+        BixeApplication.getApplication().getStationComponent().inject(this);
 
         mTouchView = new TouchableWrapper(getActivity());
         mTouchView.addView(mOriginalContentView);
@@ -82,39 +88,23 @@ public class StationMapFragment extends SupportMapFragment implements LocationLi
         mMarkerHash = new HashMap<>();
         mStationMarkerHash = new HashMap<>();
 
-        setupGoogleApi();
+        createLocationRequest();
 
         return mTouchView;
-    }
-
-    protected void setupGoogleApi() {
-        buildGoogleApiClient();
-        createLocationRequest();
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
+        mGoogleApiClient.connect();
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .build();
+        mGoogleApiClient.disconnect();
     }
 
     public synchronized void latchMyLocation() {
@@ -134,7 +124,6 @@ public class StationMapFragment extends SupportMapFragment implements LocationLi
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(5000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
     }
 
     @Override
@@ -279,15 +268,6 @@ public class StationMapFragment extends SupportMapFragment implements LocationLi
         BitmapDescriptor bitmapDescriptor = DrawableUtil.getMarkerBitmapDescriptor(lastStation);
         lastMarker.setIcon(bitmapDescriptor);
     }
-
-//    public void setOnMarkerClickListener(final GoogleMap.OnMarkerClickListener onMarkerClickListener) {
-//        getMapAsync(new OnMapReadyCallback() {
-//            @Override
-//            public void onMapReady(GoogleMap googleMap) {
-//
-//            }
-//        });
-//    }
 
     public void setLocationLatchListener(LocationLatchListener listener) {
         mInternalLocationLatchListener = listener;

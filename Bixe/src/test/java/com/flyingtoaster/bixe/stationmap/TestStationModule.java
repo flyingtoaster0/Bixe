@@ -7,6 +7,7 @@ import com.flyingtoaster.bixe.stationmap.data.providers.StationProvider;
 import com.flyingtoaster.bixe.stationmap.ui.StationMapPresenter;
 import com.flyingtoaster.bixe.stationmap.ui.map.StationMapFragment;
 import com.flyingtoaster.bixe.utils.StationFormatter;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import dagger.Module;
 import dagger.Provides;
@@ -41,5 +42,10 @@ public class TestStationModule {
     @Provides
     StationMapFragment provideStationMapFragment() {
         return spy(new StationMapFragment());
+    }
+
+    @Provides
+    GoogleApiClient provideGoogleApiClient() {
+        return mock(GoogleApiClient.class);
     }
 }
