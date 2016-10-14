@@ -37,8 +37,6 @@ public class StationMapFragment extends SupportMapFragment implements LocationLi
     @Inject
     GoogleApiClient mGoogleApiClient;
 
-    private View mOriginalContentView;
-    private TouchableWrapper mTouchView;
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
     private HashMap<Integer, Station> mStations;
@@ -52,13 +50,13 @@ public class StationMapFragment extends SupportMapFragment implements LocationLi
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        mOriginalContentView = super.onCreateView(inflater, parent, savedInstanceState);
+        View originalContentView = super.onCreateView(inflater, parent, savedInstanceState);
 
         BixeApplication.getApplication().getStationComponent().inject(this);
 
-        mTouchView = new TouchableWrapper(getActivity());
-        mTouchView.addView(mOriginalContentView);
-        mTouchView.setTouchListener(new TouchableWrapper.OnTouchListener() {
+        TouchableWrapper touchView = new TouchableWrapper(getActivity());
+        touchView.addView(originalContentView);
+        touchView.setTouchListener(new TouchableWrapper.OnTouchListener() {
             @Override
             public void onTouch() {
 
@@ -83,7 +81,7 @@ public class StationMapFragment extends SupportMapFragment implements LocationLi
 
         createLocationRequest();
 
-        return mTouchView;
+        return touchView;
     }
 
     @Override
