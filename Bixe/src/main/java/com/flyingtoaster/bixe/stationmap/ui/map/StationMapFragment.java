@@ -30,32 +30,25 @@ import javax.inject.Inject;
 
 public class StationMapFragment extends SupportMapFragment implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleMap.OnMarkerClickListener {
 
+    private static final double STARTING_LAT = 43.652992;
+    private static final double STARTING_LNG = -79.383657;
+    private static LatLng DEFAULT_LATLNG = new LatLng(STARTING_LAT, STARTING_LNG);
+
     @Inject
     GoogleApiClient mGoogleApiClient;
 
     private View mOriginalContentView;
-
     private TouchableWrapper mTouchView;
-
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
-
-    private static final double STARTING_LAT = 43.652992;
-    private static final double STARTING_LNG = -79.383657;
-
-    private static LatLng DEFAULT_LATLNG = new LatLng(STARTING_LAT, STARTING_LNG);
-
     private HashMap<Integer, Station> mStations;
     private HashMap<String, Integer> mMarkerHash;
     private HashMap<Integer, Marker> mStationMarkerHash;
 
-    private Integer mLastSelectedStationId;
-
     private boolean mLocationLatched = false;
-
-    LocationLatchListener mInternalLocationLatchListener;
-
+    private LocationLatchListener mInternalLocationLatchListener;
     private OnStationSelectListener mOnStationSelectListener;
+    private Integer mLastSelectedStationId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
